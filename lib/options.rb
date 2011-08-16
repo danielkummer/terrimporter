@@ -46,6 +46,7 @@ class TerrImporter
 
         begin
           @opts.parse!(args)
+          show_help_on_no_options
           self[:input_file] = args.shift
         rescue OptionParser::InvalidOption => e
           self[:invalid_argument] = e.message
@@ -54,6 +55,10 @@ class TerrImporter
 
       def merge(other)
         self.class.new(@orig_args + other.orig_args)
+      end
+
+      def show_help_on_no_options
+        self[:show_help] = true unless self[:import_css] or self[:import_js] or self[:import_image] or self[:init]
       end
 
     end
