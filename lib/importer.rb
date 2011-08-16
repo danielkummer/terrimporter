@@ -20,7 +20,11 @@ class TerrImporter
     def initialize(options = {})
       self.options = options
       file = File.join(Dir.pwd, CONFIG_DEFAULT_NAME)
-      init_config CONFIG_DEFAULT_NAME
+      if config_exists?(file)
+        init_config(file)
+      else
+        raise "no configuration found, exiting..."
+      end
     end
 
     def run
@@ -51,7 +55,7 @@ class TerrImporter
         options[:suffix] = css if css.include?('ie') #add ie option if in array
 
         source_url = construct_export_request(:css, options)
-        download_file(source_url, destination_path + unclean_suffix)
+        run_download(source_url, destination_path + unclean_suffix)
 
         #do line replacement
         File.open(destination_path, 'w') do |d|
@@ -97,6 +101,11 @@ class TerrImporter
     end
 
     private
+
+    def config_exists?(config)
+      raise "config file #{config} doesn't exist, if this is a new project, run with the option -i'" unless File.exists?(config)
+    end
+
     def validate_config(config)
       raise "specify downloader (curl or wget)" unless config['downloader'] =~ /curl|wget/
       raise "url format invalid" unless config['url'] =~ URI::regexp
@@ -119,7 +128,6 @@ class TerrImporter
       validate_config config
     end
 
-    
 
     def batch_download_files(relative_source_path, relative_dest_path, type_filter = "")
       source_path = relative_source_path
@@ -130,7 +138,7 @@ class TerrImporter
 
       unless type_filter.empty?
         puts "Appling type filter: #{type_filter}"
-        fTriles = files.find_all { |file| file =~ Regexp.new(".*" + type_filter.strip.gsub(" ", "|") + "$") }
+        files = files.find_all { |file| file =~ Regexp.new(".*" + type_filter.strip.gsub(" ", "|") + "$") }
       end
 
       puts "Downloading #{files.size} files..."

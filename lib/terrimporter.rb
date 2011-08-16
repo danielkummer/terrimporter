@@ -11,6 +11,11 @@ class TerrImporter
       def run!(*arguments)
         options = build_options(arguments)
 
+        #todo remove!!!!
+        puts "das sind die optionen"
+        puts options.inspect
+        exit -1
+
         if options[:invalid_argument]
           $stderr.puts options[:invalid_argument]
           options[:show_help] = true
@@ -21,10 +26,10 @@ class TerrImporter
           return 1
         end
 
-        if options[:input_file].nil?
-          $stderr.puts options.opts
-          return 1
-        end
+        #if options[:input_file].nil?
+        #  $stderr.puts options.opts
+        #  return 1
+        #end
 
         begin
 
@@ -41,6 +46,7 @@ class TerrImporter
         end
       end
 
+      #todo check force option, only override if not existing, else raise and exit
       def create_config
         FileUtils.cp(File.join(__FILE__, "../", "config", CONFIG_DEFAULT_NAME), File.join(Dir.pwd, CONFIG_DEFAULT_NAME))
       end
