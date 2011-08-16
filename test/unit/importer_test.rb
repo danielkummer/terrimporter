@@ -1,24 +1,61 @@
-require "test/unit"
+require "helper"
 
 class ImporterTest < Test::Unit::TestCase
-
-  # Called before every test method runs. Can be used
-  # to set up fixture information.
   def setup
-    # Do nothing
+    create_test_configuration_file
+
   end
 
-  # Called after every test method runs. Can be used to tear
-  # down fixture information.
 
-  def teardown
-    # Do nothing
+
+
+  should 'check for an existing config' do
+    assert_nothing_raised TerrImporter::Importer.config_exists?(@config_file)
   end
 
-  # Fake test
-  def test_fail
 
-    # To change this template use File | Settings | File Templates.
-    fail("Not implemented")
+  def create_test_configuration_file
+    example_configuration_path = File.join(File.dirname(__FILE__), '..', '..', 'config', TerrImporter::CONFIG_DEFAULT_NAME)
+    tmp_dir_path = File.join(File.dirname(__FILE__), '..', 'tmp')
+    test_configuration_path = File.join(tmp_dir_path, TerrImporter::CONFIG_DEFAULT_NAME)
+    FileUtils.mkdir(tmp_dir_path)
+    FileUtils.cp example_configuration_path, test_configuration_path
+    @test_configuration_file = test_configuration_path
   end
+
 end
+
+
+=begin
+methods to test
+
+run_download
+
+stylesheet_replace_strings
+
+check_and_create_dir
+
+construct_export_request
+
+get_file_list
+
+batch_download_files
+
+init_config
+
+validate_config
+
+config_exists?
+
+
+import_images
+
+import_js
+
+import_css
+
+run
+
+initialize
+
+=end
