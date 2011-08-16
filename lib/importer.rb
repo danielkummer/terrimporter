@@ -11,6 +11,9 @@ class TerrImporter
   class DefaultError < StandardError
   end
 
+  class ConfigurationError < StandardError
+  end
+
   class Importer
     require 'options'
     include Logging
@@ -103,23 +106,23 @@ class TerrImporter
     private
 
     def config_exists?(config)
-      raise "config file #{config} doesn't exist, if this is a new project, run with the option -i'" unless File.exists?(config)
+      raise ConfigurationError, "config file #{config} doesn't exist, if this is a new project, run with the option -i'" unless File.exists?(config)
     end
 
     def validate_config(config)
-      raise "specify downloader (curl or wget)" unless config['downloader'] =~ /curl|wget/
-      raise "url format invalid" unless config['url'] =~ URI::regexp
-      raise "version invalid" if config['version'].to_s.empty?
-      raise "app path invalid" if config['app_path'].to_s.empty?
-      raise "export path invalid" if config['export_path'].to_s.empty?
-      raise "image base path invalid" if config['image_base_path'].to_s.empty?
+      raise ConfigurationError, "specify downloader (curl or wget)" unless config['downloader'] =~ /curl|wget/
+      raise ConfigurationError,"url format invalid" unless config['url'] =~ URI::regexp
+      raise ConfigurationError,"version invalid" if config['version'].to_s.empty?
+      raise ConfigurationError,"app path invalid" if config['app_path'].to_s.empty?
+      raise ConfigurationError,"export path invalid" if config['export_path'].to_s.empty?
+      raise ConfigurationError,"image base path invalid" if config['image_base_path'].to_s.empty?
       config['stylesheets']['styles'].each do |css|
-        raise ".css extension not allowed on style definition: #{css}" if css =~ /\.css$/
+        raise ConfigurationError,".css extension not allowed on style definition: #{css}" if css =~ /\.css$/
       end
       config['javascripts']['dynamic_libraries'].each do |js|
-        raise ".js extension not allowed on javascript dynamic library definition: #{js}" if js =~ /\.js$/
+        raise ConfigurationError,".js extension not allowed on javascript dynamic library definition: #{js}" if js =~ /\.js$/
       end
-      raise "dynamic javascript libraries path invalid" if config['javascripts']['libraries_dest'].to_s.empty?
+      raise ConfigurationError,"dynamic javascript libraries path invalid" if config['javascripts']['libraries_dest'].to_s.empty?
     end
 
     def init_config(file)
