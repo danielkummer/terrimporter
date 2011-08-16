@@ -11,10 +11,10 @@ class TerrImporter
       def run!(*arguments)
         options = build_options(arguments)
 
-        #todo remove!!!!
-        puts "das sind die optionen"
-        puts options.inspect
-        exit -1
+
+        if options[:init]
+          create_config unless File.exists?(File.join(Dir.pwd, CONFIG_DEFAULT_NAME))
+        end
 
         if options[:invalid_argument]
           $stderr.puts options[:invalid_argument]
@@ -32,14 +32,12 @@ class TerrImporter
         #end
 
         begin
-
-          #todo crete config file in current working directory first
-          create_config unless File.exists?(File.join(Dir.pwd, CONFIG_DEFAULT_NAME))
-
           importer = TerrImporter::Importer.new(options)
           importer.run
           return 0
-        rescue Importer::DefaultError
+        rescue TerrImporter::ConfigurationError
+          $stderr.puts %Q{Configuration Error #{ $!.message }}
+        rescue TerrImporter::DefaultError
           $stderr.puts %Q{Unspecified Error #{ $!.message }}
           return 1
 
@@ -48,12 +46,12 @@ class TerrImporter
 
       #todo check force option, only override if not existing, else raise and exit
       def create_config
-        FileUtils.cp(File.join(__FILE__, "../", "config", CONFIG_DEFAULT_NAME), File.join(Dir.pwd, CONFIG_DEFAULT_NAME))
+        FileUtils.cp(File.join(File.dirname(__FILE__), "..", "config", CONFIG_DEFAULT_NAME), File.join(Dir.pwd, CONFIG_DEFAULT_NAME))
       end
 
 
       def build_options(arguments)
-        env_opts_string = ENV['CSV2MOD_REWRITE_OPTS'] || ""
+        env_opts_string = ENV['TERRIMPORTER_OPTS'] || ""
         env_opts = TerrImporter::Application::Options.new(shellwords(env_opts_string))
         argument_opts = TerrImporter::Application::Options.new(arguments)
         env_opts.merge(argument_opts)
