@@ -13,7 +13,7 @@ class TerrImporterTest < Test::Unit::TestCase
     merged_options = TerrImporter::Application.build_options([''] + ['-i', '--verbose'])
     expected_options = {:import_css => true,
                         :import_js => true,
-                        :import_image => true,
+                        :import_images => true,
                         :verbose => true,
                         :input_file => ''}
 

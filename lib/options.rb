@@ -59,7 +59,7 @@ class TerrImporter
       end
 
       def show_help_on_no_options
-        self[:show_help] = true unless self[:import_css] or self[:import_js] or self[:import_image] or self[:init]
+        self[:show_help] = true unless self[:import_css] or self[:import_js] or self[:import_images] or self[:init]
       end
 
     end

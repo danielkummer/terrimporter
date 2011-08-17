@@ -48,7 +48,7 @@ class TestOptions < Test::Unit::TestCase
     should "have no default import statement" do
       assert_nil @options[:import_css]
       assert_nil @options[:import_js]
-      assert_nil @options[:import_image]
+      assert_nil @options[:import_images]
     end
 
   end
@@ -85,13 +85,13 @@ class TestOptions < Test::Unit::TestCase
 
   for_options '-i' do
     should 'import image files' do
-      assert @options[:import_image]
+      assert @options[:import_images]
     end
   end
 
   for_options '--img' do
     should 'import image files' do
-      assert @options[:import_image]
+      assert @options[:import_images]
     end
   end
 
@@ -99,7 +99,7 @@ class TestOptions < Test::Unit::TestCase
     should 'import all files' do
       assert @options[:import_css]
       assert @options[:import_js]
-      assert @options[:import_image]
+      assert @options[:import_images]
     end
   end
 
@@ -107,7 +107,7 @@ class TestOptions < Test::Unit::TestCase
     should 'import all files' do
       assert @options[:import_css]
       assert @options[:import_js]
-      assert @options[:import_image]
+      assert @options[:import_images]
     end
   end
   for_options '--help' do
