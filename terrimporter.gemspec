@@ -10,7 +10,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = [%q{Daniel Kummer}]
   s.date = %q{2011-08-17}
-  s.description = %q{TODO: longer description of your gem}
+  s.description = %q{This is an importer to import files generated from terrific (http://www.terrifically.org/) into any web project.
+This should reduce merging time significantly and improve overall efficiency.}
   s.email = %q{daniel.kummer@gmail.com}
   s.executables = [%q{terrimporter}]
   s.extra_rdoc_files = [
@@ -31,6 +32,7 @@ Gem::Specification.new do |s|
     "lib/importer.rb",
     "lib/options.rb",
     "lib/terrimporter.rb",
+    "terrimporter.gemspec",
     "test/helper.rb",
     "test/test_terrimporter.rb",
     "test/unit/test_importer.rb",
