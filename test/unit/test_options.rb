@@ -1,6 +1,6 @@
 require "helper"
 
-class OptionsTest < Test::Unit::TestCase
+class TestOptions < Test::Unit::TestCase
 
   def setup_options(*arguments)
     #@input_file = "dummy.yml"

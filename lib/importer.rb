@@ -22,23 +22,25 @@ class TerrImporter
 
     def initialize(options = {})
       self.options = options
-      file = File.join(Dir.pwd, CONFIG_DEFAULT_NAME)
-      if config_exists?(file)
-        init_config(file)
-      else
-        raise "no configuration found, exiting..."
-      end
     end
 
     def run
+      init_config(config_file_path)
+
       if options[:all] != nil and options[:all] == true
         import_js
         import_css
         import_images
       else
-        options[:import].each do |import|
-          #test this really good!!!
-          Importer.send("import_" + import.to_s)
+
+        options.each do |option, value|
+          if option.to_s =~ /^import_/ and value == true
+            #test this really good!!!
+            self.send option.to_s
+
+          end
+
+
         end
       end
     end
@@ -104,31 +106,37 @@ class TerrImporter
     end
 
     private
-
-    def config_exists?(config)
-      raise ConfigurationError, "config file #{config} doesn't exist, if this is a new project, run with the option -i'" unless File.exists?(config)
+    def init_config (config_file)
+      raise ConfigurationError, "config file #{config_file} doesn't exist, if this is a new project, run with the option -i'" unless File.exists?(config_file)
+      load_config(config_file)
+      validate_config(self.config)
     end
+
+    def config_file_path(config_directory = nil)
+      config_directory = Dir.pwd if config_directory.nil?
+      File.join(config_directory, CONFIG_DEFAULT_NAME)
+    end
+
 
     def validate_config(config)
       raise ConfigurationError, "specify downloader (curl or wget)" unless config['downloader'] =~ /curl|wget/
-      raise ConfigurationError,"url format invalid" unless config['url'] =~ URI::regexp
-      raise ConfigurationError,"version invalid" if config['version'].to_s.empty?
-      raise ConfigurationError,"app path invalid" if config['app_path'].to_s.empty?
-      raise ConfigurationError,"export path invalid" if config['export_path'].to_s.empty?
-      raise ConfigurationError,"image base path invalid" if config['image_base_path'].to_s.empty?
+      raise ConfigurationError, "url format invalid" unless config['url'] =~ URI::regexp
+      raise ConfigurationError, "version invalid" if config['version'].to_s.empty?
+      raise ConfigurationError, "app path invalid" if config['app_path'].to_s.empty?
+      raise ConfigurationError, "export path invalid" if config['export_path'].to_s.empty?
+      raise ConfigurationError, "image base path invalid" if config['image_base_path'].to_s.empty?
       config['stylesheets']['styles'].each do |css|
-        raise ConfigurationError,".css extension not allowed on style definition: #{css}" if css =~ /\.css$/
+        raise ConfigurationError, ".css extension not allowed on style definition: #{css}" if css =~ /\.css$/
       end
       config['javascripts']['dynamic_libraries'].each do |js|
-        raise ConfigurationError,".js extension not allowed on javascript dynamic library definition: #{js}" if js =~ /\.js$/
+        raise ConfigurationError, ".js extension not allowed on javascript dynamic library definition: #{js}" if js =~ /\.js$/
       end
-      raise ConfigurationError,"dynamic javascript libraries path invalid" if config['javascripts']['libraries_dest'].to_s.empty?
+      raise ConfigurationError, "dynamic javascript libraries path invalid" if config['javascripts']['libraries_dest'].to_s.empty?
     end
 
-    def init_config(file)
+    def load_config(file)
       puts "Load configuration "
-      config = YAML.load_file(file)['terrific']
-      validate_config config
+      self.config = YAML.load_file(file)['terrific']
     end
 
 
@@ -172,14 +180,14 @@ class TerrImporter
       export_path.insert(0, "/") unless export_path.match(/^\//)
 
       export_path = export_path % [for_what.to_s, config['version']] #replace placeholders
-      export_path << '?' << export_settings.map { |k, v| "#{CGI.escape(k.to_s)}=#{CGI.escape(v.to_s)}" }.join("&")
+      export_path << '?' << export_settings.map { |k, v| "#{URI.escape(k.to_s)}=#{URI.escape(v.to_s)}" }.join("&")
       export_path
     end
 
     def check_and_create_dir(dir, create = true)
       unless File.directory?(dir)
         puts "Directory #{dir} does not exists... it will #{"not" unless true} be created"
-        mkdir_p(dir) if create
+        FileUtils.mkpath(dir) if create
       end
     end
 

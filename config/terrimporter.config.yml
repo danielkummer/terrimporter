@@ -67,4 +67,3 @@
       - src: /backgrounds/
         dest: public/images/backgrounds/
         types: jpg
-s

@@ -13,7 +13,14 @@ class TerrImporter
 
 
         if options[:init]
-          create_config unless File.exists?(File.join(Dir.pwd, CONFIG_DEFAULT_NAME))
+          #todo the config path can be differen in importer, extract to special class for loading and managing
+          #todo raise error instead of puts and exit
+          if File.exists?(File.join(Dir.pwd, CONFIG_DEFAULT_NAME))
+          puts "Configuration already existing, use the force option to override"
+            return 1
+          end
+          create_config
+          return 0
         end
 
         if options[:invalid_argument]
