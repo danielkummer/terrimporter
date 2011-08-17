@@ -1,6 +1,6 @@
 = terrimporter
 
-Description goes here.
+Description following in one of the next releases
 
 == Contributing to terrimporter
  
