@@ -18,7 +18,8 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/danielkummer/terrimporter"
   gem.license = "MIT"
   gem.summary = %Q{Import terrific javascripts, css files and images into a web project}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.description = %Q{This is an importer to import files generated from terrific (http://www.terrifically.org/) into any web project.
+This should reduce merging time significantly and improve overall efficiency.}
   gem.email = "daniel.kummer@gmail.com"
   gem.authors = ["Daniel Kummer"]
   # dependencies defined in Gemfile
