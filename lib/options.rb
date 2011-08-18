@@ -1,4 +1,4 @@
-class TerrImporter
+module TerrImporter
   class Application
     class Options < Hash
       attr_reader :opts, :orig_args
