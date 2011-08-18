@@ -3,7 +3,7 @@ require 'options'
 require 'importer'
 
 
-class TerrImporter
+module TerrImporter
   class Application
     class << self
       include Shellwords

@@ -4,7 +4,7 @@ require 'yaml'
 require 'uri'
 
 
-class TerrImporter
+module TerrImporter
 
   CONFIG_DEFAULT_NAME = 'terrimporter.config.yml'
 
