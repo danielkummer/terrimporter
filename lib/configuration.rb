@@ -1,3 +1,6 @@
-class Configuration
-  # To change this template use File | Settings | File Templates.
+class TerrImporter
+  class Configuration
+
+
+  end
 end
