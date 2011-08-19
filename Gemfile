@@ -1,5 +1,6 @@
 source "http://rubygems.org"
 
+gem 'kwalify'
 
 group :development do
   gem "shoulda", ">= 0"

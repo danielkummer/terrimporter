@@ -4,9 +4,8 @@ require 'yaml'
 require 'uri'
 
 
-module TerrImporter
 
-  CONFIG_DEFAULT_NAME = 'terrimporter.config.yml'
+module TerrImporter
 
   class DefaultError < StandardError
   end
@@ -16,17 +15,18 @@ module TerrImporter
 
   class Importer
     require 'options'
+    require 'configuration'
     include Logging
 
+    #todo remove
     attr_accessor :options, :config
 
     def initialize(options = {})
       self.options = options
+      self.config = TerrImporter::Application::Configuration.new
     end
 
     def run
-      init_config(config_file_path)
-
       if options[:all] != nil and options[:all] == true
         import_js
         import_css
@@ -106,39 +106,6 @@ module TerrImporter
     end
 
     private
-    def init_config (config_file)
-      raise ConfigurationError, "config file #{config_file} doesn't exist, if this is a new project, run with the option -i'" unless File.exists?(config_file)
-      load_config(config_file)
-      validate_config(self.config)
-    end
-
-    def config_file_path(config_directory = nil)
-      config_directory = Dir.pwd if config_directory.nil?
-      File.join(config_directory, CONFIG_DEFAULT_NAME)
-    end
-
-
-    def validate_config(config)
-      raise ConfigurationError, "specify downloader (curl or wget)" unless config['downloader'] =~ /curl|wget/
-      raise ConfigurationError, "url format invalid" unless config['url'] =~ URI::regexp
-      raise ConfigurationError, "version invalid" if config['version'].to_s.empty?
-      raise ConfigurationError, "app path invalid" if config['app_path'].to_s.empty?
-      raise ConfigurationError, "export path invalid" if config['export_path'].to_s.empty?
-      raise ConfigurationError, "image base path invalid" if config['image_base_path'].to_s.empty?
-      config['stylesheets']['styles'].each do |css|
-        raise ConfigurationError, ".css extension not allowed on style definition: #{css}" if css =~ /\.css$/
-      end
-      config['javascripts']['dynamic_libraries'].each do |js|
-        raise ConfigurationError, ".js extension not allowed on javascript dynamic library definition: #{js}" if js =~ /\.js$/
-      end
-      raise ConfigurationError, "dynamic javascript libraries path invalid" if config['javascripts']['libraries_dest'].to_s.empty?
-    end
-
-    def load_config(file)
-      puts "Load configuration "
-      self.config = YAML.load_file(file)['terrific']
-    end
-
 
     def batch_download_files(relative_source_path, relative_dest_path, type_filter = "")
       source_path = relative_source_path

@@ -28,11 +28,11 @@ class TestImporter < Test::Unit::TestCase
   context 'configuration loading' do
     should 'get the current working directory as config file path' do
       config_in_cwd = File.join(Dir.pwd, TerrImporter::CONFIG_DEFAULT_NAME)
-      assert_equal config_in_cwd, @importer.send(:config_file_path)
+      assert_equal config_in_cwd, @importer.send(:determine_config_file_path)
     end
 
     should 'get a configured directory path with the configuration file included' do
-      assert_equal @test_configuration_file, @importer.send(:config_file_path, @tmp_dir_path)
+      assert_equal @test_configuration_file, @importer.send(:determine_config_file_path, @tmp_dir_path)
     end
 
     should 'throw an exception on non existing config' do
