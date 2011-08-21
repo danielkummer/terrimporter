@@ -40,6 +40,7 @@
     app_path:     /Users/danielkummer/_NAMICS/projekte/mobilezone/mobilezone-abo_optimizer/public/terrific
     export_path:  /terrific/base/%2$s/public/%1$s/base/base.%1$s.php
     libraries_source_path: /js/libraries/dynamic/
+    #todo remove backslash
     image_base_path: /img
     downloader: curl
     export_settings:

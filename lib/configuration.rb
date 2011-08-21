@@ -1,18 +1,20 @@
 require 'etc'
 require 'kwalify'
+require 'config_validator'
 
 module TerrImporter
   class Application
     class Configuration < Hash
 
       CONFIG_DEFAULT_NAME = 'terrimporter.config.yml'
+      SCHEMA_DEFAULT_NAME = 'schema.yml'
 
       attr_accessor :validations
 
       def initialize
         config_file = determine_config_file_path
-        load_config(config_file)
-        validate!
+        validate_and_load_config(config_file)
+        puts "done"
       end
 
       def determine_config_file_path
@@ -32,39 +34,47 @@ module TerrImporter
         ]
       end
 
-      #todo
-      def load_config(file)
+      #todo split!
+      def validate_and_load_config(file)
         puts "Load configuration "
 
-        schema = Kwalify::Yaml.load_file('schema.yaml')
-        validator = Kwalify::Validator.new(schema)
-        parser = Kwalify:::Yaml::Parser.new(validator)
+        schema = Kwalify::Yaml.load_file(schema_file_path)
+        #validator = Kwalify::Validator.new(schema)
+        validator = ConfigValidator.new(schema)
+
+        parser = Kwalify::Yaml::Parser.new(validator)
         document = parser.parse_file(file)
         ## show errors if exist
         errors = parser.errors()
+        ##todo convert to single statement, map for example
         if errors && !errors.empty?
+          error_message = ""
           for e in errors
-            puts "#{e.linenum}:#{e.column} [#{e.path}] #{e.message}"
+             error_message << "#{e.linenum}:#{e.column} [#{e.path}] #{e.message}\n"
           end
+          raise ConfigurationError, error_message
         end
 
         self.merge! document
 
+      end
 
+      def schema_file_path
+        File.join(File.dirname(__FILE__), '..', 'config', SCHEMA_DEFAULT_NAME)
       end
 
       #todo
       def validate_schema
-        metavalidator = Kwalify::MetaValidator.instance
+        meta_validator = Kwalify::MetaValidator.instance
 
         ## validate schema definition
-        parser = Kwalify::Yaml::Parser.new(metavalidator)
-        errors = parser.parse_file('schema.yaml')
+        parser = Kwalify::Yaml::Parser.new(meta_validator)
+        errors = parser.parse_file(schema_file_path)
         for e in errors
           puts "#{e.linenum}:#{e.column} [#{e.path}] #{e.message}"
         end if errors && !errors.empty?
       end
-
+=begin remove after tested everything
       def validate!
         raise ConfigurationError, "specify downloader (curl or wget)" unless self['downloader'] =~ /curl|wget/
         raise ConfigurationError, "url format invalid" unless self['url'] =~ URI::regexp
@@ -80,6 +90,7 @@ module TerrImporter
         end
         raise ConfigurationError, "dynamic javascript libraries path invalid" if self['javascripts']['libraries_dest'].to_s.empty?
       end
+=end
     end
 
   end
