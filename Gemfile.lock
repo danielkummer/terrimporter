@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     terrimporter (0.3.0)
+      kwalify
 
 GEM
   remote: http://rubygems.org/
@@ -22,7 +23,6 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.0.0)
   jeweler (~> 1.6.4)
-  kwalify
   rcov
   shoulda
   terrimporter!
