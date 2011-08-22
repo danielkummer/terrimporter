@@ -1,3 +1,7 @@
+coverage
+rdoc
+doc
+.yardoc
 *.gem
 .bundle
 Gemfile.lock
