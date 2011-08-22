@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email       = ["daniel.kummer@gmail.com"]
   s.homepage    = ""
   s.summary     = %q{Import terrific javascripts, css files and images into a web project}
-  s.description = %q{This gem allows terrific(http://terrifically.org/) project import of css, javascript and image files based on a command line tool and a configuration file.}
+  s.description = %q{This gem allows terrific(http://terrifically.org/  ) project import of css, javascript and image files based on a command line tool and a configuration file.}
 
   s.rubyforge_project = "terrimporter"
 
