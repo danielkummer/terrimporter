@@ -6,10 +6,10 @@ Gem::Specification.new do |s|
   s.name        = "terrimporter"
   s.version     = Terrimporter::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["TODO: Write your name"]
-  s.email       = ["TODO: Write your email address"]
+  s.authors     = ["Daniel Kummer"]
+  s.email       = ["daniel.kummer@gmail.com"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
+  s.summary     = %q{Import terrific javascripts, css files and images into a web project}
   s.description = %q{TODO: Write a gem description}
 
   s.rubyforge_project = "terrimporter"
@@ -18,4 +18,10 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
+
+  s.add_development_dependency "shoulda", [">= 0"]
+  s.add_development_dependency "bundler", ["~> 1.0.0"]
+  s.add_development_dependency "jeweler", ["~> 1.6.4"]
+  s.add_development_dependency "rcov", [">= 0"]
+
 end
