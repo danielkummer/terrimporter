@@ -42,8 +42,6 @@ module TerrImporter
             File.join(Dir.pwd, '.config'),
             Etc.getpwuid.dir
         ]
-
-
       end
 
       #todo split!
