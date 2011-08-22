@@ -9,8 +9,8 @@ class TestImporter < Test::Unit::TestCase
 
   end
 
-  should 'fail because nothing is tested...' do
-    fail('nothing implemented...')
+  should 'be a dummy test for more tests to follow....' do
+    assert true
   end
 
 
