@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    terrimporter (0.3.0)
+    terrimporter (0.4.0)
       kwalify
 
 GEM
