@@ -3,7 +3,6 @@ require "helper"
 class TestOptions < Test::Unit::TestCase
 
   def setup_options(*arguments)
-    #@input_file = "dummy.yml"
     @input_file = "testfile"
     @options = TerrImporter::Application::Options.new([@input_file] + arguments)
   end
@@ -11,31 +10,10 @@ class TestOptions < Test::Unit::TestCase
   def self.for_options(*options)
     context options.join(' ') do
       setup do
-        wrap_out { setup_options *options }
+        setup_options *options
       end
       yield
     end
-  end
-
-  #todo not working
-  def wrap_out
-    original_stdout = $stdout
-    original_stderr = $stderr
-
-    fake_stdout = StringIO.new
-    fake_stderr = StringIO.new
-
-    $stdout = fake_stdout
-    $stderr = fake_stderr
-
-    begin
-      yield if block_given?
-    ensure
-      $stdout = original_stdout
-      $stderr = original_stderr
-    end
-    @stdout = fake_stdout.string
-    @stderr = fake_stderr.string
   end
 
   context "default options" do
@@ -110,6 +88,7 @@ class TestOptions < Test::Unit::TestCase
       assert @options[:import_images]
     end
   end
+
   for_options '--help' do
     should 'show help' do
       assert @options[:show_help]
@@ -121,6 +100,7 @@ class TestOptions < Test::Unit::TestCase
       assert @options[:show_help]
     end
   end
+
   for_options '-v' do
     should 'show version' do
       #assert @stdout.include? "0.1.0"
@@ -132,6 +112,13 @@ class TestOptions < Test::Unit::TestCase
   for_options '' do
     should 'show help if no options supplied' do
       assert @options[:show_help]
+    end
+  end
+
+  #todo test not working, code however is; find out the reason and correct possible bug
+  for_options '--config','param_config_file.yml', ' -a' do
+    should 'use supplied yml file for configuration' do
+      assert @options[:config_file].include?("param_config_file.yml")
     end
   end
 

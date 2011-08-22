@@ -11,7 +11,6 @@ module TerrImporter
       def run!(*arguments)
         options = build_options(arguments)
 
-
         if options[:init]
           #todo the config path can be differen in importer, extract to special class for loading and managing
           #todo raise error instead of puts and exit
@@ -50,12 +49,6 @@ module TerrImporter
 
         end
       end
-
-      #todo check force option, only override if not existing, else raise and exit
-      def create_config
-        FileUtils.cp(File.join(File.dirname(__FILE__), "..", "config", CONFIG_DEFAULT_NAME), File.join(Dir.pwd, CONFIG_DEFAULT_NAME))
-      end
-
 
       def build_options(arguments)
         env_opts_string = ENV['TERRIMPORTER_OPTS'] || ""

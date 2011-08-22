@@ -4,15 +4,13 @@ require "kwalify"
 class ConfigurationTest < Test::Unit::TestCase
 
   def setup
-    # Do nothing
+    create_test_configuration_file
+    @configuration = TerrImporter::Application::Configuration.new @test_configuration_file
+    @configuration.load_configuration
   end
 
   def teardown
-    # Do nothing
-  end
-
-  should 'do some testing' do
-    fail 'yeah, implement it baby'
+    delete_test_configuration_file
   end
 
   should 'use a valid schema file' do
@@ -26,11 +24,29 @@ class ConfigurationTest < Test::Unit::TestCase
     end if errors && !errors.empty?
 
     assert errors.empty?
+  end
 
+  should 'raise an error because non of the configurations exist in the specified paths' do
+    assert_raise ConfigurationError do
+      TerrImporter::Application::Configuration.determine_config_file_path
+    end
   end
 
   def schema_file_path
     File.join(File.dirname(__FILE__), '..', '..', 'config', TerrImporter::Application::Configuration::SCHEMA_DEFAULT_NAME)
+  end
+
+  def create_test_configuration_file
+    example_configuration_path = File.join(File.dirname(__FILE__), '..', '..', 'config', TerrImporter::Application::Configuration::CONFIG_DEFAULT_NAME)
+    tmp_dir_path = File.join(File.dirname(__FILE__), '..', 'tmp')
+    test_configuration_path = File.join(tmp_dir_path, TerrImporter::Application::Configuration::CONFIG_DEFAULT_NAME)
+    FileUtils.mkdir(tmp_dir_path) unless File.exist? tmp_dir_path
+    FileUtils.cp example_configuration_path, test_configuration_path
+    @test_configuration_file = test_configuration_path
+  end
+
+  def delete_test_configuration_file
+    FileUtils.rm_rf @test_configuration_file if File.exists? @test_configuration_file
   end
 
 end

@@ -9,21 +9,30 @@ module TerrImporter
       CONFIG_DEFAULT_NAME = 'terrimporter.config.yml'
       SCHEMA_DEFAULT_NAME = 'schema.yml'
 
-      attr_accessor :validations
+      attr_accessor :validations, :config_file
 
-      def initialize
-        config_file = determine_config_file_path
-        validate_and_load_config(config_file)
-        puts "done"
+      def initialize(config_file = nil)
+        self.config_file = config_file unless config_file.nil?
+
+      end
+
+      def load_configuration
+        config_file_path = determine_config_file_path
+        validate_and_load_config(config_file_path)
       end
 
       def determine_config_file_path
+        unless self.config_file.nil?
+          return self.config_file
+        end
+
         valid_config_paths.each do |path|
           file_path = File.join path, CONFIG_DEFAULT_NAME
           return file_path if File.exists?(file_path)
         end
+
         raise ConfigurationError, %Q{config file #{CONFIG_DEFAULT_NAME} not found in search paths. Search paths are:
-        #{valid_config_paths.join "\n"} \n If this is a new project, run with the option --init} unless File.exists?(config_file)
+        #{valid_config_paths.join "\n"} \n If this is a new project, run with the option --init}
       end
 
       def valid_config_paths
@@ -32,6 +41,8 @@ module TerrImporter
             File.join(Dir.pwd, 'config'),
             Etc.getpwuid.dir
         ]
+
+
       end
 
       #todo split!
@@ -50,7 +61,7 @@ module TerrImporter
         if errors && !errors.empty?
           error_message = ""
           for e in errors
-             error_message << "#{e.linenum}:#{e.column} [#{e.path}] #{e.message}\n"
+            error_message << "#{e.linenum}:#{e.column} [#{e.path}] #{e.message}\n"
           end
           raise ConfigurationError, error_message
         end
@@ -74,24 +85,10 @@ module TerrImporter
           puts "#{e.linenum}:#{e.column} [#{e.path}] #{e.message}"
         end if errors && !errors.empty?
       end
-=begin remove after tested everything
-      def validate!
-        raise ConfigurationError, "specify downloader (curl or wget)" unless self['downloader'] =~ /curl|wget/
-        raise ConfigurationError, "url format invalid" unless self['url'] =~ URI::regexp
-        raise ConfigurationError, "version invalid" if self['version'].to_s.empty?
-        raise ConfigurationError, "app path invalid" if self['app_path'].to_s.empty?
-        raise ConfigurationError, "export path invalid" if self['export_path'].to_s.empty?
-        raise ConfigurationError, "image base path invalid" if self['image_base_path'].to_s.empty?
-        self['stylesheets']['styles'].each do |css|
-          raise ConfigurationError, ".css extension not allowed on style definition: #{css}" if css =~ /\.css$/
-        end
-        self['javascripts']['dynamic_libraries'].each do |js|
-          raise ConfigurationError, ".js extension not allowed on javascript dynamic library definition: #{js}" if js =~ /\.js$/
-        end
-        raise ConfigurationError, "dynamic javascript libraries path invalid" if self['javascripts']['libraries_dest'].to_s.empty?
-      end
-=end
-    end
 
+      def create_config
+        FileUtils.cp(File.join(File.dirname(__FILE__), "..", "config", CONFIG_DEFAULT_NAME), File.join(Dir.pwd, CONFIG_DEFAULT_NAME))
+      end
+    end
   end
 end

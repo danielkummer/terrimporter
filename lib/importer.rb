@@ -23,10 +23,13 @@ module TerrImporter
 
     def initialize(options = {})
       self.options = options
-      self.config = TerrImporter::Application::Configuration.new
+      self.config = TerrImporter::Application::Configuration.new options[:config_file]
+
     end
 
     def run
+      self.config.load_configuration
+
       if options[:all] != nil and options[:all] == true
         import_js
         import_css
