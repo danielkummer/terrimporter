@@ -28,6 +28,9 @@ module TerrImporter
           o.on('-j', '--js', 'export configured javascript files') { self[:import_js] = true }
           o.on('--init', 'create configuration file in current working directory') { self[:init] = true }
           #todo add force option to init
+          o.on('-f', '--config CONFIG_FILE', 'use alternative configuration file') do |config_file|
+            self[:config_file] = config_file
+          end
 
           o.separator ''
           o.separator 'Additional configuration:'
@@ -59,7 +62,7 @@ module TerrImporter
       end
 
       def show_help_on_no_options
-        self[:show_help] = true unless self[:import_css] or self[:import_js] or self[:import_images] or self[:init]
+        self[:show_help] = true unless self[:import_css] or self[:import_js] or self[:import_images] or self[:init] or self[:version]
       end
 
     end

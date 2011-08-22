@@ -35,24 +35,24 @@
 #   dest:           The destination directory, relative from the current running directory
 #   types:          The image endings to be downloaded, specified as a space separated string
 ########################################################################################################################
-  terrific:
     version:      0.5
-    url:          http://terrific.abochecker
+    url:          http://terrific.url
     app_path:     /Users/danielkummer/_NAMICS/projekte/mobilezone/mobilezone-abo_optimizer/public/terrific
     export_path:  /terrific/base/%2$s/public/%1$s/base/base.%1$s.php
     libraries_source_path: /js/libraries/dynamic/
+    #todo remove backslash
     image_base_path: /img
     downloader: curl
     export_settings:
       layout: project
       debug: false
-      case: false
+      cache: false
     stylesheets:
       dest: public/stylesheets/
       styles: ie
       replace:
-      - what: /img/
-        with: /images/
+        - what: /img/
+          with: /images/
     javascripts:
       dest: public/javascripts/
       dynamic_libraries: warning pngfix
