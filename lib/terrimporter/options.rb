@@ -30,7 +30,7 @@ module TerrImporter
           o.on('-j', '--js', 'export configured javascript files') { self[:import_js] = true }
 
           o.on('--init [CONFIG_EXISTS]', [:backup, :replace], 'create configuration file in current working directory. use optional argument to force file replacement (backup, replace)') do |init|
-           self[:init] = init || true
+            self[:init] = init || true
           end
 
           o.on('-f', '--config CONFIG_FILE', 'use alternative configuration file') do |config_file|

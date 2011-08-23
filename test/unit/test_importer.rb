@@ -2,7 +2,7 @@ require "helper"
 
 class TestImporter < Test::Unit::TestCase
   def setup
-    @importer = TerrImporter::Importer.new
+    @importer = TerrImporter::Application::Importer.new
   end
 
   def teardown
