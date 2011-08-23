@@ -1,10 +1,12 @@
 require 'etc'
 require 'kwalify'
 require 'config_validator'
+require 'config_helper'
 
 module TerrImporter
   class Application
     class Configuration < Hash
+      include ConfigHelper
 
       CONFIG_DEFAULT_NAME = 'terrimporter.config.yml'
       SCHEMA_DEFAULT_NAME = 'schema.yml'
@@ -70,7 +72,7 @@ module TerrImporter
       end
 
       def schema_file_path
-        File.join(File.dirname(__FILE__), '..', 'config', SCHEMA_DEFAULT_NAME)
+        File.join(File.dirname(__FILE__), '..', '..', 'config', SCHEMA_DEFAULT_NAME)
       end
 
       #todo
@@ -85,9 +87,7 @@ module TerrImporter
         end if errors && !errors.empty?
       end
 
-      def create_config
-        FileUtils.cp(File.join(File.dirname(__FILE__), "..", "config", CONFIG_DEFAULT_NAME), File.join(Dir.pwd, CONFIG_DEFAULT_NAME))
-      end
+
     end
   end
 end

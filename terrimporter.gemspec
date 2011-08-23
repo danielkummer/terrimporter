@@ -4,7 +4,7 @@ require "terrimporter/version"
 
 Gem::Specification.new do |s|
   s.name        = "terrimporter"
-  s.version     = Terrimporter::VERSION
+  s.version     = TerrImporter::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Daniel Kummer"]
   s.email       = ["daniel.kummer@gmail.com"]

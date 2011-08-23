@@ -13,6 +13,9 @@ module TerrImporter
   class ConfigurationError < StandardError
   end
 
+  class ConfigurationMissingError < StandardError
+  end
+
   class Importer
     require 'options'
     require 'configuration'

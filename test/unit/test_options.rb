@@ -32,8 +32,20 @@ class TestOptions < Test::Unit::TestCase
   end
 
   for_options '--init' do
-    should 'initialize project' do
+    should 'initialize configuration' do
       assert @options[:init]
+    end
+  end
+
+  for_options '--init', 'replace' do
+    should 'initialize configuration and replace existing' do
+      assert_equal :replace, @options[:init]
+    end
+  end
+
+    for_options '--init', 'backup' do
+    should 'initialize configuration and backup existing' do
+      assert_equal :backup, @options[:init]
     end
   end
 
@@ -115,10 +127,15 @@ class TestOptions < Test::Unit::TestCase
     end
   end
 
-  #todo test not working, code however is; find out the reason and correct possible bug
   for_options '--config','param_config_file.yml', ' -a' do
     should 'use supplied yml file for configuration' do
       assert @options[:config_file].include?("param_config_file.yml")
+    end
+  end
+
+  for_options '--no-verbose', '-a' do
+    should 'use none verbose output' do
+      assert_equal false, @options[:verbose]
     end
   end
 

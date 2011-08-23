@@ -33,7 +33,7 @@ class ConfigurationTest < Test::Unit::TestCase
     should 'create a config file in the current directory' do
       config_path = File.join(Dir.pwd, TerrImporter::Application::Configuration::CONFIG_DEFAULT_NAME)
       FileUtils.rm_f config_path if File.exists? config_path
-      @configuration.create_config
+      @configuration.create_config_file
       assert File.exists?(config_path)
     end
   end

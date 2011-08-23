@@ -1,42 +1,37 @@
 require 'shellwords'
-require 'options'
-require 'importer'
+require 'terrimporter/options'
+require 'terrimporter/importer'
+require 'terrimporter/version'
+require 'terrimporter/config_helper'
 
 module TerrImporter
   class Application
     class << self
       include Shellwords
+      include ConfigHelper
 
       def run!(*arguments)
         options = build_options(arguments)
 
-        if options[:init]
-          #todo the config path can be differen in importer, extract to special class for loading and managing
-          #todo raise error instead of puts and exit
-          if File.exists?(File.join(Dir.pwd, CONFIG_DEFAULT_NAME))
-          puts "Configuration already existing, use the force option to override"
+        begin
+          if options[:init]
+            if config_working_directory_exists?
+              raise TerrImporter::ConfigurationError "Configuration already exists, use the override or backup option"
+            end
+            create_config_file
+            return 0
+          end
+
+          if options[:invalid_argument]
+            $stderr.puts options[:invalid_argument]
+            options[:show_help] = true
+          end
+
+          if options[:show_help]
+            $stderr.puts options.opts
             return 1
           end
-          create_config
-          return 0
-        end
 
-        if options[:invalid_argument]
-          $stderr.puts options[:invalid_argument]
-          options[:show_help] = true
-        end
-
-        if options[:show_help]
-          $stderr.puts options.opts
-          return 1
-        end
-
-        #if options[:input_file].nil?
-        #  $stderr.puts options.opts
-        #  return 1
-        #end
-
-        begin
           importer = TerrImporter::Importer.new(options)
           importer.run
           return 0
@@ -45,7 +40,6 @@ module TerrImporter
         rescue TerrImporter::DefaultError
           $stderr.puts %Q{Unspecified Error #{ $!.message }}
           return 1
-
         end
       end
 

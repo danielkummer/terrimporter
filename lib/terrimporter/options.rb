@@ -24,10 +24,15 @@ module TerrImporter
           end
 
           o.on('-c', '--css', 'export configured css files') { self[:import_css] = true }
+
           o.on('-i', '--img', 'export configured image files') { self[:import_images] = true }
+
           o.on('-j', '--js', 'export configured javascript files') { self[:import_js] = true }
-          o.on('--init', 'create configuration file in current working directory') { self[:init] = true }
-          #todo add force option to init
+
+          o.on('--init [CONFIG_EXISTS]', [:backup, :replace], 'create configuration file in current working directory. use optional argument to force file replacement (backup, replace)') do |init|
+           self[:init] = init || true
+          end
+
           o.on('-f', '--config CONFIG_FILE', 'use alternative configuration file') do |config_file|
             self[:config_file] = config_file
           end
@@ -35,13 +40,12 @@ module TerrImporter
           o.separator ''
           o.separator 'Additional configuration:'
 
-          #o.on('-v', '--verbose [on, off], default [on]', [true, false], 'Verbose mode') do |v|
           o.on('-v', '--[no-]verbose', 'run verbosely') do |v|
             self[:verbose] = v
           end
 
           o.on('--version', 'Show version') do
-            puts ::File.open(::File.join(File.dirname(__FILE__), "..", "VERSION"), 'r').gets
+            puts TerrImporter::VERSION
             exit
           end
 
