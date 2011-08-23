@@ -32,11 +32,12 @@ module TerrImporter
             return 1
           end
 
-          importer = TerrImporter::Importer.new(options)
+          importer = TerrImporter::Application::Importer.new(options)
           importer.run
           return 0
         rescue TerrImporter::ConfigurationError
           $stderr.puts %Q{Configuration Error #{ $!.message }}
+          return 1
         rescue TerrImporter::DefaultError
           $stderr.puts %Q{Unspecified Error #{ $!.message }}
           return 1
