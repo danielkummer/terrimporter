@@ -9,6 +9,7 @@ rescue Bundler::BundlerError => e
 end
 require 'test/unit'
 require 'shoulda'
+require 'fake_web'
 
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
