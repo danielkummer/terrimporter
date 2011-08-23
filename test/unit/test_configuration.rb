@@ -1,4 +1,4 @@
-require "test/unit"
+require "helper"
 require "kwalify"
 
 class ConfigurationTest < Test::Unit::TestCase

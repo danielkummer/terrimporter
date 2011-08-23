@@ -3,6 +3,7 @@ require 'terrimporter/options'
 require 'terrimporter/importer'
 require 'terrimporter/version'
 require 'terrimporter/config_helper'
+require 'terrimporter/downloader'
 
 module TerrImporter
   class Application
