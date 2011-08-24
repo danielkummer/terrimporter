@@ -9,7 +9,7 @@ class DownloaderTest < Test::Unit::TestCase
  end
 
  def teardown
-
+   FileUtils.rm_f @target_dir if not @target_dir.nil? and File.exists? @target_dir
  end
 
   should 'join relative and base paths to get fully valid uri' do
@@ -25,9 +25,14 @@ class DownloaderTest < Test::Unit::TestCase
   end
 
   should 'download a remote uri to string' do
-    result = @downloader.download_to_output ''
-
+    result = @downloader.download ''
     assert result.include? 'This is the base.css file'
+  end
+
+  should 'download a file to the tmp folder' do
+    @target_dir = File.expand_path 'dynlib.js','tmp'
+    @downloader.download @base_uri + '/js/libraries/dynamic/dynlib.js', @target_dir
+    assert File.exists?(@target_dir), "File doesn't exist #{@target_dir}"
   end
 
 

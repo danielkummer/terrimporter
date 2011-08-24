@@ -6,7 +6,7 @@ module ConfigHelper
   SCHEMA_DEFAULT_NAME = 'schema.yml'
 
   def config_working_directory_path
-    File.join(Dir.pwd, CONFIG_DEFAULT_NAME)
+    File.expand_path CONFIG_DEFAULT_NAME
   end
 
   def config_working_directory_exists?

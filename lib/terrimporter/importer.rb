@@ -19,6 +19,7 @@ module TerrImporter
     class Importer
       require 'options'
       require 'configuration'
+      require 'downloader'
       include Logging
 
       attr_accessor :options, :config
@@ -26,7 +27,11 @@ module TerrImporter
       def initialize(options = {})
         self.options = options
         self.config = Configuration.new options[:config_file]
+        init_downloader config['url']
+      end
 
+      def init_downloader(url)
+        @downloader = Downloader.new(url)
       end
 
       def run
@@ -61,7 +66,7 @@ module TerrImporter
           options[:suffix] = css if css.include?('ie') #add ie option if in array
 
           source_url = construct_export_request(:css, options)
-          run_download(source_url, destination_path + unclean_suffix)
+          @downloader.download(source_url, destination_path + unclean_suffix)
 
           #do line replacement
           File.open(destination_path, 'w') do |d|
@@ -80,7 +85,7 @@ module TerrImporter
         destination_path = File.join(config['javascripts']['dest'], "base.js")
         js_source_url = construct_export_request :js
         puts "Importing base.js from #{js_source_url} to #{destination_path}"
-        run_download(js_source_url, destination_path)
+        @downloader.download(js_source_url, destination_path)
 
         #start library import
         libraries_destination_path = File.join(config['javascripts']['dest'], config['javascripts']['libraries_dest'])
@@ -92,7 +97,7 @@ module TerrImporter
         puts "Importing libraries from #{config['libraries_source_path']} to #{libraries_destination_path}"
 
         js_libraries.each do |lib|
-          run_download(config['libraries_source_path'] + lib + ".js", File.join(libraries_destination_path, lib + ".js"))
+          @downloader.download(config['libraries_source_path'] + lib + ".js", File.join(libraries_destination_path, lib + ".js"))
         end
 
       end
@@ -127,7 +132,7 @@ module TerrImporter
       end
 
       def get_file_list(source_path)
-        output = run_download(source_path)
+        output = @downloader.download(source_path)
         files = []
 
         output.scan(/<a\shref=\"([^\"]+)\"/) { |res| files << res[0] if not res[0] =~ /^\?/ and res[0].size > 1 }
@@ -168,20 +173,7 @@ module TerrImporter
         line
       end
 
-      #todo use as central download processing
-      def run_download(remote_path, local = nil, options = {})
-        FileUtils.remove_file(local) if not local.nil? and File.exists?(local) and not File.directory?(local) and not options[:remove_old] == true
-        remote_url = config['url'] + remote_path
 
-        case config['downloader']
-          when 'curl'
-            output = `curl '#{remote_url}' #{"> #{local}" if local != nil}`
-            raise "FATAL: An error orrured downloading from #{remote_url} #{"to #{local}: \n #{output}" if local != nil}" if output.include?('error')
-            return output
-          when 'wget'
-            #todo
-        end
-      end
     end
   end
 end
