@@ -23,16 +23,10 @@ module TerrImporter
         self.options = options
         self.config = Configuration.new options[:config_file]
         self.config.load_configuration
-        init_downloader config['url']
-      end
-
-      def init_downloader(url)
-        @downloader = Downloader.new(url)
+        @downloader = Downloader.new config['url']
       end
 
       def run
-
-
         if options[:all] != nil and options[:all] == true
           import_js
           import_css
@@ -77,6 +71,7 @@ module TerrImporter
       end
 
       def import_js
+        check_and_create_dir config['javascripts']['dest']
         destination_path = File.join(config['javascripts']['dest'], "base.js")
         js_source_url = construct_export_path :js
         puts "Importing base.js from #{js_source_url} to #{destination_path}"
@@ -84,7 +79,6 @@ module TerrImporter
 
         #start library import
         libraries_destination_path = File.join(config['javascripts']['dest'], config['javascripts']['libraries_dest'])
-
         check_and_create_dir libraries_destination_path
 
         js_libraries = config['javascripts']['dynamic_libraries'].split(" ")
@@ -92,7 +86,7 @@ module TerrImporter
         puts "Importing libraries from #{config['libraries_source_path']} to #{libraries_destination_path}"
 
         js_libraries.each do |lib|
-          @downloader.download(config['libraries_source_path'] + lib + ".js", File.join(libraries_destination_path, lib + ".js"))
+          @downloader.download(File.join(config['libraries_source_path'], lib+ ".js"), File.join(libraries_destination_path, lib + ".js"))
         end
       end
 

@@ -55,7 +55,7 @@
     javascripts:
       dest: test/tmp/public/javascripts/
       dynamic_libraries: dynlib
-      libraries_dest: /
+      libraries_dest: /lib
     images:
       - src: /
         dest: test/tmp/public/images/

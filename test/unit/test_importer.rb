@@ -6,6 +6,7 @@ class TestImporter < Test::Unit::TestCase
     @importer = TerrImporter::Application::Importer.new({:config_file => test_config_file_path})
     FakeWeb.register_uri(:get, "http://terrific.url/terrific/base/0.5/public/css/base/base.css.php?appbaseurl=&application=/terrific/webapp/path&layout=project&debug=false&cache=false", :body => File.expand_path('test/fixtures/base.css'), :content_type => 'text/plain')
     FakeWeb.register_uri(:get, "http://terrific.url/terrific/base/0.5/public/css/base/base.css.php?appbaseurl=&application=/terrific/webapp/path&layout=project&suffix=ie&debug=false&cache=false", :body => File.expand_path('test/fixtures/ie.css'), :content_type => 'text/plain')
+    FakeWeb.register_uri(:get, "http://terrific.url/terrific/base/0.5/public/js/base/base.js.php?layout=project&cache=false&application=/terrific/webapp/path&debug=false", :body => File.expand_path('test/fixtures/base.js'), :content_type => 'text/plain')
     FakeWeb.register_uri(:get, "http://terrific.url/img", :body => File.expand_path('test/fixtures/img_dir.html'), :content_type => 'text/html')
     FakeWeb.register_uri(:get, "http://terrific.url/img/", :body => File.expand_path('test/fixtures/img_dir.html'), :content_type => 'text/html')
     FakeWeb.register_uri(:get, "http://terrific.url/img/testimage1.png", :body => File.expand_path('test/fixtures/testimage.png'), :content_type => 'image/png')
@@ -14,6 +15,7 @@ class TestImporter < Test::Unit::TestCase
     FakeWeb.register_uri(:get, "http://terrific.url/img/backgrounds", :body => File.expand_path('test/fixtures/img_backgrounds_dir.html'), :content_type => 'text/html')
     FakeWeb.register_uri(:get, "http://terrific.url/img/backgrounds/", :body => File.expand_path('test/fixtures/img_backgrounds_dir.html'), :content_type => 'text/html')
     FakeWeb.register_uri(:get, "http://terrific.url/img/backgrounds/background.jpg", :body => File.expand_path('test/fixtures/background.jpg'), :content_type => 'image/jpg')
+    FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic", :body => File.expand_path('test/fixtures/js_dyn_dir.html'), :content_type => 'text/html')
     FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/", :body => File.expand_path('test/fixtures/js_dyn_dir.html'), :content_type => 'text/html')
     FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/dynlib.js", :body => File.expand_path('test/fixtures/dynlib.js'), :content_type => 'text/plain')
   end
@@ -125,10 +127,52 @@ class TestImporter < Test::Unit::TestCase
     should 'import all images' do
       @importer.import_images
 
-      assert exists_in_tmp?('public/images/testimage1.png'), "testimage1 doesn't exist"
-      assert exists_in_tmp?('public/images/testimage2.png'), "testimage2 doesn't exist"
-      assert exists_in_tmp?('public/images/testimage3.png'), "testimage3 doesn't exist"
-      assert exists_in_tmp?('public/images/backgrounds/background.jpg'), "background doesn't exist"
+      assert exists_in_tmp?('public/images/testimage1.png')
+      assert exists_in_tmp?('public/images/testimage2.png')
+      assert exists_in_tmp?('public/images/testimage3.png')
+      assert exists_in_tmp?('public/images/backgrounds/background.jpg')
+    end
+
+    should 'import all css files' do
+      @importer.import_css
+      assert exists_in_tmp?('public/stylesheets/base.css')
+      assert exists_in_tmp?('public/stylesheets/ie.css')
+    end
+
+    should 'import all js files' do
+      @importer.import_js
+      assert exists_in_tmp?('public/javascripts/base.js')
+      assert exists_in_tmp?('public/javascripts/lib/dynlib.js')
+    end
+
+  end
+
+  context 'execute run and check for correct resolve of commands' do
+    setup do
+      @importer.options[:import_js] = true
+      @importer.options[:import_css] = true
+      @importer.options[:import_images] = true
+    end
+
+    should 'import js, css and images, not using the :all statement' do
+      @importer.run
+      #only cherry-pick tests
+      assert exists_in_tmp?('public/images/testimage1.png')
+      assert exists_in_tmp?('public/stylesheets/base.css')
+      assert exists_in_tmp?('public/javascripts/base.js')
+    end
+  end
+
+  context 'execute run with all possible options enabled' do
+    setup do
+      @importer.options[:all] = true
+    end
+    should 'import js, css and images, using the :all statement' do
+      @importer.run
+      #only cherry-pick tests
+      assert exists_in_tmp?('public/images/testimage1.png')
+      assert exists_in_tmp?('public/stylesheets/base.css')
+      assert exists_in_tmp?('public/javascripts/base.js')
     end
 
   end
