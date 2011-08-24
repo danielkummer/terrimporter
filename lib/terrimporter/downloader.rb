@@ -14,6 +14,7 @@ module TerrImporter
         absolute_uri = absolute_path(remote_path)
         if local_path.nil? #download to return
           data = StringIO.new
+          puts absolute_uri #todo remove debug statement
           absolute_uri.open { |io| data = io.read }
           data.to_s
         else

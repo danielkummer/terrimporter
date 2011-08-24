@@ -47,22 +47,19 @@
       debug: false
       cache: false
     stylesheets:
-      dest: public/stylesheets/
+      dest: test/tmp/public/stylesheets/
       styles: ie
       replace:
         - what: /img/
           with: /images/
     javascripts:
-      dest: public/javascripts/
+      dest: test/tmp/public/javascripts/
       dynamic_libraries: dynlib
       libraries_dest: /
     images:
       - src: /
-        dest: public/images/
+        dest: test/tmp/public/images/
         types: jpg png gif
-      - src: /
-        dest: public/
-        types: ico
-      - src: /backgrounds/
-        dest: public/images/backgrounds/
+      - src: /backgrounds
+        dest: test/tmp/public/images/backgrounds/
         types: jpg

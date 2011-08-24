@@ -22,5 +22,16 @@ class Test::Unit::TestCase
     File.join(File.dirname(__FILE__), 'fixtures', 'test.config.yml')
   end
 
+  def tmp_test_directory
+    File.join(File.dirname(__FILE__), 'tmp')
+  end
+
+  def create_tmp_test_directory
+    FileUtils.mkdir tmp_test_directory unless File.exists? tmp_test_directory
+  end
+
+  def delete_tmp_test_directory
+    FileUtils.rm_rf tmp_test_directory
+  end
 
 end

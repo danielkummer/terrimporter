@@ -60,7 +60,7 @@ module TerrImporter
           options = {}
           options[:suffix] = css if css.include?('ie') #add ie option if in array
 
-          source_url = construct_export_request(:css, options)
+          source_url = construct_export_path(:css, options)
           @downloader.download(source_url, destination_path + unclean_suffix)
 
           #do line replacement
@@ -78,7 +78,7 @@ module TerrImporter
 
       def import_js
         destination_path = File.join(config['javascripts']['dest'], "base.js")
-        js_source_url = construct_export_request :js
+        js_source_url = construct_export_path :js
         puts "Importing base.js from #{js_source_url} to #{destination_path}"
         @downloader.download(js_source_url, destination_path)
 
@@ -100,18 +100,18 @@ module TerrImporter
         config['images'].each do |image|
           check_and_create_dir image['dest']
           image_source_path = File.join(config['image_base_path'], image['src'])
-          batch_download_files(image_source_path, image['dest'], image['types'])
+          batch_download(image_source_path, image['dest'], image['types'])
         end
       end
 
       private
 
-      def batch_download_files(relative_source_path, relative_dest_path, type_filter = "")
+      def batch_download(relative_source_path, relative_dest_path, type_filter = "")
         source_path = relative_source_path
 
         puts "Downloading files from #{config['url']}#{source_path} to #{relative_dest_path} #{"allowed extensions: " + type_filter unless type_filter.empty?}"
 
-        files = get_file_list(source_path)
+        files = html_directory_content_list(source_path)
 
         unless type_filter.empty?
           puts "Appling type filter: #{type_filter}"
@@ -121,20 +121,22 @@ module TerrImporter
         puts "Downloading #{files.size} files..."
         files.each do |file|
           destination_path = File.join(relative_dest_path, file)
-          @downloader.download(source_path + file, destination_path, :remove_old => false)
+          @downloader.download(File.join(source_path,file), destination_path)
         end
       end
 
-      def get_file_list(source_path)
+      def html_directory_content_list(source_path)
         output = @downloader.download(source_path)
         files = []
 
-        output.scan(/<a\shref=\"([^\"]+)\"/) { |res| files << res[0] if not res[0] =~ /^\?/ and res[0].size > 1 }
+        output.scan(/<a\shref=\"([^\"]+)\"/) do |res|
+          files << res[0] if not res[0] =~ /^\?/ and not res[0] =~ /.*\/$/ and res[0].size > 1
+        end
         files
       end
 
-      def construct_export_request(for_what = :js, options={})
-        raise "Specify js or css url" unless for_what == :js or for_what == :css
+      def construct_export_path(for_what = :js, options={})
+        raise DefaultError, "Specify js or css url" unless for_what == :js or for_what == :css
         export_settings = config['export_settings'].clone
 
         export_settings['application'] = config['app_path']
@@ -151,10 +153,17 @@ module TerrImporter
       end
 
       def check_and_create_dir(dir, create = true)
+        created_or_exists = false
         unless File.directory?(dir)
-          puts "Directory #{dir} does not exists... it will #{"not" unless true} be created"
-          FileUtils.mkpath(dir) if create
+          puts "Directory #{dir} does not exists... it will #{"not" unless create} be created"
+          if create
+            FileUtils.mkpath(dir)
+            created_or_exists = true
+          end
+        else
+          created_or_exists = true
         end
+        created_or_exists
       end
 
       def stylesheet_replace_strings!(line)
