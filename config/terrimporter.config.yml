@@ -19,7 +19,7 @@
 #   styles:         Name of the stylesheets, space separated without the .css extension. ex: ie ie6 ie7 ie8
 #                   the main style base.css is included by default and MUST NOT BE SPECIFIED
 #   replace:        Define path replacements after the stylesheets have been downloaded
-#                   you can define multiple replacements by repeating the '-what: with:' pattern:
+#                   you can define multiple replacements by repeating the '-what: with:' statements
 #     - what:       What to replace, default is string. if you want to use regex, use the format r/[regex]/
 #                   for help on regular expressions see http://www.rubular.com/ (an online editor/tester)
 #       with:       Replace with this (string)

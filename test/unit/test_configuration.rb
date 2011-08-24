@@ -1,17 +1,19 @@
-require "helper"
+require "test_helper"
 require "kwalify"
 
+
 class ConfigurationTest < Test::Unit::TestCase
+  include ConfigHelper
 
   def setup
-    create_test_configuration_file
-    @configuration = TerrImporter::Application::Configuration.new @test_configuration_file
+    #create_test_configuration_file
+    @configuration =  TerrImporter::Application::Configuration.new test_config_file_path
     @configuration.load_configuration
   end
 
   def teardown
     puts "Cleaning up configuration files"
-    delete_test_configuration_file
+    #delete_test_configuration_file
   end
 
   should 'find a configuration in the local path and not raise an error' do
@@ -26,12 +28,12 @@ class ConfigurationTest < Test::Unit::TestCase
     }
 
     should 'get the current working directory as config file path' do
-      config_in_cwd = File.join(Dir.pwd, TerrImporter::Application::Configuration::CONFIG_DEFAULT_NAME)
+      config_in_cwd = File.join(Dir.pwd, config_default_name)
       assert_equal config_in_cwd, @configuration.determine_config_file_path
     end
 
     should 'create a config file in the current directory' do
-      config_path = File.join(Dir.pwd, TerrImporter::Application::Configuration::CONFIG_DEFAULT_NAME)
+      config_path = File.join(Dir.pwd, config_default_name)
       FileUtils.rm_f config_path if File.exists? config_path
       @configuration.create_config_file
       assert File.exists?(config_path)
@@ -39,13 +41,16 @@ class ConfigurationTest < Test::Unit::TestCase
   end
 
   def schema_file_path
-    File.join(File.dirname(__FILE__), '..', '..', 'config', TerrImporter::Application::Configuration::SCHEMA_DEFAULT_NAME)
+    File.join(File.dirname(__FILE__), '..', '..', 'config', schema_default_name)
   end
 
+
+
+=begin
   def create_test_configuration_file
-    example_configuration_path = File.join(File.dirname(__FILE__), '..', '..', 'config', TerrImporter::Application::Configuration::CONFIG_DEFAULT_NAME)
+    example_configuration_path = File.join(File.dirname(__FILE__), '..', '..', 'config', config_default_name)
     tmp_dir_path = File.join(File.dirname(__FILE__), '..', 'tmp')
-    test_configuration_path = File.join(tmp_dir_path, TerrImporter::Application::Configuration::CONFIG_DEFAULT_NAME)
+    test_configuration_path = File.join(tmp_dir_path, config_default_name)
     FileUtils.mkdir(tmp_dir_path) unless File.exist? tmp_dir_path
     FileUtils.cp example_configuration_path, test_configuration_path
     @test_configuration_file = test_configuration_path
@@ -54,5 +59,6 @@ class ConfigurationTest < Test::Unit::TestCase
   def delete_test_configuration_file
     FileUtils.rm_rf @test_configuration_file if File.exists? @test_configuration_file
   end
+=end
 
 end

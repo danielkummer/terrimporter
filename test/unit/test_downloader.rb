@@ -1,11 +1,10 @@
-require "helper"
-
-
+require "test_helper"
 
 class DownloaderTest < Test::Unit::TestCase
  def setup
     @base_uri = 'http://terrific.url'
     @downloader = TerrImporter::Application::Downloader.new @base_uri
+   FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/dynlib.js", :body => File.expand_path('test/fixtures/dynlib.js'), :content_type => 'text/plain')
  end
 
  def teardown
@@ -25,12 +24,12 @@ class DownloaderTest < Test::Unit::TestCase
   end
 
   should 'download a remote uri to string' do
-    result = @downloader.download ''
-    assert result.include? 'This is the base.css file'
+    result = @downloader.download 'js/libraries/dynamic/dynlib.js'
+    assert result.include?('This file represents a dynamic js library'), "result wrong, contains #{result.to_s}"
   end
 
   should 'download a file to the tmp folder' do
-    @target_dir = File.expand_path 'dynlib.js','tmp'
+    @target_dir = File.expand_path('/tmp/dynlib.js')
     @downloader.download @base_uri + '/js/libraries/dynamic/dynlib.js', @target_dir
     assert File.exists?(@target_dir), "File doesn't exist #{@target_dir}"
   end

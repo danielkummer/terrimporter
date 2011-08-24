@@ -1,4 +1,4 @@
-require "helper"
+require "test_helper"
 
 class TestOptions < Test::Unit::TestCase
 
@@ -27,6 +27,20 @@ class TestOptions < Test::Unit::TestCase
       assert_nil @options[:import_css]
       assert_nil @options[:import_js]
       assert_nil @options[:import_images]
+    end
+
+    should 'show help if none of the required options are specified' do
+      @options.show_help_on_no_options
+      assert @options[:show_help]
+
+       #self[:show_help] = true unless self[:import_css] or self[:import_js] or self[:import_images] or self[:init] or self[:version]
+    end
+
+    should 'not show help if one of the required options is specified' do
+      @options[:import_css] = true
+      @options.show_help_on_no_options
+      assert_equal false, @options[:show_help]
+       #self[:show_help] = true unless self[:import_css] or self[:import_js] or self[:import_images] or self[:init] or self[:version]
     end
 
   end
@@ -138,5 +152,6 @@ class TestOptions < Test::Unit::TestCase
       assert_equal false, @options[:verbose]
     end
   end
+
 
 end

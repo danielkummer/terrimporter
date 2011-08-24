@@ -1,8 +1,8 @@
-require "helper"
+require "test_helper"
 
 class TestImporter < Test::Unit::TestCase
   def setup
-    @importer = TerrImporter::Application::Importer.new
+    @importer = TerrImporter::Application::Importer.new({ :config_file => test_config_file_path })
     FakeWeb.register_uri(:get, "http://terrific.url/terrific/base/0.5/public/css/base/base.css.php?appbaseurl=&application=/terrific/webapp/path&layout=project&debug=false&cache=false", :body => File.expand_path('test/fixtures/base.css'), :content_type => 'text/plain')
     FakeWeb.register_uri(:get, "http://terrific.url/terrific/base/0.5/public/css/base/base.css.php?appbaseurl=&application=/terrific/webapp/path&layout=project&suffix=ie&debug=false&cache=false", :body => File.expand_path('test/fixtures/ie.css'), :content_type => 'text/plain')
     FakeWeb.register_uri(:get, "http://terrific.url/img/", :body => File.expand_path('test/fixtures/img_dir.html'), :content_type => 'text/html')
@@ -24,6 +24,20 @@ class TestImporter < Test::Unit::TestCase
   end
 
 
+  should 'replace a string in the stylesheet with the configured string' do
+    line = "this line should replace the /img/ string with images"
+    @importer.send(:stylesheet_replace_strings!, line)
+    assert line.include? "/images/"
+  end
+
+  should 'replace a string in the stylesheet with the configured regex' do
+    @importer.config['stylesheets']['replace'][0]['what'] = "r/re.+eg/"
+    line = "this line should replace the regex string with images"
+    @importer.send(:stylesheet_replace_strings!, line)
+    assert line.include?("/images/"), "result not expected, is #{line}"
+  end
+
+
 end
 
 
@@ -32,7 +46,7 @@ methods to test
 
 run_download
 
-stylesheet_replace_strings
+stylesheet_replace_strings!
 
 check_and_create_dir
 

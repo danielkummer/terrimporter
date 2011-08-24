@@ -1,8 +1,6 @@
 require 'fileutils'
-require 'app_logger'
 require 'yaml'
 require 'uri'
-
 
 module TerrImporter
 
@@ -17,9 +15,6 @@ module TerrImporter
 
   class Application
     class Importer
-      require 'options'
-      require 'configuration'
-      require 'downloader'
       include Logging
 
       attr_accessor :options, :config
@@ -27,6 +22,7 @@ module TerrImporter
       def initialize(options = {})
         self.options = options
         self.config = Configuration.new options[:config_file]
+        self.config.load_configuration
         init_downloader config['url']
       end
 
@@ -35,14 +31,13 @@ module TerrImporter
       end
 
       def run
-        self.config.load_configuration
+
 
         if options[:all] != nil and options[:all] == true
           import_js
           import_css
           import_images
         else
-
           options.each do |option, value|
             if option.to_s =~ /^import_/ and value == true
               self.send option.to_s
@@ -73,7 +68,7 @@ module TerrImporter
             File.open(destination_path + unclean_suffix, 'r') do |s|
               lines = s.readlines
               lines.each do |line|
-                d.print stylesheet_replace_strings(line)
+                d.print stylesheet_replace_strings!(line)
               end
             end
           end
@@ -99,7 +94,6 @@ module TerrImporter
         js_libraries.each do |lib|
           @downloader.download(config['libraries_source_path'] + lib + ".js", File.join(libraries_destination_path, lib + ".js"))
         end
-
       end
 
       def import_images
@@ -127,7 +121,7 @@ module TerrImporter
         puts "Downloading #{files.size} files..."
         files.each do |file|
           destination_path = File.join(relative_dest_path, file)
-          run_download(source_path + file, destination_path, :remove_old => false)
+          @downloader.download(source_path + file, destination_path, :remove_old => false)
         end
       end
 
@@ -163,17 +157,15 @@ module TerrImporter
         end
       end
 
-      def stylesheet_replace_strings(line)
+      def stylesheet_replace_strings!(line)
         config['stylesheets']['replace'].each do |replace|
           what = replace['what']
           with = replace['with']
-          what = Regexp.new "/#{$1}" if what.match(/^r\//)
+          what = Regexp.new "#{$1}" if what.match(/^r\/(.*)\//)
           line.gsub! what, with
         end
         line
       end
-
-
     end
   end
 end

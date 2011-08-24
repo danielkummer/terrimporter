@@ -1,8 +1,10 @@
 require 'shellwords'
+require 'terrimporter/version'
+require 'terrimporter/app_logger'
 require 'terrimporter/options'
 require 'terrimporter/importer'
-require 'terrimporter/version'
 require 'terrimporter/config_helper'
+require 'terrimporter/configuration'
 require 'terrimporter/downloader'
 
 module TerrImporter

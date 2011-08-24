@@ -1,4 +1,4 @@
-require 'helper'
+require 'test_helper'
 
 class TestTerrimporter < Test::Unit::TestCase
   should "probably rename this file and start testing for real" do

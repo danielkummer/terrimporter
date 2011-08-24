@@ -1,11 +1,13 @@
-require "helper"
+require "test_helper"
+
 require "FileUtils"
 
 
 class TerrImporterTest < Test::Unit::TestCase
+  include ConfigHelper
 
   def teardown
-    FileUtils.rm_rf File.join(Dir.pwd, TerrImporter::Application::Configuration::CONFIG_DEFAULT_NAME)
+    FileUtils.rm_rf File.join(Dir.pwd, config_default_name)
   end
 
   should 'merge environment and argument options' do
@@ -14,6 +16,7 @@ class TerrImporterTest < Test::Unit::TestCase
     expected_options = {:import_css => true,
                         :import_js => true,
                         :import_images => true,
+                        :show_help => false,
                         :verbose => true,
                         :input_file => ''}
 

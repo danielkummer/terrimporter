@@ -9,6 +9,7 @@ module TerrImporter
         @orig_args = args.clone
 
         self[:verbose] = true
+        self[:show_help] = false
 
         require 'optparse'
         @opts = OptionParser.new do |o|
@@ -66,9 +67,12 @@ module TerrImporter
       end
 
       def show_help_on_no_options
-        self[:show_help] = true unless self[:import_css] or self[:import_js] or self[:import_images] or self[:init] or self[:version]
+        unless self[:import_css] or self[:import_js] or self[:import_images] or self[:init] or self[:version]
+          self[:show_help] = true
+        else
+          self[:show_help] = false
+        end
       end
-
     end
   end
 end

@@ -2,6 +2,7 @@ require 'etc'
 require 'kwalify'
 require 'config_validator'
 require 'config_helper'
+require 'configuration'
 
 module TerrImporter
   class Application
@@ -26,11 +27,11 @@ module TerrImporter
         end
 
         valid_config_paths.each do |path|
-          file_path = File.join path, CONFIG_DEFAULT_NAME
+          file_path = File.join path, config_default_name
           return file_path if File.exists?(file_path)
         end
 
-        raise ConfigurationError, %Q{config file #{CONFIG_DEFAULT_NAME} not found in search paths. Search paths are:
+        raise ConfigurationError, %Q{config file #{config_default_name} not found in search paths. Search paths are:
         #{valid_config_paths.join "\n"} \n If this is a new project, run with the option --init}
       end
 

@@ -18,4 +18,9 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'terrimporter'
 
 class Test::Unit::TestCase
+  def test_config_file_path
+    File.join(File.dirname(__FILE__), 'fixtures', 'test.config.yml')
+  end
+
+
 end
