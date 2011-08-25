@@ -19,14 +19,25 @@ class TestTerrimporter < Test::Unit::TestCase
     assert merged_options.include?(:import_css)
   end
 
+
   should 'run the importer with the init command and a non existing configuration file' do
-    TerrImporter::Application.run!(["test"], ['--init'])
+    TerrImporter::Application.run!(["test"], '--init')
     assert File.exists? config_file
   end
+
+  should 'run the importer with the init command and a non existing configuration file' do
+    TerrImporter::Application.run!(["test"], '--init replace')
+    assert File.exists? config_file
+  end
+
+  should 'run the importer with the init command and a non existing configuration file' do
+    TerrImporter::Application.run!(["test"], '--init backup')
+    assert File.exists? config_file
+  end
+
 
   def config_file
     File.join(File.dirname(__FILE__), '..', config_default_name)
   end
-
 
 end

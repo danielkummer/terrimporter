@@ -29,7 +29,7 @@ module TerrImporter
 
         valid_config_paths.each do |path|
           file_path = File.join path, config_default_name
-          return file_path if File.exists?(file_path)
+          return file_path if File.exists?(file_path) and not file_path.include?(File.join('terrimporter', 'config')) #default config NOT valid
         end
 
         raise ConfigurationError, %Q{config file #{config_default_name} not found in search paths. Search paths are:
@@ -54,7 +54,7 @@ module TerrImporter
 
         errors = parser.errors()
         if errors && !errors.empty?
-          errors.inject("") { |result, e| result << "#{e.linenum}:#{e.column} [#{e.path}] #{e.message}\n" }
+          error_message = errors.inject("") { |result, e| result << "#{e.linenum}:#{e.column} [#{e.path}] #{e.message}\n" }
           raise ConfigurationError, error_message
         end
         self.merge! document

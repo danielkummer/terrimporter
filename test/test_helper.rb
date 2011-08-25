@@ -18,6 +18,14 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'terrimporter'
 
 class Test::Unit::TestCase
+  def schema_file_path
+    File.join(File.dirname(__FILE__), '..', 'config', schema_default_name)
+  end
+
+  def invalid_test_config_file_path
+    File.join(File.dirname(__FILE__), 'fixtures', 'invalid.config.yml')
+  end
+
   def test_config_file_path
     File.join(File.dirname(__FILE__), 'fixtures', 'test.config.yml')
   end
@@ -33,5 +41,7 @@ class Test::Unit::TestCase
   def delete_tmp_test_directory
     FileUtils.rm_rf tmp_test_directory
   end
+
+
 
 end

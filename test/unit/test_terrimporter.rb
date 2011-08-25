@@ -17,8 +17,7 @@ class TerrImporterTest < Test::Unit::TestCase
                         :import_js => true,
                         :import_images => true,
                         :show_help => false,
-                        :verbose => true,
-                        :input_file => ''}
+                        :verbose => true}
 
     assert_contains merged_options, expected_options
   end

@@ -46,8 +46,7 @@ module TerrImporter
           end
 
           o.on('--version', 'Show version') do
-            puts TerrImporter::VERSION
-            exit
+            self[:show_version] = true
           end
 
           o.on_tail('-h', '--help', 'display this help and exit') { self[:show_help] = true }
@@ -56,7 +55,7 @@ module TerrImporter
         begin
           @opts.parse!(args)
           show_help_on_no_options
-          self[:input_file] = args.shift
+          #self[:input_file] = args.shift #todo remove if really not necessary
         rescue OptionParser::InvalidOption => e
           self[:invalid_argument] = e.message
         end

@@ -61,6 +61,11 @@ class TestImporter < Test::Unit::TestCase
       assert_equal false, File.directory?(directory)
     end
 
+    should 'not create a directory if it exists, but report that it exists' do
+      directory = File.join(File.dirname(__FILE__), '..', 'tmp')
+      assert_equal true, File.directory?(directory)
+    end
+
   end
 
   context 'css and js export path construction' do

@@ -4,6 +4,7 @@ require 'terrimporter/app_logger'
 require 'terrimporter/options'
 require 'terrimporter/importer'
 require 'terrimporter/config_helper'
+require 'terrimporter/config_validator'
 require 'terrimporter/configuration'
 require 'terrimporter/downloader'
 
@@ -33,6 +34,11 @@ module TerrImporter
           if options[:show_help]
             $stderr.puts options.opts
             return 1
+          end
+
+          if options[:show_version]
+            puts TerrImporter::VERSION
+            return 0
           end
 
           importer = TerrImporter::Application::Importer.new(options)
