@@ -17,8 +17,8 @@ module TerrImporter
         options = build_options(arguments)
 
         begin
-          if options[:init]
-            if config_working_directory_exists?
+          unless options[:init].nil?
+            if config_working_directory_exists? and options[:init] != :backup and options[:init] != :replace
               raise TerrImporter::ConfigurationError "Configuration already exists, use the override or backup option"
             end
             create_config_file

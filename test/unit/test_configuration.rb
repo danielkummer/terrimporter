@@ -1,5 +1,5 @@
 require "test_helper"
-require "kwalify"
+
 
 
 class ConfigurationTest < Test::Unit::TestCase
