@@ -68,6 +68,7 @@ module TerrImporter
 
       def show_help_on_no_options
         unless self[:import_css] or self[:import_js] or self[:import_images] or self[:init] or self[:version]
+          puts "None of the default options selected, showing help"
           self[:show_help] = true
         else
           self[:show_help] = false

@@ -18,6 +18,7 @@ module TerrImporter
 
       def load_configuration
         config_file_path = determine_config_file_path
+        puts "Configuration file located, load from #{config_file_path}"
         validate_and_load_config(config_file_path)
       end
 
@@ -46,7 +47,7 @@ module TerrImporter
 
       #todo split!
       def validate_and_load_config(file)
-        puts "Load configuration "
+        puts "Validating configuration..."
 
         parser = Kwalify::Yaml::Parser.new(load_validator)
         document = parser.parse_file(file)
@@ -61,6 +62,7 @@ module TerrImporter
       end
 
       def load_validator
+        puts "Loading validator from #{schema_file_path}"
         schema = Kwalify::Yaml.load_file(schema_file_path)
         ConfigValidator.new(schema)
       end

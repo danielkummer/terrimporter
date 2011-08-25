@@ -28,12 +28,14 @@ module TerrImporter
 
       def run
         if options[:all] != nil and options[:all] == true
+          puts "Import of everything started"
           import_js
           import_css
           import_images
         else
           options.each do |option, value|
             if option.to_s =~ /^import_/ and value == true
+              puts "Import of #{option.to_s.split('_').last} started"
               self.send option.to_s
             end
           end
@@ -55,9 +57,11 @@ module TerrImporter
           options[:suffix] = css if css.include?('ie') #add ie option if in array
 
           source_url = construct_export_path(:css, options)
+
           @downloader.download(source_url, destination_path + unclean_suffix)
 
           #do line replacement
+          puts "Start css line replacements"
           File.open(destination_path, 'w') do |d|
             File.open(destination_path + unclean_suffix, 'r') do |s|
               lines = s.readlines
@@ -66,6 +70,7 @@ module TerrImporter
               end
             end
           end
+          puts "Deleting unclean css files"
           FileUtils.remove destination_path + unclean_suffix
         end
       end
@@ -74,13 +79,14 @@ module TerrImporter
         check_and_create_dir config['javascripts']['dest']
         destination_path = File.join(config['javascripts']['dest'], "base.js")
         js_source_url = construct_export_path :js
+
         puts "Importing base.js from #{js_source_url} to #{destination_path}"
+
         @downloader.download(js_source_url, destination_path)
 
-        #start library import
+
         libraries_destination_path = File.join(config['javascripts']['dest'], config['javascripts']['libraries_dest'])
         check_and_create_dir libraries_destination_path
-
         js_libraries = config['javascripts']['dynamic_libraries'].split(" ")
 
         puts "Importing libraries from #{config['libraries_source_path']} to #{libraries_destination_path}"
@@ -103,7 +109,7 @@ module TerrImporter
       def batch_download(relative_source_path, relative_dest_path, type_filter = "")
         source_path = relative_source_path
 
-        puts "Downloading files from #{config['url']}#{source_path} to #{relative_dest_path} #{"allowed extensions: " + type_filter unless type_filter.empty?}"
+        puts "Downloading multiple files from #{config['url']}#{source_path} to #{relative_dest_path} #{"allowed extensions: " + type_filter unless type_filter.empty?}"
 
         files = html_directory_content_list(source_path)
 
@@ -120,12 +126,14 @@ module TerrImporter
       end
 
       def html_directory_content_list(source_path)
+        puts "Getting html directory list"
         output = @downloader.download(source_path)
         files = []
 
         output.scan(/<a\shref=\"([^\"]+)\"/) do |res|
           files << res[0] if not res[0] =~ /^\?/ and not res[0] =~ /.*\/$/ and res[0].size > 1
         end
+        puts "Found #{files.size} files"
         files
       end
 
@@ -165,6 +173,9 @@ module TerrImporter
           what = replace['what']
           with = replace['with']
           what = Regexp.new "#{$1}" if what.match(/^r\/(.*)\//)
+
+          puts "Replacing #{what.to_s} with #{with}"
+
           line.gsub! what, with
         end
         line

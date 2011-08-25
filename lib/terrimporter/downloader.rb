@@ -7,17 +7,21 @@ module TerrImporter
 
       def initialize(base_uri)
         @base_uri = base_uri
-        FakeWeb.register_uri(:get, "http://terrific.url", :body => File.expand_path('fixtures/base.css'), :content_type => 'text/plain')
+        puts "Downloader initialized to uri: #{base_uri}"
       end
 
       def download(remote_path, local_path=nil)
         absolute_uri = absolute_path(remote_path)
-        if local_path.nil? #download to return
+        if local_path.nil? #download to buffer
           data = StringIO.new
-          puts absolute_uri #todo remove debug statement
+
+          puts "Downloading #{absolute_uri} to buffer"
+
           absolute_uri.open { |io| data = io.read }
           data.to_s
         else
+          puts "Downloading #{absolute_uri} to local path #{local_path}"
+
           open(local_path, "wb") { |file|
             file.write(absolute_uri.open.read)
           }
