@@ -23,9 +23,6 @@ mapping:
       type: str
       required: yes
       pattern:  /\/.*/
-  "downloader":
-       type: str
-       enum: [curl, wget]
   "export_settings":
     type: map
     mapping:

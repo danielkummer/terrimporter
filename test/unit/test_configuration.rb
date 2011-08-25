@@ -59,21 +59,4 @@ class ConfigurationTest < Test::Unit::TestCase
       assert File.exists?(config_path)
     end
   end
-
-
-=begin
-  def create_test_configuration_file
-    example_configuration_path = File.join(File.dirname(__FILE__), '..', '..', 'config', config_default_name)
-    tmp_dir_path = File.join(File.dirname(__FILE__), '..', 'tmp')
-    test_configuration_path = File.join(tmp_dir_path, config_default_name)
-    FileUtils.mkdir(tmp_dir_path) unless File.exist? tmp_dir_path
-    FileUtils.cp example_configuration_path, test_configuration_path
-    @test_configuration_file = test_configuration_path
-  end
-
-  def delete_test_configuration_file
-    FileUtils.rm_rf @test_configuration_file if File.exists? @test_configuration_file
-  end
-=end
-
 end

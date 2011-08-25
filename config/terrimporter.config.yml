@@ -7,7 +7,6 @@
 # export_path       You most probably won't have to change this
 # image_base_path:  The Terrific image base path. You most probably won't have to change this
 # libraries_source_path:  The library source path. You most probably won't have to change this
-# downloader:       The downloader to use, supported are 'curl' and 'wget'
 #
 # export_settings:  The settings below are added as query parameters for base.js and base.css
 #   layout:         You most probably won't have to change this
@@ -41,7 +40,6 @@
     export_path:  /terrific/base/%2$s/public/%1$s/base/base.%1$s.php
     libraries_source_path: /js/libraries/dynamic
     image_base_path: /img
-    downloader: curl
     export_settings:
       layout: project
       debug: false
