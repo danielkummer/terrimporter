@@ -31,7 +31,7 @@ class TestTerrimporter < Test::Unit::TestCase
   end
 
   should 'run the importer with the init command and a non existing configuration file' do
-    TerrImporter::Application.run!(["test"], '--init backup')
+    TerrImporter::Application.run!(["test"], '--init','backup')
     assert File.exists? config_file
   end
 
