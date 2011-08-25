@@ -112,12 +112,12 @@ class TestImporter < Test::Unit::TestCase
     end
 
     should 'download only files specified by file extension' do
-      @importer.send(:batch_download, '/img/backgrounds', tmp_test_directory, "doesntexist")
+      @importer.send(:batch_download, '/img/backgrounds/', tmp_test_directory, "doesntexist")
       assert_same false, exists_in_tmp?('background.jpg')
     end
 
     should 'download only files specified by file multiple extension' do
-      @importer.send(:batch_download, '/img/backgrounds', tmp_test_directory, "doesntexist jpg")
+      @importer.send(:batch_download, '/img/backgrounds/', tmp_test_directory, "doesntexist jpg")   #here broken
       assert exists_in_tmp? 'background.jpg'
     end
 
@@ -125,7 +125,7 @@ class TestImporter < Test::Unit::TestCase
 
   context 'test public grand import functions - everything is preconfigured' do
     should 'import all images' do
-      @importer.import_images
+      @importer.import_images                            #here broken
 
       assert exists_in_tmp?('public/images/testimage1.png')
       assert exists_in_tmp?('public/images/testimage2.png')
@@ -155,7 +155,7 @@ class TestImporter < Test::Unit::TestCase
     end
 
     should 'import js, css and images, not using the :all statement' do
-      @importer.run
+      @importer.run                                                        #here broken
       #only cherry-pick tests
       assert exists_in_tmp?('public/images/testimage1.png')
       assert exists_in_tmp?('public/stylesheets/base.css')
@@ -168,7 +168,7 @@ class TestImporter < Test::Unit::TestCase
       @importer.options[:all] = true
     end
     should 'import js, css and images, using the :all statement' do
-      @importer.run
+      @importer.run                                                           #here broken
       #only cherry-pick tests
       assert exists_in_tmp?('public/images/testimage1.png')
       assert exists_in_tmp?('public/stylesheets/base.css')

@@ -4,7 +4,7 @@ class DownloaderTest < Test::Unit::TestCase
  def setup
     @base_uri = 'http://terrific.url'
     @downloader = TerrImporter::Application::Downloader.new @base_uri
-   FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/dynlib.js", :body => File.expand_path('test/fixtures/dynlib.js'), :content_type => 'text/plain')
+   FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/dynlib.js", :body => File.expand_path('test/fixtures/js/dynlib.js'), :content_type => 'text/plain')
  end
 
  def teardown
