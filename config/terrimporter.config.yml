@@ -7,7 +7,6 @@
 # export_path       You most probably won't have to change this
 # image_base_path:  The Terrific image base path. You most probably won't have to change this
 # libraries_source_path:  The library source path. You most probably won't have to change this
-# downloader:       The downloader to use, supported are 'curl' and 'wget'
 #
 # export_settings:  The settings below are added as query parameters for base.js and base.css
 #   layout:         You most probably won't have to change this
@@ -19,7 +18,7 @@
 #   styles:         Name of the stylesheets, space separated without the .css extension. ex: ie ie6 ie7 ie8
 #                   the main style base.css is included by default and MUST NOT BE SPECIFIED
 #   replace:        Define path replacements after the stylesheets have been downloaded
-#                   you can define multiple replacements by repeating the '-what: with:' pattern:
+#                   you can define multiple replacements by repeating the '-what: with:' statements
 #     - what:       What to replace, default is string. if you want to use regex, use the format r/[regex]/
 #                   for help on regular expressions see http://www.rubular.com/ (an online editor/tester)
 #       with:       Replace with this (string)
@@ -41,7 +40,6 @@
     export_path:  /terrific/base/%2$s/public/%1$s/base/base.%1$s.php
     libraries_source_path: /js/libraries/dynamic
     image_base_path: /img
-    downloader: curl
     export_settings:
       layout: project
       debug: false

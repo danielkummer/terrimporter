@@ -1,12 +1,16 @@
-require 'configuration'
 
 module ConfigHelper
 
-  CONFIG_DEFAULT_NAME = 'terrimporter.config.yml'
-  SCHEMA_DEFAULT_NAME = 'schema.yml'
+  def config_default_name
+    'terrimporter.config.yml'
+  end
+
+  def schema_default_name
+    'schema.yml'
+  end
 
   def config_working_directory_path
-    File.join(Dir.pwd, CONFIG_DEFAULT_NAME)
+    File.expand_path config_default_name
   end
 
   def config_working_directory_exists?
@@ -14,18 +18,21 @@ module ConfigHelper
   end
 
   def config_example_path
-    File.join(base_config_path, CONFIG_DEFAULT_NAME)
+    File.join(base_config_path, config_default_name)
   end
 
   def schema_file_path
-    File.join(base_config_path, SCHEMA_DEFAULT_NAME)
+    File.join(base_config_path, schema_default_name)
   end
 
   def create_config_file(backup_or_replace = nil)
+    puts "Creating configuration file"
     case backup_or_replace
       when :backup
+        puts "Backing up old configuration file to #{config_working_directory_path}.bak"
         FileUtils.mv(config_working_directory_path, config_working_directory_path + '.bak')
       when :replace
+        puts "Replacing old configuration file"
         FileUtils.rm_f(config_working_directory_path) if File.exists? config_working_directory_path
     end
     FileUtils.cp(config_example_path, config_working_directory_path)

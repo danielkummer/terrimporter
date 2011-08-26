@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
+###
+### $Rev$
+### $Release: 0.4.0 $
+###
+
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
-require 'rubygems'
 require 'terrimporter'
 
 exit TerrImporter::Application.run!(*ARGV)

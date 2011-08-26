@@ -9,6 +9,7 @@ module TerrImporter
         @orig_args = args.clone
 
         self[:verbose] = true
+        self[:show_help] = false
 
         require 'optparse'
         @opts = OptionParser.new do |o|
@@ -45,8 +46,7 @@ module TerrImporter
           end
 
           o.on('--version', 'Show version') do
-            puts TerrImporter::VERSION
-            exit
+            self[:show_version] = true
           end
 
           o.on_tail('-h', '--help', 'display this help and exit') { self[:show_help] = true }
@@ -55,7 +55,7 @@ module TerrImporter
         begin
           @opts.parse!(args)
           show_help_on_no_options
-          self[:input_file] = args.shift
+          #self[:input_file] = args.shift #todo remove if really not necessary
         rescue OptionParser::InvalidOption => e
           self[:invalid_argument] = e.message
         end
@@ -66,9 +66,13 @@ module TerrImporter
       end
 
       def show_help_on_no_options
-        self[:show_help] = true unless self[:import_css] or self[:import_js] or self[:import_images] or self[:init] or self[:version]
+        unless self[:import_css] or self[:import_js] or self[:import_images] or self[:init] or self[:version]
+          puts "None of the default options selected, showing help"
+          self[:show_help] = true
+        else
+          self[:show_help] = false
+        end
       end
-
     end
   end
 end

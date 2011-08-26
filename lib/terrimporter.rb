@@ -1,8 +1,12 @@
 require 'shellwords'
+require 'terrimporter/version'
+require 'terrimporter/app_logger'
 require 'terrimporter/options'
 require 'terrimporter/importer'
-require 'terrimporter/version'
 require 'terrimporter/config_helper'
+require 'terrimporter/config_validator'
+require 'terrimporter/configuration'
+require 'terrimporter/downloader'
 
 module TerrImporter
   class Application
@@ -14,9 +18,9 @@ module TerrImporter
         options = build_options(arguments)
 
         begin
-          if options[:init]
-            if config_working_directory_exists?
-              raise TerrImporter::ConfigurationError "Configuration already exists, use the override or backup option"
+          unless options[:init].nil?
+            if config_working_directory_exists? and options[:init] != :backup and options[:init] != :replace
+              raise TerrImporter::ConfigurationError, "Configuration already exists, use the override or backup option"
             end
             create_config_file
             return 0
@@ -30,6 +34,11 @@ module TerrImporter
           if options[:show_help]
             $stderr.puts options.opts
             return 1
+          end
+
+          if options[:show_version]
+            puts TerrImporter::VERSION
+            return 0
           end
 
           importer = TerrImporter::Application::Importer.new(options)

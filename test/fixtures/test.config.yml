@@ -41,28 +41,24 @@
     export_path:  /terrific/base/%2$s/public/%1$s/base/base.%1$s.php
     libraries_source_path: /js/libraries/dynamic
     image_base_path: /img
-    downloader: curl
     export_settings:
       layout: project
       debug: false
       cache: false
     stylesheets:
-      dest: public/stylesheets/
+      dest: test/tmp/public/stylesheets/
       styles: ie
       replace:
         - what: /img/
           with: /images/
     javascripts:
-      dest: public/javascripts/
+      dest: test/tmp/public/javascripts/
       dynamic_libraries: dynlib
-      libraries_dest: /
+      libraries_dest: /lib
     images:
       - src: /
-        dest: public/images/
+        dest: test/tmp/public/images/
         types: jpg png gif
-      - src: /
-        dest: public/
-        types: ico
-      - src: /backgrounds/
-        dest: public/images/backgrounds/
+      - src: /backgrounds
+        dest: test/tmp/public/images/backgrounds/
         types: jpg

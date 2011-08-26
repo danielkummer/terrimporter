@@ -2,6 +2,7 @@ require 'etc'
 require 'kwalify'
 require 'config_validator'
 require 'config_helper'
+require 'configuration'
 
 module TerrImporter
   class Application
@@ -17,6 +18,7 @@ module TerrImporter
 
       def load_configuration
         config_file_path = determine_config_file_path
+        puts "Configuration file located, load from #{config_file_path}"
         validate_and_load_config(config_file_path)
       end
 
@@ -26,11 +28,11 @@ module TerrImporter
         end
 
         valid_config_paths.each do |path|
-          file_path = File.join path, CONFIG_DEFAULT_NAME
-          return file_path if File.exists?(file_path)
+          file_path = File.join path, config_default_name
+          return file_path if File.exists?(file_path) and not file_path.include?(File.join('terrimporter', 'config')) #default config NOT valid
         end
 
-        raise ConfigurationError, %Q{config file #{CONFIG_DEFAULT_NAME} not found in search paths. Search paths are:
+        raise ConfigurationError, %Q{config file #{config_default_name} not found in search paths. Search paths are:
         #{valid_config_paths.join "\n"} \n If this is a new project, run with the option --init}
       end
 
@@ -45,14 +47,14 @@ module TerrImporter
 
       #todo split!
       def validate_and_load_config(file)
-        puts "Load configuration "
+        puts "Validating configuration..."
 
         parser = Kwalify::Yaml::Parser.new(load_validator)
         document = parser.parse_file(file)
 
         errors = parser.errors()
         if errors && !errors.empty?
-          errors.inject("") { |result, e| result << "#{e.linenum}:#{e.column} [#{e.path}] #{e.message}\n" }
+          error_message = errors.inject("") { |result, e| result << "#{e.linenum}:#{e.column} [#{e.path}] #{e.message}\n" }
           raise ConfigurationError, error_message
         end
         self.merge! document
@@ -60,6 +62,7 @@ module TerrImporter
       end
 
       def load_validator
+        puts "Loading validator from #{schema_file_path}"
         schema = Kwalify::Yaml.load_file(schema_file_path)
         ConfigValidator.new(schema)
       end
