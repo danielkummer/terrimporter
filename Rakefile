@@ -36,12 +36,31 @@ namespace :version do
   namespace :bump do
     desc "Bump major version"
     task :major do
-      puts version?
+      bump_version :major
+    end
+
+    desc "Bump minor version"
+    task :minor do
+      bump_version :minor
+    end
+
+    desc "Bump patch version"
+    task :patch do
+      bump_version :patch
     end
   end
 
-  def bump_version()
-
+  def bump_version(version_to_bump)
+    version = version?
+    case version_to_bump
+      when :major
+        version[:major] = version[:major].to_i + 1
+      when :minor
+        version[:minor] = version[:minor].to_1 + 1
+      when :patch
+        version[:patch] = version[:patch].to_i + 1
+    end
+    write_version(version)
   end
 
   def version_file_path
@@ -58,8 +77,13 @@ namespace :version do
     version
   end
 
-  def write_version
-
+  def write_version(version={})
+    version_rb = %Q{
+module TerrImporter
+  VERSION = "#{version[:major]}.#{version[:minor]}.#{version[:patch]}"
+end
+}
+    File.open(version_file_path, 'w') {|f| f.write(version_rb)}
   end
 
 
