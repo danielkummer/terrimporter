@@ -49,21 +49,24 @@ class TestImporter < Test::Unit::TestCase
 
     should 'create a directory if it doesn\'t exist' do
       directory = File.join(File.dirname(__FILE__), '..', 'tmp', 'test_mkdir')
-      @importer.send(:check_and_create_dir, directory)
+      created_or_exists = @importer.send(:check_and_create_dir, directory)
       assert File.directory? directory
+      assert created_or_exists
       #cleanup
       FileUtils.rmdir directory
     end
 
     should 'not create a directory if it doesnt exist and create isnt used' do
       directory = File.join(File.dirname(__FILE__), '..', 'tmp', 'test_mkdir')
-      @importer.send(:check_and_create_dir, directory, false)
+      created_or_exists = @importer.send(:check_and_create_dir, directory, false)
       assert_equal false, File.directory?(directory)
+      assert !created_or_exists
     end
 
     should 'not create a directory if it exists, but report that it exists' do
       directory = File.join(File.dirname(__FILE__), '..', 'tmp')
-      assert_equal true, File.directory?(directory)
+      created_or_exists= @importer.send(:check_and_create_dir, directory)
+      assert created_or_exists
     end
 
   end
