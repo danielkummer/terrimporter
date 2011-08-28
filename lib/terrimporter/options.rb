@@ -54,7 +54,6 @@ module TerrImporter
 
         begin
           @opts.parse!(args)
-          show_help_on_no_options
           #self[:input_file] = args.shift #todo remove if really not necessary
         rescue OptionParser::InvalidOption => e
           self[:invalid_argument] = e.message
@@ -65,14 +64,6 @@ module TerrImporter
         self.class.new(@orig_args + other.orig_args)
       end
 
-      def show_help_on_no_options
-        unless self[:import_css] or self[:import_js] or self[:import_images] or self[:init] or self[:version]
-          puts "None of the default options selected, showing help"
-          self[:show_help] = true
-        else
-          self[:show_help] = false
-        end
-      end
     end
   end
 end
