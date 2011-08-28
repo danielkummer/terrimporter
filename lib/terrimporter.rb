@@ -7,6 +7,11 @@ require 'terrimporter/config_helper'
 require 'terrimporter/config_validator'
 require 'terrimporter/configuration'
 require 'terrimporter/downloader'
+require 'etc'
+require 'kwalify'
+require 'fileutils'
+require 'yaml'
+require 'uri'
 
 module TerrImporter
   class Application
