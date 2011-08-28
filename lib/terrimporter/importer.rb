@@ -1,5 +1,3 @@
-
-
 module TerrImporter
 
   class DefaultError < StandardError
@@ -82,16 +80,25 @@ module TerrImporter
 
         @downloader.download(js_source_url, destination_path)
 
+        if config['javascripts']
+          not nil
+          libraries_destination_path = File.join(config['javascripts']['dest'], config['javascripts']['libraries_dest'])
+          check_and_create_dir libraries_destination_path
+          js_libraries = config['javascripts']['dynamic_libraries'].split(" ")
 
-        libraries_destination_path = File.join(config['javascripts']['dest'], config['javascripts']['libraries_dest'])
-        check_and_create_dir libraries_destination_path
-        js_libraries = config['javascripts']['dynamic_libraries'].split(" ")
+          puts "Importing libraries from #{config['libraries_source_path']} to #{libraries_destination_path}"
 
-        puts "Importing libraries from #{config['libraries_source_path']} to #{libraries_destination_path}"
+          if config['libraries_source_path'].nil?
+            puts "Please define 'libraries_source_path' in configuration file"
+          else
+            js_libraries.each do |lib|
+              @downloader.download(File.join(config['libraries_source_path'], lib+ ".js"), File.join(libraries_destination_path, lib + ".js"))
+            end
 
-        js_libraries.each do |lib|
-          @downloader.download(File.join(config['libraries_source_path'], lib+ ".js"), File.join(libraries_destination_path, lib + ".js"))
+          end
+
         end
+
       end
 
       def import_images
@@ -119,7 +126,7 @@ module TerrImporter
         puts "Downloading #{files.size} files..."
         files.each do |file|
           destination_path = File.join(relative_dest_path, file)
-          @downloader.download(File.join(source_path,file), destination_path)
+          @downloader.download(File.join(source_path, file), destination_path)
         end
       end
 
