@@ -1,6 +1,4 @@
-require 'fileutils'
-require 'yaml'
-require 'uri'
+
 
 module TerrImporter
 
