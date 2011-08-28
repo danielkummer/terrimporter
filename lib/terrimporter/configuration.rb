@@ -1,8 +1,5 @@
-require 'etc'
-require 'kwalify'
-require 'config_validator'
-require 'config_helper'
-require 'configuration'
+#require 'etc'
+#require 'kwalify'
 
 module TerrImporter
   class Application
