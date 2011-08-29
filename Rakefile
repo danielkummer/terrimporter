@@ -57,7 +57,7 @@ namespace :version do
       when :major
         version[:major] = version[:major].to_i + 1
       when :minor
-        version[:minor] = version[:minor].to_1 + 1
+        version[:minor] = version[:minor].to_i + 1
       when :patch
         version[:patch] = version[:patch].to_i + 1
     end
