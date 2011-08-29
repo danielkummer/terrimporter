@@ -18,9 +18,13 @@ terrimporter has the following features:
 
 === Gem Installation
 
+You need sudo to install terrimporter if you're not using a ruby version manager like rvm for example.
+It is strongly encouraged to use such a ruby version management tool in order to install the gem without sudo rights.
 Download and install terrimporter with the following.
 
    gem install terrimporter
+
+
 
 == Usage
 
