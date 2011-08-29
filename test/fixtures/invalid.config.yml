@@ -2,8 +2,8 @@
     url:          http://terrific.url
     app_path:     /terrific/webapp/path
     export_path:  /terrific/base/%2$s/public/%1$s/base/base.%1$s.php
-    libraries_source_path: /js/libraries/dynamic
-    image_base_path: /img
+    libraries_server_path: /js/libraries/dynamic
+    image_server_path: /img
     export_settings:
       layout: project
       debug: false
@@ -11,17 +11,17 @@
     stylesheets:
       dest: test/tmp/public/stylesheets/
       styles: ie.css
-      replace:
+      replace_strings:
         - what: /img/
           with: /images/
     javascripts:
       dest: test/tmp/public/javascripts/
       dynamic_libraries: dynlib.js
-      libraries_dest: /lib
+      relative_libraries_destination_path: /lib
     images:
-      - src: /
+      - server_path: /
         dest: test/tmp/public/images/
-        types: jpg png gif
-      - src: /backgrounds
+        file_types: jpg png gif
+      - server_path: /backgrounds
         dest: test/tmp/public/images/backgrounds/
-        types: jpg
+        file_types: jpg

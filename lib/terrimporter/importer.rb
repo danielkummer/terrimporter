@@ -82,17 +82,17 @@ module TerrImporter
 
         if config['javascripts']
           not nil
-          libraries_relative_destination_path = File.join(config['javascripts']['relative_destination_path'], config['javascripts']['libraries_dest'])
+          libraries_relative_destination_path = File.join(config['javascripts']['relative_destination_path'], config['javascripts']['relative_libraries_destination_path'])
           check_and_create_dir libraries_relative_destination_path
           js_libraries = config['javascripts']['dynamic_libraries'].split(" ")
 
-          puts "Importing libraries from #{config['libraries_source_path']} to #{libraries_relative_destination_path}"
+          puts "Importing libraries from #{config['libraries_server_path']} to #{libraries_relative_destination_path}"
 
-          if config['libraries_source_path'].nil?
-            puts "Please define 'libraries_source_path' in configuration file"
+          if config['libraries_server_path'].nil?
+            puts "Please define 'libraries_server_path' in configuration file"
           else
             js_libraries.each do |lib|
-              @downloader.download(File.join(config['libraries_source_path'], lib+ ".js"), File.join(libraries_relative_destination_path, lib + ".js"))
+              @downloader.download(File.join(config['libraries_server_path'], lib+ ".js"), File.join(libraries_relative_destination_path, lib + ".js"))
             end
 
           end
@@ -104,8 +104,8 @@ module TerrImporter
       def import_images
         config['images'].each do |image|
           check_and_create_dir image['relative_destination_path']
-          image_source_path = File.join(config['image_base_path'], image['src'])
-          batch_download(image_source_path, image['relative_destination_path'], image['types'])
+          image_source_path = File.join(config['image_server_path'], image['server_path'])
+          batch_download(image_source_path, image['relative_destination_path'], image['file_types'])
         end
       end
 
@@ -174,7 +174,7 @@ module TerrImporter
       end
 
       def stylesheet_replace_strings!(line)
-        config['stylesheets']['replace'].each do |replace|
+        config['stylesheets']['replace_strings'].each do |replace|
           what = replace['what']
           with = replace['with']
           what = Regexp.new "#{$1}" if what.match(/^r\/(.*)\//)

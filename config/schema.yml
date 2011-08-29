@@ -15,11 +15,11 @@ mapping:
     type: str
     required: yes
     pattern: /^\/terrific.*\%2\$s.*\%1\$s.*\%1\$s.*\.php$/
-  "libraries_source_path":
+  "libraries_server_path":
     type: str
     required: yes
     pattern:  /\/.*/
-  "image_base_path":
+  "image_server_path":
       type: str
       required: yes
       pattern:  /\/.*/
@@ -45,7 +45,7 @@ mapping:
          type: str
          name: css
          required: no
-      "replace":
+      "replace_strings":
         type: seq
         required: no
         sequence:
@@ -67,7 +67,7 @@ mapping:
         type: str
         name: js
         required: no
-      "libraries_dest":
+      "relative_libraries_destination_path":
         type: str
         required: yes
   "images":
@@ -75,12 +75,12 @@ mapping:
     sequence:
       - type: map
         mapping:
-          "src":
+          "server_path":
             type: str
             required: yes
           "relative_destination_path":
             type: str
             required: yes
-          "types":
+          "file_types":
             type: str
             required: no

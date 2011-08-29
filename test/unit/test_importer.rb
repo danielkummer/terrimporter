@@ -35,7 +35,7 @@ class TestImporter < Test::Unit::TestCase
     end
 
     should 'replace a string in the stylesheet with the configured regex' do
-      @importer.config['stylesheets']['replace'][0]['what'] = "r/(re.+ex)/"
+      @importer.config['stylesheets']['replace_strings'][0]['what'] = "r/(re.+ex)/"
       line = "this line should replace the regex string with images"
       @importer.send(:stylesheet_replace_strings!, line)
       assert line.include?("/images/"), "result not expected, is #{line}"

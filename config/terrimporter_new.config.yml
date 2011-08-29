@@ -6,30 +6,30 @@ application_url: http://terrific.url
 # Import settings for stylesheets
 stylesheets:
 # The destination directory, relative from the current running directory
-  dest: public/stylesheets/
+  relative_destination_path: public/stylesheets/
 # Name of the stylesheets (except base.css), space separated without the .css extension. ex: ie ie6 ie7 ie8
 #  styles: ie ie6 ie7
-# replace: Define path replacements after the stylesheets have been downloaded
+# replace_strings: Define path replacements after the stylesheets have been downloaded
 # you can define multiple replacements by repeating the '-what: with:' statements
-  replace:
+  replace_strings:
 #    - what: /img/     # What to replace, format: string or r/regular expression/
 #      with: /images/  # Replace with this (string)
 
 # Import settings for javascripts
 javascripts:
 # Destination path of the javascript base.js file
-  dest: public/javascripts/
+  relative_destination_path: public/javascripts/
 # Dynamic libraries definition, space separated without the .js extension. ex: warning pngfix
 #  dynamic_libraries: foo_lib bar_lib
 # Destination of the dynamic libraries relative to the 'relative_destination_path' path. '/' means they're included in 'relative_destination_path'
-#  libraries_dest: /
+#  libraries_relative_destination_path: /
 
-# Define the images to be downloaded, the terrific base path is always "img", so the src root is "img/"
+# Define the images to be downloaded, the terrific base path is always "img", so the server_path root is "img/"
 # each of the entries describes one path for images to be downloaded
 images:
-#  - src: /                # The source path, "/" means "img/"
-#    dest: public/images/  # The destination directory, relative from the current running directory
-#    types: jpg png gif    # The image endings to be downloaded, specified as a space separated string
+#  - server_path: /                # The source path, "/" means "img/"
+#    relative_destination_path: public/images/  # The destination directory, relative from the current running directory
+#    file_types: jpg png gif    # The image endings to be downloaded, specified as a space separated string
 
 
 # ADVANCED EDITING
@@ -46,7 +46,7 @@ export_settings:
   cache: false    # You most probably won't have to change this
 
 # The library source path for the dynamic libraries.
-libraries_source_path: /js/libraries/dynamic
+libraries_server_path: /js/libraries/dynamic
 
 # The terrific image base path.
-image_base_path: /img
+image_server_path: /img
