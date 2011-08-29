@@ -164,7 +164,7 @@ module TerrImporter
 
         unless type_filter.empty?
           puts "Appling type filter: #{type_filter}"
-          files = files.find_all { |file| file =~ Regexp.new(".*" + config.robust_split(type_filter).join("|") + "$") }
+          files = files.find_all { |file| file =~ Regexp.new(".*" + type_filter.robust_split.join("|") + "$") }
         end
 
         puts "Downloading #{files.size} files..."

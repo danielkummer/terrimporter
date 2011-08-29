@@ -70,18 +70,6 @@ class ConfigurationTest < Test::Unit::TestCase
       @configuration.create_config_file
       assert File.exists?(config_path)
     end
-
-    should 'robust split a string into an array with comma separation' do
-      expected = ["this", "is a", "test", "string"]
-      result = @configuration.send(:robust_split, expected.join(", "))
-      assert_equal expected, result
-    end
-
-    should 'robust split a string into an array with space separation' do
-      expected = ["this", "is_a", "test", "string"]
-      result = @configuration.send(:robust_split, expected.join(" "))
-      assert_equal expected, result
-    end
   end
 
   context 'required configurations' do
