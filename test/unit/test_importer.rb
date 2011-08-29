@@ -4,6 +4,8 @@ class TestImporter < Test::Unit::TestCase
   def setup
     create_tmp_test_directory
     @importer = TerrImporter::Application::Importer.new({:config_file => test_config_file_path})
+    FakeWeb.register_uri(:get, "http://terrific.url", :body => File.expand_path('test/fixtures/html/application_root.html'), :content_type => 'text/plain')
+    FakeWeb.register_uri(:get, "http://terrific.url/", :body => File.expand_path('test/fixtures/html/application_root.html'), :content_type => 'text/plain')
     FakeWeb.register_uri(:get, "http://terrific.url/terrific/base/0.5/public/css/base/base.css.php?appbaseurl=&application=/terrific/webapp/path&layout=project&debug=false&cache=false", :body => File.expand_path('test/fixtures/css/base.css'), :content_type => 'text/plain')
     FakeWeb.register_uri(:get, "http://terrific.url/terrific/base/0.5/public/css/base/base.css.php?appbaseurl=&application=/terrific/webapp/path&layout=project&suffix=ie&debug=false&cache=false", :body => File.expand_path('test/fixtures/css/ie.css'), :content_type => 'text/plain')
     FakeWeb.register_uri(:get, "http://terrific.url/terrific/base/0.5/public/js/base/base.js.php?layout=project&cache=false&application=/terrific/webapp/path&debug=false", :body => File.expand_path('test/fixtures/js/base.js'), :content_type => 'text/plain')
@@ -122,7 +124,7 @@ class TestImporter < Test::Unit::TestCase
     end
 
     should 'download only files specified by file multiple extension' do
-      @importer.send(:batch_download, '/img/backgrounds/', tmp_test_directory, "doesntexist jpg")   #here broken
+      @importer.send(:batch_download, '/img/backgrounds/', tmp_test_directory, "doesntexist jpg") #here broken
       assert exists_in_tmp? 'background.jpg'
     end
 
@@ -130,7 +132,7 @@ class TestImporter < Test::Unit::TestCase
 
   context 'test public grand import functions - everything is preconfigured' do
     should 'import all images' do
-      @importer.import_images                            #here broken
+      @importer.import_images
 
       assert exists_in_tmp?('public/images/testimage1.png')
       assert exists_in_tmp?('public/images/testimage2.png')
@@ -160,8 +162,8 @@ class TestImporter < Test::Unit::TestCase
     end
 
     should 'import js, css and images, not using the :all statement' do
-      @importer.run                                                        #here broken
-      #only cherry-pick tests
+      @importer.run #here broken
+                    #only cherry-pick tests
       assert exists_in_tmp?('public/images/testimage1.png')
       assert exists_in_tmp?('public/stylesheets/base.css')
       assert exists_in_tmp?('public/javascripts/base.js')
@@ -173,14 +175,26 @@ class TestImporter < Test::Unit::TestCase
       @importer.options[:all] = true
     end
     should 'import js, css and images, using the :all statement' do
-      @importer.run                                                           #here broken
-      #only cherry-pick tests
+      @importer.run #here broken
+                    #only cherry-pick tests
       assert exists_in_tmp?('public/images/testimage1.png')
       assert exists_in_tmp?('public/stylesheets/base.css')
       assert exists_in_tmp?('public/javascripts/base.js')
     end
 
   end
+
+  context 'read additional configuration values from parent page' do
+    should 'extract version and app path from parent page' do
+      assert_nothing_raised do
+        @importer.determine_configuration_values_from_uri
+      end
+
+      assert !@importer.config['version'].nil?
+      assert !@importer.config['app_path'].nil?
+    end
+  end
+
 
   def exists_in_tmp?(name)
     File.exists? File.join(tmp_test_directory, name)

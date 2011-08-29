@@ -12,19 +12,23 @@ module TerrImporter
 
       def download(remote_path, local_path=nil)
         absolute_uri = absolute_path(remote_path)
-        if local_path.nil? #download to buffer
-          data = StringIO.new
+        begin
+          if local_path.nil? #download to buffer
+            data = StringIO.new
 
-          puts "Downloading #{absolute_uri} to buffer"
+            puts "Downloading #{absolute_uri} to buffer"
 
-          absolute_uri.open { |io| data = io.read }
-          data.to_s
-        else
-          puts "Downloading #{absolute_uri} to local path #{local_path}"
+            absolute_uri.open { |io| data = io.read }
+            data.to_s
+          else
+            puts "Downloading #{absolute_uri} to local path #{local_path}"
 
-          open(local_path, "wb") { |file|
-            file.write(absolute_uri.open.read)
-          }
+            open(local_path, "wb") { |file|
+              file.write(absolute_uri.open.read)
+            }
+          end
+        rescue SocketError => e
+          raise DefaultError, "Error opening url #{absolute_uri}: \n #{e.message}"
         end
       end
 

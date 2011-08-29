@@ -1,6 +1,4 @@
-    version:
     url:          http://terrific.url
-    app_path:     /terrific/webapp/path
     export_path:  /terrific/base/%2$s/public/%1$s/base/base.%1$s.php
     libraries_server_path: /js/libraries/dynamic
     image_server_path: /img

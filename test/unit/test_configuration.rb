@@ -9,10 +9,6 @@ class ConfigurationTest < Test::Unit::TestCase
     @configuration.load_configuration
   end
 
-  def teardown
-    puts "Cleaning up configuration files"
-  end
-
   should 'find a configuration in the local path and not raise an error' do
     assert_nothing_raised do
       @configuration.determine_config_file_path
@@ -42,7 +38,7 @@ class ConfigurationTest < Test::Unit::TestCase
     end
   end
 
-  context 'test config file independed functions' do
+  context 'test config file independent functions' do
     setup {
       @configuration = TerrImporter::Application::Configuration.new
     }
@@ -57,6 +53,16 @@ class ConfigurationTest < Test::Unit::TestCase
       FileUtils.rm_f config_path if File.exists? config_path
       @configuration.create_config_file
       assert File.exists?(config_path)
+    end
+  end
+
+  context 'required configurations' do
+    should 'test for all the required configurations needed to function properly' do
+      #these values are set by the downloader
+      @configuration['version'] = 'present'
+      @configuration['app_path'] = 'present'
+
+      assert @configuration.required_present?
     end
   end
 end

@@ -64,6 +64,14 @@ module TerrImporter
         ConfigValidator.new(schema)
       end
 
+      def required_present?
+        if self['version'].nil? or self['app_path'].nil? or self['application_url'].nil?
+          false
+        else
+          true
+        end
+      end
+
     end
   end
 end

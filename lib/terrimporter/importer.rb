@@ -23,6 +23,8 @@ module TerrImporter
       end
 
       def run
+
+
         if options[:all] != nil and options[:all] == true
           puts "Import of everything started"
           import_js
@@ -38,7 +40,26 @@ module TerrImporter
         end
       end
 
+      def determine_configuration_values_from_uri
+        result = @downloader.download('')
+        result =~ /\/terrific\/base\/(.*?)\/public\/.*application=(.*?)(&amp;|&)/
+
+        terrific_version = $1
+        app_path = $2
+
+        raise ConfigurationError, "Unable to determine necessary configuration value #{terrific_version} from application url" if terrific_version.nil?
+        raise ConfigurationError, "Unable to determine necessary configuration value #{app_path} from application url" if app_path.nil?
+
+        puts "Determined the following configuration values from #{config['application_url']}:\n" +
+                 "terrific version: #{terrific_version} \n" +
+                 "application path: #{app_path}"
+
+        config['version'] = terrific_version
+        config['app_path'] = app_path
+      end
+
       def import_css
+        check_and_complete_config!
         unclean_suffix = "_unclean"
 
         check_and_create_dir config['stylesheets']['relative_destination_path']
@@ -72,6 +93,7 @@ module TerrImporter
       end
 
       def import_js
+        check_and_complete_config!
         check_and_create_dir config['javascripts']['relative_destination_path']
         relative_destination_path = File.join(config['javascripts']['relative_destination_path'], "base.js")
         js_source_url = construct_export_path :js
@@ -102,6 +124,7 @@ module TerrImporter
       end
 
       def import_images
+        check_and_complete_config!
         config['images'].each do |image|
           check_and_create_dir image['relative_destination_path']
           image_source_path = File.join(config['image_server_path'], image['server_path'])
@@ -184,6 +207,12 @@ module TerrImporter
           line.gsub! what, with
         end
         line
+      end
+
+      def check_and_complete_config!
+        unless config.required_present?
+          determine_configuration_values_from_uri
+        end
       end
     end
   end
