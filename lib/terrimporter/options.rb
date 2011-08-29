@@ -13,7 +13,7 @@ module TerrImporter
 
         require 'optparse'
         @opts = OptionParser.new do |o|
-          o.banner = "Usage: #{File.basename($0)} [options] \n e.g. #{File.basename($0)} -a, use --init for first time use"
+          o.banner = "Usage: #{File.basename($0)} [application_url] [options] \n e.g. #{File.basename($0)} -a, use --init for first time use"
 
           o.separator ''
           o.separator 'Common options:'
@@ -54,7 +54,10 @@ module TerrImporter
 
         begin
           @opts.parse!(args)
-          self[:application_uri] = args.shift
+          self[:application_url] = args.shift
+
+          #todo regex check application url and throw error if not ok
+
         rescue OptionParser::InvalidOption => e
           self[:invalid_argument] = e.message
         end

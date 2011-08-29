@@ -22,13 +22,15 @@ module TerrImporter
         options = build_options(arguments)
 
         begin
-          unless options[:init].nil?
+          if !options[:init].nil?
             if config_working_directory_exists? and options[:init] != :backup and options[:init] != :replace
               raise TerrImporter::ConfigurationError, "Configuration already exists, use the override or backup option"
             end
-            create_config_file
+            create_config_file(options[:init], options[:application_url])
             return 0
           end
+
+          #todo replace app uri if appropriate with :application_uri value (only if regex test passed)
 
           if options[:invalid_argument]
             $stderr.puts options[:invalid_argument]

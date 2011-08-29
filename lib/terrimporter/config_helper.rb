@@ -1,4 +1,3 @@
-
 module ConfigHelper
 
   def config_default_name
@@ -25,7 +24,7 @@ module ConfigHelper
     File.join(base_config_path, schema_default_name)
   end
 
-  def create_config_file(backup_or_replace = nil)
+  def create_config_file(backup_or_replace = nil, application_url = nil)
     puts "Creating configuration file..."
     case backup_or_replace
       when :backup
@@ -36,6 +35,13 @@ module ConfigHelper
         FileUtils.rm_f(config_working_directory_path) if File.exists? config_working_directory_path
     end
     FileUtils.cp(config_example_path, config_working_directory_path)
+
+    unless application_url.nil?
+      configuration = File.read(config_working_directory_path)
+      configuration.gsub!(/application_url:.*$/, "application_url: #{application_url}")
+      File.open(config_working_directory_path, 'w') { |f| f.write(configuration) }
+    end
+
     puts "done! You should take a look an edit it to your needs..."
   end
 

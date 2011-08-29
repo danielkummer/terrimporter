@@ -22,7 +22,7 @@ class TestTerrimporter < Test::Unit::TestCase
     should 'merge environment and argument options' do
     ENV['TERRIMPORTER_OPTS'] = '-j -c'
     merged_options = TerrImporter::Application.build_options([''] + ['-i', '--verbose'])
-    expected_options = {:application_uri => "",
+    expected_options = {:application_url => "",
                         :import_css => true,
                         :import_js => true,
                         :import_images => true,
@@ -44,6 +44,7 @@ class TestTerrimporter < Test::Unit::TestCase
   end
 
   should 'run the importer with the init command and a non existing configuration file' do
+    TerrImporter::Application.run!(["test"], '--init')
     TerrImporter::Application.run!(["test"], '--init','backup')
     assert File.exists? config_file
   end

@@ -27,6 +27,12 @@ class ConfigValidatorTest < Test::Unit::TestCase
     assert File.exists?(config_working_directory_path)
   end
 
+  should 'create a configuration file and replace the application url' do
+    application_url = "http://test.url"
+    create_config_file(nil, application_url)
+    configuration = File.read(config_working_directory_path)
+    assert configuration.include?("application_url: #{application_url}")
+  end
 
 end
 
