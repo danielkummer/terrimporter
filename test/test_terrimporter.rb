@@ -63,6 +63,11 @@ class TestTerrimporter < Test::Unit::TestCase
     assert return_code == 1
   end
 
+  should 'run the importer show version and return' do
+    return_code = TerrImporter::Application.run!(["test"], '--version')
+    assert return_code == 0
+  end
+
   def config_file
     File.join(File.dirname(__FILE__), '..', config_default_name)
   end

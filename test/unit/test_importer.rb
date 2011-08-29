@@ -28,8 +28,6 @@ class TestImporter < Test::Unit::TestCase
 
 
   context 'css string replacement' do
-
-
     should 'replace a string in the stylesheet with the configured string' do
       line = "this line should replace the /img/ string with images"
       @importer.send(:stylesheet_replace_strings!, line)
@@ -41,6 +39,13 @@ class TestImporter < Test::Unit::TestCase
       line = "this line should replace the regex string with images"
       @importer.send(:stylesheet_replace_strings!, line)
       assert line.include?("/images/"), "result not expected, is #{line}"
+    end
+
+    #todo this tests is a fluke and not clean!
+    should 'not do any string replacement if not configured' do
+      @importer.config['stylesheets']['replace_strings'] = nil
+      @importer.import_css
+      assert true
     end
   end
 

@@ -117,7 +117,7 @@ module TerrImporter
         @downloader.download(js_source_url, relative_destination_path)
 
 
-        if config.additional_javascripts?
+        if config.additional_dynamic_javascripts?
 
           libraries_destination_path = config.libraries_destination_path
           check_and_create_dir libraries_destination_path

@@ -59,7 +59,7 @@ mapping:
         required: no
       "libraries_relative_destination_path":
         type: str
-        required: yes
+        required: no
   "images":
     type: seq
     required: no

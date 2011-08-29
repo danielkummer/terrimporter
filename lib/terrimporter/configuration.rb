@@ -89,11 +89,11 @@ module TerrImporter
       end
 
       def replace_style_strings?
-        !self['stylesheets']['replace_strings'].nil?
+        !self['stylesheets'].nil? and !self['stylesheets']['replace_strings'].nil?
       end
 
-      def additional_javascripts?
-        !self['javascripts']['dynamic_libraries'].nil?
+      def additional_dynamic_javascripts?
+        !self['javascripts'].nil? and !self['javascripts']['dynamic_libraries'].nil?
       end
 
       def libraries_destination_path
@@ -121,9 +121,8 @@ module TerrImporter
       end
 
 
-      private
       def additional_stylesheets? #todo test
-        !self['stylesheets']['styles'].nil?
+        !self['stylesheets'].nil? and !self['stylesheets']['styles'].nil?
       end
 
 

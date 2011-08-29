@@ -1,25 +1,13 @@
-    application_url:          http://terrific.url
-    libraries_server_path: /js/libraries/dynamic
-    image_server_path: /img
-    export_settings:
-      layout: project
-      debug: false
-      cache: false
-    stylesheets:
-      relative_destination_path: test/tmp/public/stylesheets/
-      styles: ie.css
-      replace_strings:
-        - what: /img/
-          with: /images/
-    javascripts:
-      relative_destination_path: test/tmp/public/javascripts/
-      dynamic_libraries: dynlib
-      libraries_relative_destination_path: test/tmp/public/javascripts/lib
-    images:
-      - server_path: /
-        relative_destination_path: test/tmp/public/images/
-        file_types: jpg, png, gif
-      - server_path: /backgrounds
-        relative_destination_path: test/tmp/public/images/backgrounds/
-        file_types: jpg
+application_url:          http://terrific.url
+libraries_server_path: /js/libraries/dynamic
+image_server_path: /img
+export_settings:
+  layout: project
+  debug: false
+  cache: false
+stylesheets:
+  relative_destination_path: test/tmp/public/stylesheets/
+javascripts:
+  relative_destination_path: test/tmp/public/javascripts/
+images:
 

@@ -15,6 +15,22 @@ class ConfigurationTest < Test::Unit::TestCase
     end
   end
 
+  should 'have an image configuration' do
+    assert @configuration.images?
+  end
+
+  should 'have dynamic libraries' do
+    assert @configuration.additional_dynamic_javascripts?
+  end
+
+  should 'have style replacement strings' do
+    assert @configuration.replace_style_strings?
+  end
+
+  should 'have additional stylesheets configured' do
+    assert @configuration.additional_stylesheets?
+  end
+
   context 'no configuration file around' do
     setup { @invalid_configuration = TerrImporter::Application::Configuration.new }
 
@@ -77,5 +93,44 @@ class ConfigurationTest < Test::Unit::TestCase
 
       assert @configuration.required_present?
     end
+  end
+
+  context 'minimal working configuration' do
+    setup do
+      @configuration = TerrImporter::Application::Configuration.new min_test_config_file_path
+    end
+
+    should 'not raise an error when loading the minimal configuration' do
+      assert_nothing_raised do
+        @configuration.load_configuration
+      end
+    end
+
+    should 'not have an image configuration' do
+      assert !@configuration.images?
+    end
+
+    should 'not have dynamic libraries' do
+      assert !@configuration.additional_dynamic_javascripts?
+    end
+
+    should 'not have style replacement strings' do
+      assert !@configuration.replace_style_strings?
+    end
+
+    should 'not have additional stylesheets configured' do
+      assert !@configuration.additional_stylesheets?
+    end
+
+    should 'only get the base.css file' do
+      assert_equal ["base.css"], @configuration.stylesheets
+    end
+
+    #todo why is this failing?
+=begin
+    should 'return javascript destination path if libraries destination path is undefined' do
+      assert_equal @configuration['javascripts']['relative_destination_path'], @configuration.libraries_destination_path
+    end
+=end
   end
 end

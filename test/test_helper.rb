@@ -30,6 +30,10 @@ class Test::Unit::TestCase
     File.join(File.dirname(__FILE__), 'fixtures', 'test.config.yml')
   end
 
+  def min_test_config_file_path
+    File.join(File.dirname(__FILE__), 'fixtures', 'minimal.test.config.yml')
+  end
+
   def tmp_test_directory
     File.join(File.dirname(__FILE__), 'tmp')
   end

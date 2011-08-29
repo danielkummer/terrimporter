@@ -1,15 +1,15 @@
 require "test_helper"
 
 class DownloaderTest < Test::Unit::TestCase
- def setup
+  def setup
     @base_uri = 'http://terrific.url'
     @downloader = TerrImporter::Application::Downloader.new @base_uri
-   FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/dynlib.js", :body => File.expand_path('test/fixtures/js/dynlib.js'), :content_type => 'text/plain')
- end
+    FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/dynlib.js", :body => File.expand_path('test/fixtures/js/dynlib.js'), :content_type => 'text/plain')
+  end
 
- def teardown
-   FileUtils.rm_f @target_dir if not @target_dir.nil? and File.exists? @target_dir
- end
+  def teardown
+    FileUtils.rm_f @target_dir if not @target_dir.nil? and File.exists? @target_dir
+  end
 
   should 'join relative and base paths to get fully valid uri' do
     absolute_path = @downloader.send :absolute_path, 'first/test'
@@ -32,6 +32,13 @@ class DownloaderTest < Test::Unit::TestCase
     @target_dir = File.expand_path('/tmp/dynlib.js')
     @downloader.download @base_uri + '/js/libraries/dynamic/dynlib.js', @target_dir
     assert File.exists?(@target_dir), "File doesn't exist #{@target_dir}"
+  end
+
+  should 'raise DefaultError, raised by invalid url socket error' do
+    assert_raises TerrImporter::DefaultError do
+      @downloader = TerrImporter::Application::Downloader.new 'http://url.doesntex.ist'
+      @downloader.download('')
+    end
   end
 
 
