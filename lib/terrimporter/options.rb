@@ -13,7 +13,8 @@ module TerrImporter
 
         require 'optparse'
         @opts = OptionParser.new do |o|
-          o.banner = "Usage: #{File.basename($0)} [application_url] [options] \n e.g. #{File.basename($0)} -a, use --init for first time use"
+          o.banner = "Usage: #{File.basename($0)} [options] \n" +
+          "Use #{File.basename($0)} [application_url] --init to initialize importer before first usage."
 
           o.separator ''
           o.separator 'Common options:'
