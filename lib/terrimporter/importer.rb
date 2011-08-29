@@ -47,17 +47,18 @@ module TerrImporter
 
         css_result, js_result = result.scan(/(\/terrific\/base\/(.*?)\/public\/.*base.(css|js).php)\?.*application=(.*?)(&amp;|&)/)
 
+
+        if css_result.nil? or css_result.size < 5
+          raise ConfigurationError, "Unable to extract css information from application url, content is: #{result}"
+        end
+        if js_result.nil? or js_result.size < 5
+          raise ConfigurationError, "Unable to extract javascript information from application url, content is: #{result}"
+        end
+
         css_export_path = css_result[0]
         js_export_path = js_result[0]
         terrific_version = css_result[1]
         application = css_result[3]
-
-        if css_result.nil? or css_result.size != 5
-          raise ConfigurationError, "Unexpected number of results when trying to determine css configuration: #{css_result.inspect}"
-        end
-        if js_result.nil? or js_result.size != 5
-          raise ConfigurationError, "Unexpected number of results when trying to determine css configuration: #{js_result.inspect}"
-        end
 
         raise ConfigurationError, "Unable to determine css export path from application url" if css_export_path.nil?
         raise ConfigurationError, "Unable to determine js export path from application url" if js_export_path.nil?
