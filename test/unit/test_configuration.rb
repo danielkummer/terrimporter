@@ -59,8 +59,9 @@ class ConfigurationTest < Test::Unit::TestCase
   context 'required configurations' do
     should 'test for all the required configurations needed to function properly' do
       #these values are set by the downloader
-      @configuration['version'] = 'present'
-      @configuration['app_path'] = 'present'
+      @configuration['export_path'] = 'present'
+      @configuration['export_settings'] = {'application' => 'present'}
+      @configuration['application_url'] = 'present'
 
       assert @configuration.required_present?
     end

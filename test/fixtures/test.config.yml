@@ -1,5 +1,4 @@
     application_url:          http://terrific.url
-    export_path:  /terrific/base/%2$s/public/%1$s/base/base.%1$s.php
     libraries_server_path: /js/libraries/dynamic
     image_server_path: /img
     export_settings:

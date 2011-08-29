@@ -36,10 +36,6 @@ images:
 # ADVANCED EDITING
 # ----------------
 # Only edit the following if you know what you're doing...
-
-# The base.js/.css export path
-export_path:  /terrific/base/%2$s/public/%1$s/base/base.%1$s.php
-
 # The settings below are added as query parameters for base.js and base.css
 export_settings:
   layout: project # You most probably won't have to change this

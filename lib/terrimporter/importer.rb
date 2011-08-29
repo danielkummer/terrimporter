@@ -42,20 +42,33 @@ module TerrImporter
 
       def determine_configuration_values_from_uri
         result = @downloader.download('')
-        result =~ /\/terrific\/base\/(.*?)\/public\/.*application=(.*?)(&amp;|&)/
+        #result =~ /\/terrific\/base\/(.*?)\/public\/.*application=(.*?)(&amp;|&)/
+        #result =~ /(\/terrific\/base\/(.*?)\/public\/.*base.(css|js).php).*application=(.*?)(&amp;|&)/
 
-        terrific_version = $1
-        app_path = $2
+        css_result, js_result = result.scan(/(\/terrific\/base\/(.*?)\/public\/.*base.(css|js).php)\?.*application=(.*?)(&amp;|&)/)
 
-        raise ConfigurationError, "Unable to determine necessary configuration value #{terrific_version} from application url" if terrific_version.nil?
-        raise ConfigurationError, "Unable to determine necessary configuration value #{app_path} from application url" if app_path.nil?
+        css_export_path = css_result[0]
+        js_export_path = js_result[0]
+        terrific_version = css_result[1]
+        application = css_result[3]
+
+        if css_result.nil? or css_result.size != 5
+          raise ConfigurationError, "Unexpected number of results when trying to determine css configuration: #{css_result.inspect}"
+        end
+        if js_result.nil? or js_result.size != 5
+          raise ConfigurationError, "Unexpected number of results when trying to determine css configuration: #{js_result.inspect}"
+        end
+
+        raise ConfigurationError, "Unable to determine css export path from application url" if css_export_path.nil?
+        raise ConfigurationError, "Unable to determine js export path from application url" if js_export_path.nil?
 
         puts "Determined the following configuration values from #{config['application_url']}:\n" +
                  "terrific version: #{terrific_version} \n" +
-                 "application path: #{app_path}"
+                 "application path: #{application}"
 
         config['version'] = terrific_version
-        config['app_path'] = app_path
+        config['export_settings']['application'] = application
+        config['export_path'] = {'css' => css_export_path, 'js' => js_export_path}
       end
 
       def import_css
@@ -169,15 +182,10 @@ module TerrImporter
         raise DefaultError, "Specify js or css url" unless for_what == :js or for_what == :css
         export_settings = config['export_settings'].clone
 
-        export_settings['application'] = config['app_path']
         export_settings.merge!(options)
         export_settings['appbaseurl'] = "" if for_what == :css
 
-        #glue everything together
-        export_path = config['export_path']
-        export_path.insert(0, "/") unless export_path.match(/^\//)
-
-        export_path = export_path % [for_what.to_s, config['version']] #replace placeholders
+        export_path = config['export_path'][for_what.to_s]
         export_path << '?' << export_settings.map { |k, v| "#{URI.escape(k.to_s)}=#{URI.escape(v.to_s)}" }.join("&")
         export_path
       end

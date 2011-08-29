@@ -65,7 +65,7 @@ module TerrImporter
       end
 
       def required_present?
-        if self['version'].nil? or self['app_path'].nil? or self['application_url'].nil?
+        if self['export_path'].nil? or self['export_settings']['application'].nil? or self['application_url'].nil?
           false
         else
           true

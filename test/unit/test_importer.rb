@@ -71,6 +71,10 @@ class TestImporter < Test::Unit::TestCase
   end
 
   context 'css and js export path construction' do
+    setup do
+      @importer.config['export_path'] = {'css' => 'base.css', 'js' => 'base.js'}
+    end
+
     should 'raise an error on wrongly supplied arguments' do
       assert_raise TerrImporter::DefaultError do
         @importer.send(:construct_export_path, :invalid)
@@ -162,8 +166,8 @@ class TestImporter < Test::Unit::TestCase
     end
 
     should 'import js, css and images, not using the :all statement' do
-      @importer.run #here broken
-                    #only cherry-pick tests
+      @importer.run
+      #only cherry-pick tests
       assert exists_in_tmp?('public/images/testimage1.png')
       assert exists_in_tmp?('public/stylesheets/base.css')
       assert exists_in_tmp?('public/javascripts/base.js')
@@ -175,8 +179,8 @@ class TestImporter < Test::Unit::TestCase
       @importer.options[:all] = true
     end
     should 'import js, css and images, using the :all statement' do
-      @importer.run #here broken
-                    #only cherry-pick tests
+      @importer.run
+      #only cherry-pick tests
       assert exists_in_tmp?('public/images/testimage1.png')
       assert exists_in_tmp?('public/stylesheets/base.css')
       assert exists_in_tmp?('public/javascripts/base.js')
@@ -191,7 +195,9 @@ class TestImporter < Test::Unit::TestCase
       end
 
       assert !@importer.config['version'].nil?
-      assert !@importer.config['app_path'].nil?
+      assert !@importer.config['export_settings']['application'].nil?
+      assert !@importer.config['export_path']['js'].nil?
+      assert !@importer.config['export_path']['css'].nil?
     end
   end
 
