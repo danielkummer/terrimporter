@@ -23,7 +23,7 @@ javascripts:
 # Dynamic libraries definition, space separated without the .js extension. ex: warning pngfix
 #  dynamic_libraries: foo_lib bar_lib
 # Destination of the dynamic libraries relative to the 'relative_destination_path' path. '/' means they're included in 'relative_destination_path'
-#  libraries_relative_destination_path: /
+#  libraries_relative_destination_path:  public/javascripts/libraries/
 
 # IMAGES - multiple entries allowed
 images:

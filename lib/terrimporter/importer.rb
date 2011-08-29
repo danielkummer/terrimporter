@@ -104,7 +104,7 @@ module TerrImporter
 
         if config['javascripts']
           not nil
-          libraries_relative_destination_path = File.join(config['javascripts']['relative_destination_path'], config['javascripts']['relative_libraries_destination_path'])
+          libraries_relative_destination_path = File.join(config['javascripts']['relative_libraries_destination_path'])
           check_and_create_dir libraries_relative_destination_path
           js_libraries = config['javascripts']['dynamic_libraries'].split(" ")
 
