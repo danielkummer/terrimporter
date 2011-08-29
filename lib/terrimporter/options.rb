@@ -56,9 +56,7 @@ module TerrImporter
         begin
           @opts.parse!(args)
           self[:application_url] = args.shift
-
-          #todo regex check application url and throw error if not ok
-
+          validate_application_url
         rescue OptionParser::InvalidOption => e
           self[:invalid_argument] = e.message
         end
@@ -66,6 +64,13 @@ module TerrImporter
 
       def merge(other)
         self.class.new(@orig_args + other.orig_args)
+      end
+
+      def validate_application_url
+        unless self[:application_url].nil?
+          valid = self[:application_url] =~ /^(http|https):\/\/.*$/
+        end
+        valid ||= true
       end
 
     end

@@ -30,8 +30,6 @@ module TerrImporter
             return 0
           end
 
-          #todo replace app uri if appropriate with :application_uri value (only if regex test passed)
-
           if options[:invalid_argument]
             $stderr.puts options[:invalid_argument]
             options[:show_help] = true
