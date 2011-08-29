@@ -19,6 +19,7 @@ module TerrImporter
     class << self
       include Shellwords
       include ConfigHelper
+      include Logging
 
       def run!(*arguments)
         options = build_options(arguments)

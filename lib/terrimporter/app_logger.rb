@@ -24,6 +24,10 @@ module Logging
     Logging.log.fatal hash[:fatal] unless hash[:fatal].nil?
   end
 
+  def info(message)
+    Logging.log.info message
+  end
+
   def self.log
     @logger ||= Logger.new $stdout
     @logger.formatter = LogFormatter.new
@@ -33,11 +37,6 @@ module Logging
   def verbose?
     !self.options.nil? && self.options[:verbose] = true
   end
-
-  def self.initialize_logger
-
-  end
-
 end
 
 

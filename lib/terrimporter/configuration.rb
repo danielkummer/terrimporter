@@ -5,6 +5,7 @@ module TerrImporter
   class Application
     class Configuration < Hash
       include ConfigHelper
+      include Logging
 
       attr_accessor :validations, :config_file
 
@@ -15,7 +16,7 @@ module TerrImporter
 
       def load_configuration
         config_file_path = determine_config_file_path
-        puts "Configuration file located, load from #{config_file_path}"
+        info "Configuration file located, load from #{config_file_path}"
         validate_and_load_config(config_file_path)
       end
 
@@ -44,7 +45,7 @@ module TerrImporter
 
       #todo split!
       def validate_and_load_config(file)
-        puts "Validating configuration..."
+        info "Validating configuration..."
 
         parser = Kwalify::Yaml::Parser.new(load_validator)
         document = parser.parse_file(file)
@@ -59,7 +60,7 @@ module TerrImporter
       end
 
       def load_validator
-        puts "Loading validator from #{schema_file_path}"
+        info "Loading validator from #{schema_file_path}"
         schema = Kwalify::Yaml.load_file(schema_file_path)
         Kwalify::Validator.new(schema)
       end
@@ -77,7 +78,7 @@ module TerrImporter
         if additional_stylesheets?
           stylesheets = stylesheets + self['stylesheets']['styles'].to_s.robust_split
         else
-          puts "No additional stylesheets defined."
+          info "No additional stylesheets defined."
         end
         stylesheets.add_if_missing!('.css')
       end
