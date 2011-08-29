@@ -61,7 +61,7 @@ module TerrImporter
       def load_validator
         puts "Loading validator from #{schema_file_path}"
         schema = Kwalify::Yaml.load_file(schema_file_path)
-        ConfigValidator.new(schema)
+        Kwalify::Validator.new(schema)
       end
 
       def required_present?
@@ -108,11 +108,6 @@ module TerrImporter
         !self['images'].nil?
       end
 
-      private
-      def additional_stylesheets? #todo test
-        !self['stylesheets']['styles'].nil?
-      end
-
       #todo move to helper method
       def robust_split(string) #todo test
         case string
@@ -124,6 +119,13 @@ module TerrImporter
             [string.strip]
         end
       end
+
+
+      private
+      def additional_stylesheets? #todo test
+        !self['stylesheets']['styles'].nil?
+      end
+
 
       #todo move to helper method or even extend array class
       def correct_extension!(array, extension) #todo test

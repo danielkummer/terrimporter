@@ -34,7 +34,6 @@ mapping:
         required: yes
       "styles":
          type: str
-         name: css
          required: no
       "replace_strings":
         type: seq
@@ -57,7 +56,6 @@ mapping:
         required: yes
       "dynamic_libraries":
         type: str
-        name: js
         required: no
       "libraries_relative_destination_path":
         type: str
