@@ -185,7 +185,7 @@ module TerrImporter
         export_settings.merge!(options)
         export_settings['appbaseurl'] = "" if for_what == :css
 
-        export_path = config['export_path'][for_what.to_s]
+        export_path = config['export_path'][for_what.to_s].clone
         export_path << '?' << export_settings.map { |k, v| "#{URI.escape(k.to_s)}=#{URI.escape(v.to_s)}" }.join("&")
         export_path
       end

@@ -137,7 +137,6 @@ class TestImporter < Test::Unit::TestCase
   context 'test public grand import functions - everything is preconfigured' do
     should 'import all images' do
       @importer.import_images
-
       assert exists_in_tmp?('public/images/testimage1.png')
       assert exists_in_tmp?('public/images/testimage2.png')
       assert exists_in_tmp?('public/images/testimage3.png')
