@@ -1,6 +1,6 @@
-# ----------------------------------------------------------------------------------
-# Terrific import configuration file, adjust as needed. Don't mess with indentation!
-# ----------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+# terrimporter configuration, adjust as needed. Don't mess with indentation!
+#-------------------------------------------------------------------------------
 # url: Terrific base url
 application_url: http://terrific.project.url
 
@@ -8,33 +8,32 @@ application_url: http://terrific.project.url
 stylesheets:
 # The destination directory, relative from the current running directory
   relative_destination_path: public/stylesheets/
-# Name of the additional stylesheets (except base.css), you can but don't have to add the extension
+# Additional stylesheets, you can but don't have to add the .css extension
 #  styles: ie, ie6, ie7.css
-# replace_strings: Define path replacements after the stylesheets have been downloaded
-# you can define multiple replacements by repeating the '-what: with:' statements
+# replace_strings: Define string replacements in css files 
+# (use multiple replacements by repeating the '-what: with:' statements)
   replace_strings:
-#    - what: /img/     # What to replace, format: string or r/regular expression/
-#      with: /images/  # Replace with this (string)
+#    - what: /img/     # What to replace, format: [string] or [r/regex/]
+#      with: /images/  # Replace with [string]
 
 # JAVASCRIPTS
 javascripts:
 # Destination path of the javascript base.js file
   relative_destination_path: public/javascripts/
-# Dynamic libraries definition, you can but don't have to add the extension
+# Dynamic libraries definition, you can but don't have to add the .js extension
 #  dynamic_libraries: foo_lib.js bar_lib.js
-# Destination of the dynamic libraries relative to the 'relative_destination_path' path. '/' means they're included in 'relative_destination_path'
+# Destination path of the dynamic libraries relative 
 #  libraries_relative_destination_path:  public/javascripts/libraries/
 
 # IMAGES - multiple entries allowed
 images:
-#  - server_path: /                # The source path, "/" means "img/"
-#    relative_destination_path: public/images/  # The destination directory, relative from the current running directory
-#    file_types: jpg png gif    # The image endings to be downloaded, specified as a space separated string
+#  - server_path: / # The server path is appended to the image_server_path
+#    relative_destination_path: public/images/  # The relative destination path
+#    file_types: jpg, png, gif  # Image file endings to be downloaded
 
-
-# --------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # ADVANCED EDITING - Only edit the following if you know what you're doing...
-# --------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # The settings below are added as query string parameters to the export path
 export_settings:
   debug: false      # False compacts the base.js and base.css files
