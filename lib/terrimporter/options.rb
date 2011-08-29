@@ -56,9 +56,6 @@ module TerrImporter
         begin
           @opts.parse!(args)
           self[:application_url] = args.shift
-          unless validate_application_url
-            raise OptionParser::InvalidOption, "Application url is invalid, please use the form http:// or https://"
-          end
         rescue OptionParser::InvalidOption => e
           self[:invalid_argument] = e.message
         end
@@ -67,14 +64,6 @@ module TerrImporter
       def merge(other)
         self.class.new(@orig_args + other.orig_args)
       end
-
-      def validate_application_url
-        unless self[:application_url].nil?
-          valid = self[:application_url] =~ /^(http|https):\/\/.*$/
-        end
-        valid ||= true
-      end
-
     end
   end
 end
