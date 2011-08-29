@@ -91,8 +91,6 @@ end
 }
     File.open(version_file_path, 'w') { |f| f.write(version_rb) }
   end
-
-
 end
 
 
