@@ -137,5 +137,16 @@ class TestOptions < Test::Unit::TestCase
     end
   end
 
+  context 'use application uri' do
+    setup do
+      @uri = 'http://terrific.app.uri'
+      @options = TerrImporter::Application::Options.new([@uri])
+    end
+
+    should 'display the correct application uri if passes as main param' do
+      assert_equal @uri, @options[:application_uri]
+    end
+  end
+
 
 end

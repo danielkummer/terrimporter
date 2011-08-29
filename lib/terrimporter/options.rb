@@ -54,7 +54,7 @@ module TerrImporter
 
         begin
           @opts.parse!(args)
-          #self[:input_file] = args.shift #todo remove if really not necessary
+          self[:application_uri] = args.shift
         rescue OptionParser::InvalidOption => e
           self[:invalid_argument] = e.message
         end
