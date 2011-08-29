@@ -77,28 +77,29 @@ module TerrImporter
 
         check_and_create_dir config['stylesheets']['relative_destination_path']
 
-        #create stylesheet array and add base.css
-        styles = config['stylesheets']['styles'].split(" ")
-        styles << "base"
+        styles = config.stylesheets
 
         styles.each do |css|
-          relative_destination_path = File.join(config['stylesheets']['relative_destination_path'], css + ".css")
+          relative_destination_path = File.join(config['stylesheets']['relative_destination_path'], css)
           options = {}
-          options[:suffix] = css if css.include?('ie') #add ie option if in array
+          options[:suffix] = $1 if css =~ /(ie.*).css$/ #add ie option if in array
 
           source_url = construct_export_path(:css, options)
 
           @downloader.download(source_url, relative_destination_path + unclean_suffix)
 
-          #do line replacement
-          puts "Start css line replacements"
-          File.open(relative_destination_path, 'w') do |d|
-            File.open(relative_destination_path + unclean_suffix, 'r') do |s|
-              lines = s.readlines
-              lines.each do |line|
-                d.print stylesheet_replace_strings!(line)
+          if config.replace_style_strings?
+            puts "Start css line replacements..."
+            File.open(relative_destination_path, 'w') do |d|
+              File.open(relative_destination_path + unclean_suffix, 'r') do |s|
+                lines = s.readlines
+                lines.each do |line|
+                  d.print stylesheet_replace_strings!(line)
+                end
               end
             end
+          else
+            puts "No css line replacements defined; skipping..."
           end
           puts "Deleting unclean css files"
           FileUtils.remove relative_destination_path + unclean_suffix
@@ -115,33 +116,39 @@ module TerrImporter
 
         @downloader.download(js_source_url, relative_destination_path)
 
-        if config['javascripts']
-          not nil
-          libraries_relative_destination_path = File.join(config['javascripts']['relative_libraries_destination_path'])
-          check_and_create_dir libraries_relative_destination_path
-          js_libraries = config['javascripts']['dynamic_libraries'].split(" ")
 
-          puts "Importing libraries from #{config['libraries_server_path']} to #{libraries_relative_destination_path}"
+        if config.additional_javascripts?
+
+          libraries_destination_path = config.libraries_destination_path
+          check_and_create_dir libraries_destination_path
+          js_libraries = config.dynamic_libraries
+
+          puts "Importing libraries from #{config['libraries_server_path']} to #{libraries_destination_path}"
 
           if config['libraries_server_path'].nil?
             puts "Please define 'libraries_server_path' in configuration file"
           else
             js_libraries.each do |lib|
-              @downloader.download(File.join(config['libraries_server_path'], lib+ ".js"), File.join(libraries_relative_destination_path, lib + ".js"))
+              @downloader.download(File.join(config['libraries_server_path'], lib), File.join(libraries_destination_path, lib))
             end
 
           end
 
         end
-
       end
 
       def import_images
         check_and_complete_config!
-        config['images'].each do |image|
-          check_and_create_dir image['relative_destination_path']
-          image_source_path = File.join(config['image_server_path'], image['server_path'])
-          batch_download(image_source_path, image['relative_destination_path'], image['file_types'])
+        if config.images?
+          puts "Start importing images..."
+
+          config['images'].each do |image|
+            check_and_create_dir image['relative_destination_path']
+            image_source_path = File.join(config['image_server_path'], image['server_path'])
+            batch_download(image_source_path, image['relative_destination_path'], image['file_types'])
+          end
+        else
+          puts "No image configuration found, skipping image import..."
         end
       end
 
@@ -204,6 +211,7 @@ module TerrImporter
         created_or_exists
       end
 
+      #todo refactor config access away
       def stylesheet_replace_strings!(line)
         config['stylesheets']['replace_strings'].each do |replace|
           what = replace['what']

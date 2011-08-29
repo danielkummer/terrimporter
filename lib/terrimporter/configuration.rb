@@ -72,6 +72,71 @@ module TerrImporter
         end
       end
 
+      #todo test from here on out
+      def stylesheets
+        stylesheets = ["base.css"]
+        if additional_stylesheets?
+          stylesheets = stylesheets + robust_split(self['stylesheets']['styles'])
+        else
+          puts "No additional stylesheets defined."
+        end
+        correct_extension!(stylesheets, '.css')
+      end
+
+      def dynamic_libraries
+        libraries = robust_split(self['javascripts']['dynamic_libraries'])
+        correct_extension!(libraries, '.js')
+      end
+
+      def replace_style_strings?
+        !self['stylesheets']['replace_strings'].nil?
+      end
+
+      def additional_javascripts?
+        !self['javascripts']['dynamic_libraries'].nil?
+      end
+
+      def libraries_destination_path
+        if !self['javascripts']['libraries_relative_destination_path'].nil?
+          File.join(self['javascripts']['libraries_relative_destination_path'])
+        else
+          File.join(self['javascripts']['relative_destination_path'])
+        end
+      end
+
+      def images?
+        !self['images'].nil?
+      end
+
+      private
+      def additional_stylesheets? #todo test
+        !self['stylesheets']['styles'].nil?
+      end
+
+      #todo move to helper method
+      def robust_split(string) #todo test
+        case string
+          when /,/
+            string.split(/,/).collect(&:strip)
+          when /\s/
+            string.split(/\s/).collect(&:strip)
+          else
+            [string.strip]
+        end
+      end
+
+      #todo move to helper method or even extend array class
+      def correct_extension!(array, extension) #todo test
+        array.collect! do |item|
+          unless item =~ /#{extension}$/
+            item + extension
+          else
+            item
+          end
+        end
+
+      end
+
     end
   end
 end

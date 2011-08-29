@@ -1,15 +1,15 @@
-# -----------------------------------------------------
-# Terrific import configuration file, adjust as needed.
-# -----------------------------------------------------
+# ----------------------------------------------------------------------------------
+# Terrific import configuration file, adjust as needed. Don't mess with indentation!
+# ----------------------------------------------------------------------------------
 # url: Terrific base url
-application_url: http://terrific.url
+application_url: http://terrific.project.url
 
 # STYLESHEETS
 stylesheets:
 # The destination directory, relative from the current running directory
   relative_destination_path: public/stylesheets/
-# Name of the stylesheets (except base.css), space separated without the .css extension. ex: ie ie6 ie7 ie8
-#  styles: ie ie6 ie7
+# Name of the additional stylesheets (except base.css), you can but don't have to add the extension
+#  styles: ie, ie6, ie7.css
 # replace_strings: Define path replacements after the stylesheets have been downloaded
 # you can define multiple replacements by repeating the '-what: with:' statements
   replace_strings:
@@ -20,8 +20,8 @@ stylesheets:
 javascripts:
 # Destination path of the javascript base.js file
   relative_destination_path: public/javascripts/
-# Dynamic libraries definition, space separated without the .js extension. ex: warning pngfix
-#  dynamic_libraries: foo_lib bar_lib
+# Dynamic libraries definition, you can but don't have to add the extension
+#  dynamic_libraries: foo_lib.js bar_lib.js
 # Destination of the dynamic libraries relative to the 'relative_destination_path' path. '/' means they're included in 'relative_destination_path'
 #  libraries_relative_destination_path:  public/javascripts/libraries/
 
@@ -32,18 +32,17 @@ images:
 #    file_types: jpg png gif    # The image endings to be downloaded, specified as a space separated string
 
 
-# ----------------
-# ADVANCED EDITING
-# ----------------
-# Only edit the following if you know what you're doing...
-# The settings below are added as query parameters for base.js and base.css
+# --------------------------------------------------------------------------------
+# ADVANCED EDITING - Only edit the following if you know what you're doing...
+# --------------------------------------------------------------------------------
+# The settings below are added as query string parameters to the export path
 export_settings:
-  layout: project # You most probably won't have to change this
-  debug: false    # False compacts the base.js and base.css files
-  cache: false    # You most probably won't have to change this
+  debug: false      # False compacts the base.js and base.css files
+  cache: false      # You most probably won't have to change this
+  layout: project   # You most probably won't have to change this
 
-# The library source path for the dynamic libraries.
+# The server side library source path for the dynamic libraries
 libraries_server_path: /js/libraries/dynamic
 
-# The terrific image base path.
+# The server side image base path
 image_server_path: /img
