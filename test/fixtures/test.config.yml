@@ -22,3 +22,4 @@
       - server_path: /backgrounds
         relative_destination_path: test/tmp/public/images/backgrounds/
         file_types: jpg
+
