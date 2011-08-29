@@ -1,27 +1,27 @@
 # Terrific import configuration file, adjust as needed.
 # -----------------------------------------------------
-# Terrific base url
-url: http://terrific.url
+# url: Terrific base url
+application_url: http://terrific.url
 
-# Define the stylesheets in the following form:
+# Import settings for stylesheets
 stylesheets:
 # The destination directory, relative from the current running directory
   dest: public/stylesheets/
 # Name of the stylesheets (except base.css), space separated without the .css extension. ex: ie ie6 ie7 ie8
 #  styles: ie ie6 ie7
-# Define path replacements after the stylesheets have been downloaded
+# replace: Define path replacements after the stylesheets have been downloaded
 # you can define multiple replacements by repeating the '-what: with:' statements
   replace:
 #    - what: /img/     # What to replace, format: string or r/regular expression/
 #      with: /images/  # Replace with this (string)
 
-# Define base.js destination and additional javascript files to export
+# Import settings for javascripts
 javascripts:
 # Destination path of the javascript base.js file
   dest: public/javascripts/
 # Dynamic libraries definition, space separated without the .js extension. ex: warning pngfix
 #  dynamic_libraries: foo_lib bar_lib
-# Destination of the dynamic libraries relative to the 'dest' path. '/' means they're included in 'dest'
+# Destination of the dynamic libraries relative to the 'relative_destination_path' path. '/' means they're included in 'relative_destination_path'
 #  libraries_dest: /
 
 # Define the images to be downloaded, the terrific base path is always "img", so the src root is "img/"

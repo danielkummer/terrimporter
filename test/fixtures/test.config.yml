@@ -27,7 +27,7 @@
 # javascripts:      Define the javascript files in the following form
 #   dest:           Destination of the javascript base.js file
 #   dynamic_libraries: Dynamic libraries definition, space separated without the .js extension. ex: warning pngfix
-#   libraries_dest: Destination of the dynamic libraries relative to the 'dest' path. '/' means they're included in 'dest'
+#   libraries_dest: Destination of the dynamic libraries relative to the 'relative_destination_path' path. '/' means they're included in 'relative_destination_path'
 #
 # images:           Define the images to be downloaded, the terrific base path is always "img", so the src root is "img/"
 #                   each of the entries describes one path for images to be downloaded
@@ -36,7 +36,7 @@
 #   types:          The image endings to be downloaded, specified as a space separated string
 ########################################################################################################################
     version:      0.5
-    url:          http://terrific.url
+    application_url:          http://terrific.url
     app_path:     /terrific/webapp/path
     export_path:  /terrific/base/%2$s/public/%1$s/base/base.%1$s.php
     libraries_source_path: /js/libraries/dynamic
@@ -46,19 +46,19 @@
       debug: false
       cache: false
     stylesheets:
-      dest: test/tmp/public/stylesheets/
+      relative_destination_path: test/tmp/public/stylesheets/
       styles: ie
       replace:
         - what: /img/
           with: /images/
     javascripts:
-      dest: test/tmp/public/javascripts/
+      relative_destination_path: test/tmp/public/javascripts/
       dynamic_libraries: dynlib
       libraries_dest: /lib
     images:
       - src: /
-        dest: test/tmp/public/images/
+        relative_destination_path: test/tmp/public/images/
         types: jpg png gif
       - src: /backgrounds
-        dest: test/tmp/public/images/backgrounds/
+        relative_destination_path: test/tmp/public/images/backgrounds/
         types: jpg

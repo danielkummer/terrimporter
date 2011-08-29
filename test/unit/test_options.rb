@@ -29,20 +29,6 @@ class TestOptions < Test::Unit::TestCase
       assert_nil @options[:import_images]
     end
 
-    should 'show help if none of the required options are specified' do
-      @options.show_help_on_no_options
-      assert @options[:show_help]
-
-       #self[:show_help] = true unless self[:import_css] or self[:import_js] or self[:import_images] or self[:init] or self[:version]
-    end
-
-    should 'not show help if one of the required options is specified' do
-      @options[:import_css] = true
-      @options.show_help_on_no_options
-      assert_equal false, @options[:show_help]
-       #self[:show_help] = true unless self[:import_css] or self[:import_js] or self[:import_images] or self[:init] or self[:version]
-    end
-
   end
 
   for_options '--init' do
@@ -127,17 +113,9 @@ class TestOptions < Test::Unit::TestCase
     end
   end
 
-
   for_options '--version' do
     should 'show version' do
       assert @options[:show_version]
-    end
-  end
-
-
-  for_options '' do
-    should 'show help if no options supplied' do
-      assert @options[:show_help]
     end
   end
 

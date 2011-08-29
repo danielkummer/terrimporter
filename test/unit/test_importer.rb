@@ -24,9 +24,6 @@ class TestImporter < Test::Unit::TestCase
     delete_tmp_test_directory
   end
 
-  should 'be a dummy test for more tests to follow....' do
-    assert true
-  end
 
   context 'css string replacement' do
 

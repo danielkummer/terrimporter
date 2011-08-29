@@ -3,7 +3,7 @@ mapping:
   "version":
     type: text
     required: yes
-  "url":
+  "application_url":
     type: str
     required: yes
     pattern: /^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/
@@ -38,7 +38,7 @@ mapping:
   "stylesheets":
     type: map
     mapping:
-      "dest":
+      "relative_destination_path":
         type: str
         required: yes
       "styles":
@@ -60,7 +60,7 @@ mapping:
   "javascripts":
     type: map
     mapping:
-      "dest":
+      "relative_destination_path":
         type: str
         required: yes
       "dynamic_libraries":
@@ -78,7 +78,7 @@ mapping:
           "src":
             type: str
             required: yes
-          "dest":
+          "relative_destination_path":
             type: str
             required: yes
           "types":
