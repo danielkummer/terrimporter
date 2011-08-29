@@ -1,66 +1,53 @@
-########################################################################################################################
+# -----------------------------------------------------
 # Terrific import configuration file, adjust as needed.
-#
-# version:          Define the terrific version in use
-# url:              Terrific base url
-# app_path          Terrific application path (must start with '/')
-# export_path       You most probably won't have to change this
-# image_server_path:  The Terrific image base path. You most probably won't have to change this
-# libraries_server_path:  The library source path. You most probably won't have to change this
-#
-# export_settings:  The settings below are added as query parameters for base.js and base.css
-#   layout:         You most probably won't have to change this
-#   debug:          False compacts the base.js and base.css files
-#   cache:          You most probably won't have to change this
-#
-# stylesheets:      Define the stylesheets in the following form:
-#   dest:           The destination directory, relative from the current running directory
-#   styles:         Name of the stylesheets, space separated without the .css extension. ex: ie ie6 ie7 ie8
-#                   the main style base.css is included by default and MUST NOT BE SPECIFIED
-#   replace_strings:        Define path replace_stringsments after the stylesheets have been downloaded
-#                   you can define multiple replace_stringsments by repeating the '-what: with:' statements
-#     - what:       What to replace_strings, default is string. if you want to use regex, use the format r/[regex]/
-#                   for help on regular expressions see http://www.rubular.com/ (an online editor/tester)
-#       with:       replace_strings with this (string)
-#
-# javascripts:      Define the javascript files in the following form
-#   dest:           Destination of the javascript base.js file
-#   dynamic_libraries: Dynamic libraries definition, space separated without the .js extension. ex: warning pngfix
-#   relative_libraries_destination_path: Destination of the dynamic libraries relative to the 'relative_destination_path' path. '/' means they're included in 'relative_destination_path'
-#
-# images:           Define the images to be downloaded, the terrific base path is always "img", so the server_path root is "img/"
-#                   each of the entries describes one path for images to be downloaded
-#   -server_path:           The source path, "/" means "img/"
-#   dest:           The destination directory, relative from the current running directory
-#   file_types:          The image endings to be downloaded, specified as a space separated string
-########################################################################################################################
-    version:      0.5
-    application_url:          http://terrific.url
-    app_path:     /terrific/webapp/path
-    export_path:  /terrific/base/%2$s/public/%1$s/base/base.%1$s.php
-    libraries_server_path: /js/libraries/dynamic
-    image_server_path: /img
-    export_settings:
-      layout: project
-      debug: false
-      cache: false
-    stylesheets:
-      relative_destination_path: public/stylesheets/
-      styles: ie
-      replace_strings:
-        - what: /img/
-          with: /images/
-    javascripts:
-      relative_destination_path: public/javascripts/
-      dynamic_libraries: dynlib
-      relative_libraries_destination_path: /
-    images:
-      - server_path: /
-        relative_destination_path: public/images/
-        file_types: jpg png gif
-      - server_path: /
-        relative_destination_path: public/
-        file_types: ico
-      - server_path: /backgrounds/
-        relative_destination_path: public/images/backgrounds/
-        file_types: jpg
+# -----------------------------------------------------
+# url: Terrific base url
+application_url: http://terrific.url
+
+# STYLESHEETS
+stylesheets:
+# The destination directory, relative from the current running directory
+  relative_destination_path: public/stylesheets/
+# Name of the stylesheets (except base.css), space separated without the .css extension. ex: ie ie6 ie7 ie8
+#  styles: ie ie6 ie7
+# replace_strings: Define path replacements after the stylesheets have been downloaded
+# you can define multiple replacements by repeating the '-what: with:' statements
+  replace_strings:
+#    - what: /img/     # What to replace, format: string or r/regular expression/
+#      with: /images/  # Replace with this (string)
+
+# JAVASCRIPTS
+javascripts:
+# Destination path of the javascript base.js file
+  relative_destination_path: public/javascripts/
+# Dynamic libraries definition, space separated without the .js extension. ex: warning pngfix
+#  dynamic_libraries: foo_lib bar_lib
+# Destination of the dynamic libraries relative to the 'relative_destination_path' path. '/' means they're included in 'relative_destination_path'
+#  libraries_relative_destination_path: /
+
+# IMAGES - multiple entries allowed
+images:
+#  - server_path: /                # The source path, "/" means "img/"
+#    relative_destination_path: public/images/  # The destination directory, relative from the current running directory
+#    file_types: jpg png gif    # The image endings to be downloaded, specified as a space separated string
+
+
+# ----------------
+# ADVANCED EDITING
+# ----------------
+# Only edit the following if you know what you're doing...
+
+# The base.js/.css export path
+export_path:  /terrific/base/%2$s/public/%1$s/base/base.%1$s.php
+
+# The settings below are added as query parameters for base.js and base.css
+export_settings:
+  layout: project # You most probably won't have to change this
+  debug: false    # False compacts the base.js and base.css files
+  cache: false    # You most probably won't have to change this
+
+# The library source path for the dynamic libraries.
+libraries_server_path: /js/libraries/dynamic
+
+# The terrific image base path.
+image_server_path: /img
