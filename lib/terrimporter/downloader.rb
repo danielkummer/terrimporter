@@ -4,11 +4,10 @@ require 'uri'
 module TerrImporter
   class Application
     class Downloader
-      include Logging
 
       def initialize(base_uri)
         @base_uri = base_uri
-        info "Downloader initialized to uri: #{base_uri}"
+        LOG.info "Downloader initialized to uri: #{base_uri}"
       end
 
       def download(remote_path, local_path=nil)
@@ -17,12 +16,12 @@ module TerrImporter
           if local_path.nil? #download to buffer
             data = StringIO.new
 
-            info "Downloading #{absolute_uri} to buffer"
+            LOG.info "Downloading #{absolute_uri} to buffer"
 
             absolute_uri.open { |io| data = io.read }
             data.to_s
           else
-            info "Downloading #{absolute_uri} to local path #{local_path}"
+            LOG.info "Downloading #{absolute_uri} to local path #{local_path}"
 
             open(local_path, "wb") { |file|
               file.write(absolute_uri.open.read)

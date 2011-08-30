@@ -1,42 +1,40 @@
-module Logging
-  require 'logger'
+class Logger
+  attr_accessor :level
 
-  #logformatter monkeypatch
-  class LogFormatter < Logger::Formatter
-    CUSTOM_FORMAT = "[%s] %5s %s: %s\n"
+  NUMBER_TO_NAME_MAP = {0=>'DEBUG', 1=>'INFO', 2=>'WARN', 3=>'ERROR', 4=>'FATAL', 5=>'UNKNOWN'}
+  NUMBER_TO_COLOR_MAP = {0=>'0;37', 1=>'32', 2=>'33', 3=>'31', 4=>'31', 5=>'37'}
+  #CUSTOM_FORMAT = "[%s] %5s: %s\n"
+  LOG_FORMAT = "\033[0;37m[%s]\033[0m[\033[%sm %5s \033[0m]: %s \n"
+  #"#{message =}" "\033[0;37m#{Time.now.to_s(:db)}\033[0m [\033[#{color}m" + sprintf("%-5s","#{sevstring}") + "\033[0m] #{message.strip} (pid:#{$$})\n" unless message[-1] == ?\n
+  TIME_FORMAT = "%H:% M:%S"
 
-    def call(severity, time, progname, message)
-      CUSTOM_FORMAT % [format_datetime(time), severity, progname, msg2str(message)]
-    end
-
-    def format_datetime(time)
-      time.strftime("%Y-%m-%d %H:%M:%S")
-    end
+  def initialize
+    self.level = 0
   end
 
-
-# @param hash [:info => "message", :debug => "message", :error => "message"]
-  def log(hash)
-    Logging.log.debug hash[:debug] unless hash[:debug].nil?
-    Logging.log.info hash[:info] unless hash[:info].nil?
-    Logging.log.warn hash[:warn] unless hash[:warn].nil?
-    Logging.log.error hash[:error] unless hash[:error].nil?
-    Logging.log.fatal hash[:fatal] unless hash[:fatal].nil?
+  def error(message)
+    log(3, message)
   end
 
   def info(message)
-    Logging.log.info message
+    log(1, message)
   end
 
-  def self.log
-    @logger ||= Logger.new $stdout
-    @logger.formatter = LogFormatter.new
-    @logger
+  def log(severity, message)
+    return if self.level > severity
+    sevstring = NUMBER_TO_NAME_MAP[severity]
+    color = NUMBER_TO_COLOR_MAP[severity]
+    self.output (LOG_FORMAT % [format_datetime(Time.new),color, sevstring, message])
+    #"\033[0;37m#{Time.now.to_s(:db)}\033[0m [\033[#{color}m" + sprintf("%-5s","#{sevstring}") + "\033[0m] #{message.strip} (pid:#{$$})\n"
   end
 
-  def verbose?
-    !self.options.nil? && self.options[:verbose] = true
+  def format_datetime(time)
+    time.strftime(TIME_FORMAT)
+  end
+
+  def output(value)
+    puts value
   end
 end
 
-
+LOG = Logger.new

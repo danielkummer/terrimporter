@@ -19,7 +19,6 @@ module TerrImporter
     class << self
       include Shellwords
       include ConfigHelper
-      include Logging
 
       def run!(*arguments)
         options = build_options(arguments)
@@ -32,6 +31,11 @@ module TerrImporter
             create_config_file(options[:init], options[:application_url])
             return 0
           end
+
+          if options[:verbose]
+            LOG.level = 0
+          end
+
 
           if options[:invalid_argument]
             $stderr.puts options[:invalid_argument]

@@ -11,7 +11,6 @@ module TerrImporter
 
   class Application
     class Importer
-      include Logging
 
       attr_accessor :options, :config
 
@@ -26,14 +25,14 @@ module TerrImporter
 
 
         if options[:all] != nil and options[:all] == true
-          puts "Import of everything started"
+          LOG.info "Import of everything started"
           import_js
           import_css
           import_images
         else
           options.each do |option, value|
             if option.to_s =~ /^import_/ and value == true
-              puts "Import of #{option.to_s.split('_').last} started"
+              LOG.info "Import of #{option.to_s.split('_').last} started"
               self.send option.to_s
             end
           end
@@ -63,7 +62,7 @@ module TerrImporter
         raise ConfigurationError, "Unable to determine css export path from application url" if css_export_path.nil?
         raise ConfigurationError, "Unable to determine js export path from application url" if js_export_path.nil?
 
-        puts "Determined the following configuration values from #{config['application_url']}:\n" +
+        LOG.info "Determined the following configuration values from #{config['application_url']}:\n" +
                  "terrific version: #{terrific_version} \n" +
                  "application path: #{application}"
 
@@ -90,7 +89,7 @@ module TerrImporter
           @downloader.download(source_url, relative_destination_path + unclean_suffix)
 
           if config.replace_style_strings?
-            puts "Start css line replacements..."
+            LOG.info "Start css line replacements..."
             File.open(relative_destination_path, 'w') do |d|
               File.open(relative_destination_path + unclean_suffix, 'r') do |s|
                 lines = s.readlines
@@ -100,9 +99,9 @@ module TerrImporter
               end
             end
           else
-            puts "No css line replacements defined; skipping..."
+            LOG.info "No css line replacements defined; skipping..."
           end
-          puts "Deleting unclean css files"
+          LOG.info "Deleting unclean css files"
           FileUtils.remove relative_destination_path + unclean_suffix
         end
       end
@@ -113,7 +112,7 @@ module TerrImporter
         relative_destination_path = File.join(config['javascripts']['relative_destination_path'], "base.js")
         js_source_url = construct_export_path :js
 
-        puts "Importing base.js from #{js_source_url} to #{relative_destination_path}"
+        LOG.info "Importing base.js from #{js_source_url} to #{relative_destination_path}"
 
         @downloader.download(js_source_url, relative_destination_path)
 
@@ -124,10 +123,10 @@ module TerrImporter
           check_and_create_dir libraries_destination_path
           js_libraries = config.dynamic_libraries
 
-          puts "Importing libraries from #{config['libraries_server_path']} to #{libraries_destination_path}"
+          LOG.info "Importing libraries from #{config['libraries_server_path']} to #{libraries_destination_path}"
 
           if config['libraries_server_path'].nil?
-            puts "Please define 'libraries_server_path' in configuration file"
+            LOG.info "Please define 'libraries_server_path' in configuration file"
           else
             js_libraries.each do |lib|
               @downloader.download(File.join(config['libraries_server_path'], lib), File.join(libraries_destination_path, lib))
@@ -141,7 +140,7 @@ module TerrImporter
       def import_images
         check_and_complete_config!
         if config.images?
-          puts "Start importing images..."
+          LOG.info "Start importing images..."
 
           config['images'].each do |image|
             check_and_create_dir image['relative_destination_path']
@@ -149,7 +148,7 @@ module TerrImporter
             batch_download(image_source_path, image['relative_destination_path'], image['file_types'])
           end
         else
-          puts "No image configuration found, skipping image import..."
+          LOG.info "No image configuration found, skipping image import..."
         end
       end
 
@@ -158,16 +157,16 @@ module TerrImporter
       def batch_download(relative_source_path, relative_dest_path, type_filter = "")
         source_path = relative_source_path
 
-        puts "Downloading multiple files from #{config['application_url']}#{source_path} to #{relative_dest_path} #{"allowed extensions: " + type_filter unless type_filter.empty?}"
+        LOG.info "Downloading multiple files from #{config['application_url']}#{source_path} to #{relative_dest_path} #{"allowed extensions: " + type_filter unless type_filter.empty?}"
 
         files = html_directory_content_list(source_path)
 
         unless type_filter.empty?
-          puts "Appling type filter: #{type_filter}"
+          LOG.info "Appling type filter: #{type_filter}"
           files = files.find_all { |file| file =~ Regexp.new(".*" + type_filter.robust_split.join("|") + "$") }
         end
 
-        puts "Downloading #{files.size} files..."
+        LOG.info "Downloading #{files.size} files..."
         files.each do |file|
           relative_destination_path = File.join(relative_dest_path, file)
           @downloader.download(File.join(source_path, file), relative_destination_path)
@@ -175,14 +174,14 @@ module TerrImporter
       end
 
       def html_directory_content_list(source_path)
-        puts "Getting html directory list"
+        LOG.info "Getting html directory list"
         output = @downloader.download(source_path)
         files = []
 
         output.scan(/<a\shref=\"([^\"]+)\"/) do |res|
           files << res[0] if not res[0] =~ /^\?/ and not res[0] =~ /.*\/$/ and res[0].size > 1
         end
-        puts "Found #{files.size} files"
+        LOG.info "Found #{files.size} files"
         files
       end
 
@@ -201,7 +200,7 @@ module TerrImporter
       def check_and_create_dir(dir, create = true)
         created_or_exists = false
         unless File.directory?(dir)
-          puts "Directory #{dir} does not exists... it will #{"not" unless create} be created"
+          LOG.info "Directory #{dir} does not exists... it will #{"not" unless create} be created"
           if create
             FileUtils.mkpath(dir)
             created_or_exists = true
@@ -219,7 +218,7 @@ module TerrImporter
           with = replace['with']
           what = Regexp.new "#{$1}" if what.match(/^r\/(.*)\//)
 
-          puts "Replacing #{what.to_s} with #{with}"
+          LOG.info "Replacing #{what.to_s} with #{with}"
 
           line.gsub! what, with
         end
