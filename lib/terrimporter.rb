@@ -33,7 +33,7 @@ module TerrImporter
           end
 
           if options[:verbose]
-            LOG.level = 0
+            LOG.level = :debug
           end
 
 

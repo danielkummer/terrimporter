@@ -1,8 +1,8 @@
 class Logger
   attr_accessor :level
 
-  NUMBER_TO_NAME_MAP  = {0=>'DEBUG',  1=>'INFO',  2=>'WARN',  3=>'ERROR', 4=>'FATAL', 5=>'UNKNOWN'}
-  NUMBER_TO_COLOR_MAP = {0=>'0;37',   1=>'32',    2=>'33',    3=>'31',    4=>'31',    5=>'37'}
+  LOG_LEVELS = {:debug => 0, :info => 1, :warn => 2, :error=> 3, :fatal => 4}
+  LOG_COLORS = {:debug =>'0;37', :info =>'32', :warn =>'33', :error=>'31', :fatal =>'31'}
 
   # more infos: https://wiki.archlinux.org/index.php/Color_Bash_Prompt
   #\033[0m      Text reset
@@ -17,22 +17,22 @@ class Logger
   TIME_FORMAT = "%H:%M:%S"
 
   def initialize
-    self.level = 0
+    self.level = :debug
   end
 
   def error(message)
-    log(3, message)
+    log(:error, message)
   end
 
   def info(message)
-    log(1, message)
+    log(:info, message)
   end
 
   def log(severity, message)
-    return if self.level > severity
-    sevstring = NUMBER_TO_NAME_MAP[severity]
-    color = NUMBER_TO_COLOR_MAP[severity]
-    self.output (LOG_FORMAT % [format_datetime(Time.now),color, sevstring, message])
+    return if LOG_LEVELS[self.level] > LOG_LEVELS[severity]
+
+    color = LOG_COLORS[severity]
+    self.output (LOG_FORMAT % [format_datetime(Time.now), color, severity.to_s.upcase, message])
   end
 
   def format_datetime(time)
