@@ -42,6 +42,11 @@ module TerrImporter
             options[:show_help] = true
           end
 
+          if options[:invalid_option]
+            $stderr.puts options[:invalid_option]
+            options[:show_help] = true
+          end
+
           if options[:show_help]
             $stderr.puts options.opts
             return 1

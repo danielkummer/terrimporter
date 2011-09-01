@@ -55,8 +55,13 @@ class TestTerrimporter < Test::Unit::TestCase
     assert return_code == 1
   end
 
+  should 'run the importer with an invalid option, display help and return error code' do
+    return_code = TerrImporter::Application.run!(["test"], '--invalidoption')
+    assert return_code == 1
+  end
+
   should 'run the importer with an invalid argument, display help and return error code' do
-    return_code = TerrImporter::Application.run!(["test"], '--invalid')
+    return_code = TerrImporter::Application.run!(["test"], '--init', 'INVALID')
     assert return_code == 1
   end
 

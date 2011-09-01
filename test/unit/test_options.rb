@@ -131,7 +131,13 @@ class TestOptions < Test::Unit::TestCase
     end
   end
 
-  for_options '-invalidargumend' do
+  for_options '-invalidoption' do
+    should 'show the invalid option error message' do
+      assert !@options[:invalid_option].nil?
+    end
+  end
+
+  for_options '--init', 'BACKUP' do
     should 'show the invalid argument error message' do
       assert !@options[:invalid_argument].nil?
     end

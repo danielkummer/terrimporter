@@ -23,6 +23,11 @@ class ConfigurationTest < Test::Unit::TestCase
     assert @configuration.additional_dynamic_javascripts?
   end
 
+  should 'use the normal libraries path if no dynamic libraries are specified' do
+    @configuration['javascripts']['libraries_relative_destination_path'] = nil
+    assert  @configuration['javascripts']['relative_destination_path'], @configuration.libraries_destination_path
+  end
+
   should 'have style replacement strings' do
     assert @configuration.replace_style_strings?
   end

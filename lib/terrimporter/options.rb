@@ -57,8 +57,11 @@ module TerrImporter
           @opts.parse!(args)
           self[:application_url] = args.shift
         rescue OptionParser::InvalidOption => e
+          self[:invalid_option] = e.message
+        rescue OptionParser::InvalidArgument => e
           self[:invalid_argument] = e.message
         end
+
       end
 
       def merge(other)

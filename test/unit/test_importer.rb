@@ -203,8 +203,38 @@ class TestImporter < Test::Unit::TestCase
       assert !@importer.config['export_path']['js'].nil?
       assert !@importer.config['export_path']['css'].nil?
     end
+
+    should 'throw a configuration error if the parent pages js values can\'t be read correctly' do
+      FakeWeb.register_uri(:get, "http://terrific.url", :body => File.expand_path('test/fixtures/html/application_root_js_error.html'), :content_type => 'text/plain')
+      assert_raises TerrImporter::ConfigurationError do
+        @importer.determine_configuration_values_from_uri
+      end
+    end
+
+    should 'throw a configuration error if the parent pages css values can\'t be read correctly' do
+      FakeWeb.register_uri(:get, "http://terrific.url", :body => File.expand_path('test/fixtures/html/application_root_css_error.html'), :content_type => 'text/plain')
+      assert_raises TerrImporter::ConfigurationError do
+        @importer.determine_configuration_values_from_uri
+      end
+    end
   end
 
+  context 'missing configuration values' do
+    should 'run through but not throw an error if the servers library path is not specified' do
+      @importer.config['libraries_server_path'] = nil
+      assert_nothing_raised do
+        @importer.import_js
+      end
+    end
+
+    should 'run through but not throw an error if the images path is not specified' do
+      @importer.config['images'] = nil
+      assert_nothing_raised do
+        @importer.import_images
+      end
+    end
+
+  end
 
   def exists_in_tmp?(name)
     File.exists? File.join(tmp_test_directory, name)
