@@ -1,5 +1,6 @@
 require 'shellwords'
 require 'terrimporter/version'
+require 'terrimporter/application_helper'
 require 'terrimporter/app_logger'
 require 'terrimporter/options'
 require 'terrimporter/importer'
@@ -19,6 +20,7 @@ module TerrImporter
     class << self
       include Shellwords
       include ConfigHelper
+      include ApplicationHelper
 
       def run!(*arguments)
         options = build_options(arguments)
