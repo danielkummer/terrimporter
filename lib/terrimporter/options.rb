@@ -19,17 +19,19 @@ module TerrImporter
           o.separator ''
           o.separator 'Common options:'
 
-          o.on('-a', '--all', 'export everything configured; javascripts, css files and images') do
+          o.on('-a', '--all', 'import everything configured; javascripts, css files and images') do
             self[:import_css] = true
             self[:import_js] = true
             self[:import_images] = true
           end
 
-          o.on('-c', '--css', 'export configured css files') { self[:import_css] = true }
+          o.on('-c', '--css', 'import configured css files') { self[:import_css] = true }
 
-          o.on('-i', '--img', 'export configured image files') { self[:import_images] = true }
+          o.on('-i', '--img', 'import configured image files') { self[:import_images] = true }
 
-          o.on('-j', '--js', 'export configured javascript files') { self[:import_js] = true }
+          o.on('-j', '--js', 'import configured javascript files') { self[:import_js] = true }
+
+          o.on('-m', '--module', 'import configured module files') { self[:import_modules] = true }
 
           o.on('--init [CONFIG_EXISTS]', [:backup, :replace], 'create configuration file in current working directory. use optional argument to force file replacement (backup, replace)') do |init|
             self[:init] = init || true
