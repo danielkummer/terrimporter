@@ -148,7 +148,7 @@ module TerrImporter
           config['images'].each do |image|
             check_and_create_dir image['relative_destination_path']
             image_source_path = File.join(config['image_server_path'], image['server_path'])
-            batch_download(image_source_path, image['relative_destination_path'], image['file_types'])
+            @downloader.batch_download(image_source_path, image['relative_destination_path'], image['file_types'])
           end
         else
           LOG.info "Skipping image import"
@@ -181,38 +181,6 @@ module TerrImporter
       end
 
       private
-
-      #todo move to download class
-      def batch_download(relative_source_path, relative_dest_path, type_filter = "")
-        source_path = relative_source_path
-
-        LOG.info "Download multiple files from #{config['application_url']}#{source_path} to #{relative_dest_path} #{"allowed extensions: " + type_filter unless type_filter.empty?}"
-
-        files = html_directory_content_list(source_path)
-
-        unless type_filter.empty?
-          LOG.info "Apply type filter: #{type_filter}"
-          files = files.find_all { |file| file =~ Regexp.new(".*" + type_filter.robust_split.join("|") + "$") }
-        end
-
-        LOG.info "Download #{files.size} files..."
-        files.each do |file|
-          relative_destination_path = File.join(relative_dest_path, file)
-          @downloader.download(File.join(source_path, file), relative_destination_path)
-        end
-      end
-
-      def html_directory_content_list(source_path)
-        LOG.info "Get html directory list"
-        output = @downloader.download(source_path)
-        files = []
-
-        output.scan(/<a\shref=\"([^\"]+)\"/) do |res|
-          files << res[0] if not res[0] =~ /^\?/ and not res[0] =~ /.*\/$/ and res[0].size > 1
-        end
-        LOG.info "Found #{files.size} files"
-        files
-      end
 
       def construct_export_path(for_what = :js, options={})
         raise DefaultError, "Specify js or css url" unless for_what == :js or for_what == :css

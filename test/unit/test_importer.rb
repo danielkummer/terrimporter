@@ -103,42 +103,6 @@ class TestImporter < Test::Unit::TestCase
     end
   end
 
-  context 'file lists' do
-    should 'get a list of files from a directory html page' do
-      files = @importer.send(:html_directory_content_list, '/img')
-      assert files.size == 3
-      assert files.include?("testimage1.png")
-      assert files.include?("testimage2.png")
-      assert files.include?("testimage3.png")
-      assert files[0] == ("testimage1.png")
-    end
-
-    should 'not return subdirectories if included in file list' do
-      files = @importer.send(:html_directory_content_list, '/img')
-      assert_same false, files.include?("backgrounds/")
-    end
-  end
-
-  context 'batch download files' do
-    should 'download all images into the target folder' do
-      @importer.send(:batch_download, '/img', tmp_test_directory)
-      assert exists_in_tmp? 'testimage1.png'
-      assert exists_in_tmp? 'testimage2.png'
-      assert exists_in_tmp? 'testimage3.png'
-    end
-
-    should 'download only files specified by file extension' do
-      @importer.send(:batch_download, '/img/backgrounds/', tmp_test_directory, "doesntexist")
-      assert_same false, exists_in_tmp?('background.jpg')
-    end
-
-    should 'download only files specified by file multiple extension' do
-      @importer.send(:batch_download, '/img/backgrounds/', tmp_test_directory, "doesntexist jpg") #here broken
-      assert exists_in_tmp? 'background.jpg'
-    end
-
-  end
-
   context 'test public grand import functions - everything is preconfigured' do
     should 'import all images' do
       @importer.import_images

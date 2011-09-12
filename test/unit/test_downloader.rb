@@ -5,6 +5,16 @@ class DownloaderTest < Test::Unit::TestCase
     @base_uri = 'http://terrific.url'
     @downloader = TerrImporter::Application::Downloader.new @base_uri
     FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/dynlib.js", :body => File.expand_path('test/fixtures/js/dynlib.js'), :content_type => 'text/plain')
+    FakeWeb.register_uri(:get, "http://terrific.url/img", :body => File.expand_path('test/fixtures/html/img_dir.html'), :content_type => 'text/html')
+    FakeWeb.register_uri(:get, "http://terrific.url/img/", :body => File.expand_path('test/fixtures/html/img_dir.html'), :content_type => 'text/html')
+    FakeWeb.register_uri(:get, "http://terrific.url/img", :body => File.expand_path('test/fixtures/html/img_dir.html'), :content_type => 'text/html')
+    FakeWeb.register_uri(:get, "http://terrific.url/img/", :body => File.expand_path('test/fixtures/html/img_dir.html'), :content_type => 'text/html')
+    FakeWeb.register_uri(:get, "http://terrific.url/img/testimage1.png", :body => File.expand_path('test/fixtures/img/testimage.png'), :content_type => 'image/png')
+    FakeWeb.register_uri(:get, "http://terrific.url/img/testimage2.png", :body => File.expand_path('test/fixtures/img/testimage.png'), :content_type => 'image/png')
+    FakeWeb.register_uri(:get, "http://terrific.url/img/testimage3.png", :body => File.expand_path('test/fixtures/img/testimage.png'), :content_type => 'image/png')
+    FakeWeb.register_uri(:get, "http://terrific.url/img/backgrounds", :body => File.expand_path('test/fixtures/html/img_backgrounds_dir.html'), :content_type => 'text/html')
+    FakeWeb.register_uri(:get, "http://terrific.url/img/backgrounds/", :body => File.expand_path('test/fixtures/html/img_backgrounds_dir.html'), :content_type => 'text/html')
+    FakeWeb.register_uri(:get, "http://terrific.url/img/backgrounds/background.jpg", :body => File.expand_path('test/fixtures/img/background.jpg'), :content_type => 'image/jpg')
   end
 
   def teardown
@@ -40,6 +50,41 @@ class DownloaderTest < Test::Unit::TestCase
       @downloader.download('')
     end
   end
+
+  context 'batch download files' do
+    should 'download all images into the target folder' do
+      @downloader.batch_download '/img', tmp_test_directory
+      assert exists_in_tmp? 'testimage1.png'
+      assert exists_in_tmp? 'testimage2.png'
+      assert exists_in_tmp? 'testimage3.png'
+    end
+
+    should 'download only files specified by file extension' do
+      @downloader.batch_download '/img/backgrounds/', tmp_test_directory, "doesntexist"
+      assert_same false, exists_in_tmp?('background.jpg')
+    end
+
+    should 'download only files specified by file multiple extension' do
+      @downloader.batch_download '/img/backgrounds/', tmp_test_directory, "doesntexist jpg"
+      assert exists_in_tmp? 'background.jpg'
+    end
+  end
+
+  context 'file lists' do
+      should 'get a list of files from a directory html page' do
+        files = @downloader.send(:html_directory_content_list, '/img')
+        assert files.size == 3
+        assert files.include?("testimage1.png")
+        assert files.include?("testimage2.png")
+        assert files.include?("testimage3.png")
+        assert files[0] == ("testimage1.png")
+      end
+
+      should 'not return subdirectories if included in file list' do
+        files = @downloader.send(:html_directory_content_list, '/img')
+        assert_same false, files.include?("backgrounds/")
+      end
+    end
 
 
 end
