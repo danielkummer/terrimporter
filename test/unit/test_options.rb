@@ -90,6 +90,7 @@ class TestOptions < Test::Unit::TestCase
       assert @options[:import_css]
       assert @options[:import_js]
       assert @options[:import_images]
+      assert @options[:import_modules]
     end
   end
 
@@ -98,6 +99,7 @@ class TestOptions < Test::Unit::TestCase
       assert @options[:import_css]
       assert @options[:import_js]
       assert @options[:import_images]
+      assert @options[:import_modules]
     end
   end
 
@@ -140,6 +142,18 @@ class TestOptions < Test::Unit::TestCase
   for_options '--init', 'BACKUP' do
     should 'show the invalid argument error message' do
       assert !@options[:invalid_argument].nil?
+    end
+  end
+
+  for_options '-m' do
+    should 'import all modules' do
+      assert @options[:import_modules]
+    end
+  end
+
+  for_options '--module' do
+    should 'import all modules' do
+      assert @options[:import_modules]
     end
   end
 

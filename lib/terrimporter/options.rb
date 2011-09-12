@@ -23,6 +23,7 @@ module TerrImporter
             self[:import_css] = true
             self[:import_js] = true
             self[:import_images] = true
+            self[:import_modules] = true
           end
 
           o.on('-c', '--css', 'import configured css files') { self[:import_css] = true }
