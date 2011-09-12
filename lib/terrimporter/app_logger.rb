@@ -13,29 +13,29 @@ class Logger
   #\033[037m    White
 
   # %s => [datetime], %s => color, %-5s => severity, %s => message
-  LOG_FORMAT = "\033[0;37m %s \033[0m[\033[%sm %-13s:%-5s\033[0m]: %s \n"
+  LOG_FORMAT = "\033[0;37m %s \033[0m[\033[%sm %-5s\033[0m]: %s \n"
   TIME_FORMAT = "%H:%M:%S"
 
   def initialize
     self.level = :debug
   end
 
-  def error(message, classname = "")
-    log(:error, message, classname)
+  def error(message)
+    log(:error, message)
   end
 
-  def info(message, classname = "")
-    log(:info, message, classname)
+  def info(message)
+    log(:info, message)
   end
 
-  def log(severity, message, classname)
+  def log(severity, message)
     return if LOG_LEVELS[self.level] > LOG_LEVELS[severity]
 
     color = LOG_COLORS[severity]
     if LOG_LEVELS[severity] >= LOG_LEVELS[:error]
-      $stderr.puts (LOG_FORMAT % [format_datetime(Time.now), color, classname.upcase, severity.to_s.upcase, message])
+      $stderr.puts (LOG_FORMAT % [format_datetime(Time.now), color, severity.to_s.upcase, message])
     else
-      $stdout.puts (LOG_FORMAT % [format_datetime(Time.now), color, classname.upcase, severity.to_s.upcase, message])
+      $stdout.puts (LOG_FORMAT % [format_datetime(Time.now), color, severity.to_s.upcase, message])
     end
   end
 

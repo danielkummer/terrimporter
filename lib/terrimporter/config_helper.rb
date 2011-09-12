@@ -25,13 +25,13 @@ module ConfigHelper
   end
 
   def create_config_file(backup_or_replace = nil, application_url = nil)
-    LOG.info "Creating configuration file...", class_name
+    LOG.info "Creating configuration file..."
     case backup_or_replace
       when :backup
-        LOG.info "Backing up old configuration file to #{config_working_directory_path}.bak", class_name
+        LOG.info "Backing up old configuration file to #{config_working_directory_path}.bak"
         FileUtils.mv(config_working_directory_path, config_working_directory_path + '.bak')
       when :replace
-        LOG.info "Replacing old configuration file", class_name
+        LOG.info "Replacing old configuration file"
         FileUtils.rm_f(config_working_directory_path) if File.exists? config_working_directory_path
     end
     FileUtils.cp(config_example_path, config_working_directory_path)
@@ -42,7 +42,7 @@ module ConfigHelper
       File.open(config_working_directory_path, 'w') { |f| f.write(configuration) }
     end
 
-    LOG.info "done! You should take a look an edit it to your needs...", class_name
+    LOG.info "done! You should take a look an edit it to your needs..."
   end
 
   private
