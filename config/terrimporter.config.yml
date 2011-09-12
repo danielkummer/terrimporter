@@ -31,6 +31,13 @@ images:
 #    relative_destination_path: public/images/  # The relative destination path
 #    file_types: jpg, png, gif  # Image file endings to be downloaded
 
+# MODULES - multiple entries allowed
+modules:
+  - name: #the name of the module
+    skin:
+    template: false # only import template without surrounding divs, default false if not specified
+    relative_destination_path:
+
 #-------------------------------------------------------------------------------
 # ADVANCED EDITING - Only edit the following if you know what you're doing...
 # ------------------------------------------------------------------------------

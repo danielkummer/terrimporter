@@ -75,3 +75,21 @@ mapping:
           "file_types":
             type: str
             required: no
+  "modules":
+    type: seq
+    required: no
+    sequence:
+      - type: map
+        mapping:
+          "name":
+            type: str
+            required: yes
+          "skin":
+            type: str
+            required: no
+          "relative_destination_path":
+            type: str
+            required: yes
+          "template":
+            type: bool
+            default: false
