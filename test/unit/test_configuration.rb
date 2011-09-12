@@ -23,6 +23,10 @@ class ConfigurationTest < Test::Unit::TestCase
     assert @configuration.additional_dynamic_javascripts?
   end
 
+  should 'have modules' do
+    assert @configuration.modules?
+  end
+
   should 'use the normal libraries path if no dynamic libraries are specified' do
     @configuration['javascripts']['libraries_relative_destination_path'] = nil
     assert  @configuration['javascripts']['relative_destination_path'], @configuration.libraries_destination_path
@@ -117,6 +121,10 @@ class ConfigurationTest < Test::Unit::TestCase
 
     should 'only get the base.css file' do
       assert_equal ["base.css"], @configuration.stylesheets
+    end
+
+    should 'not have additional modules' do
+      assert !@configuration.modules?
     end
 
     #todo why is this failing?

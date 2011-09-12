@@ -10,4 +10,5 @@ stylesheets:
 javascripts:
   relative_destination_path: test/tmp/public/javascripts/
 images:
+modules:
 

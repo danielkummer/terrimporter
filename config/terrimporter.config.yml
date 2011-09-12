@@ -33,9 +33,10 @@ images:
 
 # MODULES - multiple entries allowed
 modules:
-  - name: #the name of the module
-    skin:
-    template: false # only import template without surrounding divs, default false if not specified
+  - name: #Name of the module, required
+    skin: #Skin used, optional
+    module_template: #The module template used, required
+    template_only: false #Only import template without surrounding divs, default false if not specified
     relative_destination_path:
 
 #-------------------------------------------------------------------------------

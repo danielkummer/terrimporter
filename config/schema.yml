@@ -84,12 +84,16 @@ mapping:
           "name":
             type: str
             required: yes
-          "skin":
-            type: str
-            required: no
           "relative_destination_path":
             type: str
             required: yes
-          "template":
+          "module_template":
+            type: str
+            required: yes
+          "skin":
+            type: str
+            required: no
+          "template_only":
             type: bool
             default: false
+            required: no

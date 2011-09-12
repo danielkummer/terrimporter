@@ -111,6 +111,10 @@ module TerrImporter
         !self['images'].nil?
       end
 
+      def modules?
+        !self['modules'].nil?
+      end
+
     end
   end
 end

@@ -160,6 +160,11 @@ class TestImporter < Test::Unit::TestCase
       assert exists_in_tmp?('public/javascripts/lib/dynlib.js')
     end
 
+    should 'import all module files' do
+      fluke "implement and test!"
+      @importer.import_modules
+    end
+
   end
 
   context 'execute run and check for correct resolve of commands' do

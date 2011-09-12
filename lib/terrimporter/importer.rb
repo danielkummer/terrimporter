@@ -10,6 +10,7 @@ module TerrImporter
   end
 
   class Application
+    #todo split importer -> subclass from baseimporter into specified css, img, js and module importer classes
     class Importer
 
       attr_accessor :options, :config
@@ -25,10 +26,11 @@ module TerrImporter
 
 
         if options[:all] != nil and options[:all] == true
-          LOG.info "Import of everything started"
+          LOG.info "Import everything"
           import_js
           import_css
           import_images
+          import_modules
         else
           options.each do |option, value|
             if option.to_s =~ /^import_/ and value == true
@@ -39,6 +41,7 @@ module TerrImporter
         end
       end
 
+      #todo at the wrong place, move to configuration
       def determine_configuration_values_from_uri
         result = @downloader.download('')
         #result =~ /\/terrific\/base\/(.*?)\/public\/.*application=(.*?)(&amp;|&)/
@@ -63,8 +66,8 @@ module TerrImporter
         raise ConfigurationError, "Unable to determine js export path from application url" if js_export_path.nil?
 
         LOG.info "Determined the following configuration values from #{config['application_url']}:\n" +
-                 "terrific version: #{terrific_version} \n" +
-                 "application path: #{application}"
+                     "terrific version: #{terrific_version} \n" +
+                     "application path: #{application}"
 
         config['version'] = terrific_version
         config['export_settings']['application'] = application
@@ -89,7 +92,7 @@ module TerrImporter
           @downloader.download(source_url, relative_destination_path + unclean_suffix)
 
           if config.replace_style_strings?
-            LOG.info "Start css line replacements..."
+            LOG.info "CSS line replacements"
             File.open(relative_destination_path, 'w') do |d|
               File.open(relative_destination_path + unclean_suffix, 'r') do |s|
                 lines = s.readlines
@@ -99,7 +102,7 @@ module TerrImporter
               end
             end
           else
-            LOG.info "No css line replacements defined; skipping..."
+            LOG.info "Skipping css line replacements"
           end
           LOG.info "Deleting unclean css files"
           FileUtils.remove relative_destination_path + unclean_suffix
@@ -112,7 +115,7 @@ module TerrImporter
         relative_destination_path = File.join(config['javascripts']['relative_destination_path'], "base.js")
         js_source_url = construct_export_path :js
 
-        LOG.info "Importing base.js from #{js_source_url} to #{relative_destination_path}"
+        LOG.info "Import base.js from #{js_source_url} to #{relative_destination_path}"
 
         @downloader.download(js_source_url, relative_destination_path)
 
@@ -123,10 +126,10 @@ module TerrImporter
           check_and_create_dir libraries_destination_path
           js_libraries = config.dynamic_libraries
 
-          LOG.info "Importing libraries from #{config['libraries_server_path']} to #{libraries_destination_path}"
+          LOG.info "Import libraries from #{config['libraries_server_path']} to #{libraries_destination_path}"
 
           if config['libraries_server_path'].nil?
-            LOG.info "Please define 'libraries_server_path' in configuration file"
+            LOG.info "Define 'libraries_server_path' in configuration file"
           else
             js_libraries.each do |lib|
               @downloader.download(File.join(config['libraries_server_path'], lib), File.join(libraries_destination_path, lib))
@@ -140,7 +143,7 @@ module TerrImporter
       def import_images
         check_and_complete_config!
         if config.images?
-          LOG.info "Start importing images..."
+          LOG.info "Import images"
 
           config['images'].each do |image|
             check_and_create_dir image['relative_destination_path']
@@ -148,25 +151,51 @@ module TerrImporter
             batch_download(image_source_path, image['relative_destination_path'], image['file_types'])
           end
         else
-          LOG.info "No image configuration found, skipping image import..."
+          LOG.info "Skipping image import"
         end
+      end
+
+      def import_modules
+
+        if config.modules?
+          LOG.info "Module import"
+
+          config['modules'].each do |mod|
+            check_and_create_dir mod['relative_destination_path']
+            #todo download module to
+            module_source_url = construct_module_path(mod['name'], mod['module_template'], mod['skin'], mod['template_only'])
+            @downloader.download(module_source_url, File.join(mod['relative_destination_path'], mod['name'] + '.html'))
+          end
+        end
+      end
+
+      def construct_module_path(name, module_template, skin = nil, template = nil)
+        skin = '' if skin.nil?
+        #todo add not empty check to name and module_template -> most probably in configuration file
+        # todo complete!
+        #todo refactor export path to be more universal
+        export_path = config['application_url'].clone
+        #todo moduletemplate missing!
+        export_path << "/terrific/module/details/#{name}/#{module_template}/#{skin}/format/module#{"content" if template}"
+        export_path
       end
 
       private
 
+      #todo move to download class
       def batch_download(relative_source_path, relative_dest_path, type_filter = "")
         source_path = relative_source_path
 
-        LOG.info "Downloading multiple files from #{config['application_url']}#{source_path} to #{relative_dest_path} #{"allowed extensions: " + type_filter unless type_filter.empty?}"
+        LOG.info "Download multiple files from #{config['application_url']}#{source_path} to #{relative_dest_path} #{"allowed extensions: " + type_filter unless type_filter.empty?}"
 
         files = html_directory_content_list(source_path)
 
         unless type_filter.empty?
-          LOG.info "Appling type filter: #{type_filter}"
+          LOG.info "Apply type filter: #{type_filter}"
           files = files.find_all { |file| file =~ Regexp.new(".*" + type_filter.robust_split.join("|") + "$") }
         end
 
-        LOG.info "Downloading #{files.size} files..."
+        LOG.info "Download #{files.size} files..."
         files.each do |file|
           relative_destination_path = File.join(relative_dest_path, file)
           @downloader.download(File.join(source_path, file), relative_destination_path)
@@ -174,7 +203,7 @@ module TerrImporter
       end
 
       def html_directory_content_list(source_path)
-        LOG.info "Getting html directory list"
+        LOG.info "Get html directory list"
         output = @downloader.download(source_path)
         files = []
 

@@ -22,3 +22,5 @@
       - server_path: /backgrounds
         dest: test/tmp/public/images/backgrounds/
         file_types: jpg
+    modules:
+      - name:
