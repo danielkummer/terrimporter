@@ -68,6 +68,14 @@ module TerrImporter
       def absolute_path(relative_path)
         URI.join(@base_uri, relative_path)
       end
+
+      #todo use this for directory creation
+      def create_dir_path(dir)
+        unless File.directory?(dir) and File.file?(dir)
+          LOG.info "Creating directory #{dir}"
+          FileUtils.mkpath(dir)
+        end
+      end
     end
   end
 end

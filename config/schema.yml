@@ -90,9 +90,6 @@ mapping:
           "module_template":
             type: str
             required: yes
-          "skin":
-            type: str
-            required: no
           "template_only":
             type: bool
             default: false

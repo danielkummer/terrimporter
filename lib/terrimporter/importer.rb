@@ -156,17 +156,26 @@ module TerrImporter
       end
 
       def import_modules
-
         if config.modules?
           LOG.info "Module import"
 
           config['modules'].each do |mod|
             check_and_create_dir mod['relative_destination_path']
-            #todo download module to
-            module_source_url = construct_module_path(mod['name'], mod['module_template'], mod['skin'], mod['template_only'])
+
+            name, skin = extract_module_and_skin_name(mod['name'])
+
+            module_source_url = construct_module_path(name, mod['module_template'], skin, mod['template_only'])
             @downloader.download(module_source_url, File.join(mod['relative_destination_path'], mod['name'] + '.html'))
           end
         end
+      end
+
+      def extract_module_and_skin_name(module_name)
+        names = []
+        module_name =~ /^(.*)_(.*)/
+        names << 'mod_' + $2
+        names << module_name if $1 == 'skn'
+        names
       end
 
       def construct_module_path(name, module_template, skin = nil, template = nil)
@@ -194,6 +203,7 @@ module TerrImporter
         export_path
       end
 
+      #todo remove from here, must be handled in downloader
       def check_and_create_dir(dir, create = true)
         created_or_exists = false
         unless File.directory?(dir)

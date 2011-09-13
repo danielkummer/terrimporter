@@ -205,8 +205,4 @@ class TestImporter < Test::Unit::TestCase
 
   end
 
-  def exists_in_tmp?(name)
-    File.exists? File.join(tmp_test_directory, name)
-  end
-
 end

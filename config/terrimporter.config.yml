@@ -22,7 +22,7 @@ javascripts:
   relative_destination_path: public/javascripts/
 # Dynamic libraries definition, you can but don't have to add the .js extension
 #  dynamic_libraries: foo_lib.js bar_lib.js
-# Destination path of the dynamic libraries relative 
+# Destination path of the dynamic libraries (relative)
 #  libraries_relative_destination_path:  public/javascripts/libraries/
 
 # IMAGES - multiple entries allowed
@@ -33,11 +33,10 @@ images:
 
 # MODULES - multiple entries allowed
 modules:
-  - name: #Name of the module, required
-    skin: #Skin used, optional
-    module_template: #The module template used, required
-    template_only: false #Only import template without surrounding divs, default false if not specified
-    relative_destination_path:
+  - name:                 #Use mod_name (or skn_name if you only want to import the skin
+    module_template:      #The module template used, required
+    template_only: false  #Only import template without surrounding divs, default: false
+    relative_destination_path: #Destination path of
 
 #-------------------------------------------------------------------------------
 # ADVANCED EDITING - Only edit the following if you know what you're doing...

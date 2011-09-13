@@ -2,6 +2,7 @@ require "test_helper"
 
 class DownloaderTest < Test::Unit::TestCase
   def setup
+    create_tmp_test_directory
     @base_uri = 'http://terrific.url'
     @downloader = TerrImporter::Application::Downloader.new @base_uri
     FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/dynlib.js", :body => File.expand_path('test/fixtures/js/dynlib.js'), :content_type => 'text/plain')
@@ -19,6 +20,7 @@ class DownloaderTest < Test::Unit::TestCase
 
   def teardown
     FileUtils.rm_f @target_dir if not @target_dir.nil? and File.exists? @target_dir
+    delete_tmp_test_directory
   end
 
   should 'join relative and base paths to get fully valid uri' do

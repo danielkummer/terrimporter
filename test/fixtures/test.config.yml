@@ -23,12 +23,10 @@
         relative_destination_path: test/tmp/public/images/backgrounds/
         file_types: jpg
     modules:
-      - name: module1
-        skin:
+      - name: mod_list
         relative_destination_path: modules/
         module_template: template1
-      - name: module2
-        skin: skin1
+      - name: skn_test
         relative_destination_path: modules/
         module_template: template2
         template_only: true
