@@ -8,37 +8,33 @@ module TerrImporter
 
       def initialize(base_uri)
         @base_uri = base_uri
-        LOG.debug "Downloader initialized to uri: #{base_uri}"
+        LOG.debug "Downloader initialized to uri: #{@base_uri}"
       end
 
-      def download(remote_path, local_path=nil)
-        absolute_uri = absolute_path(remote_path)
+      def download(remote_path, local_path = nil)
+        remote_url = url(remote_path)
         begin
           if local_path.nil? #download to buffer
-            LOG.debug "Download #{absolute_uri} to buffer"
+            LOG.debug "Download #{remote_url} to buffer"
             data = StringIO.new
-            absolute_uri.open { |io| data = io.read }
+            remote_url.open { |io| data = io.read }
             data.to_s
           else
+            LOG.info "Download #{remote_url} to local path #{local_path}"
             create_dir_path File.dirname(local_path)
-            LOG.info "Download #{absolute_uri} to local path #{local_path}"
-            open(local_path, "wb") { |file|
-              file.write(absolute_uri.open.read)
-            }
+            open(local_path, "wb") { |file| file.write(remote_url.open.read) }
           end
         rescue SocketError => e
-          raise DefaultError, "Error opening url #{absolute_uri}: \n #{e.message}"
+          raise DefaultError, "Error opening url #{remote_url}: \n #{e.message}"
         end
       end
 
+      def batch_download(remote_path, local_path, type_filter = "")
+        source_path = url(remote_path)
+        create_dir_path local_path
+        LOG.debug "Download multiple files from #{source_path} to #{local_path} #{"allowed extensions: " + type_filter unless type_filter.empty?}"
 
-      def batch_download(remote_path, relative_dest_path, type_filter = "")
-        source_path = absolute_path(remote_path)
-        create_dir_path relative_dest_path
-
-        LOG.debug "Download multiple files from #{source_path} to #{relative_dest_path} #{"allowed extensions: " + type_filter unless type_filter.empty?}"
-
-        files = html_directory_content_list(source_path)
+        files = html_directory_list(source_path)
 
         unless type_filter.empty?
           LOG.debug "Apply type filter: #{type_filter}"
@@ -47,13 +43,13 @@ module TerrImporter
 
         LOG.info "Download #{files.size} files..."
         files.each do |file|
-          destination_path = File.join(relative_dest_path.to_s, file)
-          self.download(File.join(source_path.to_s, file), destination_path)
+          local_file_path = File.join(local_path.to_s, file)
+          self.download(File.join(source_path.to_s, file), local_file_path)
         end
       end
 
       private
-      def html_directory_content_list(remote_path)
+      def html_directory_list(remote_path)
         LOG.debug "Get html directory list"
         output = self.download(remote_path)
         files = []
@@ -65,10 +61,9 @@ module TerrImporter
         files
       end
 
-      def absolute_path(relative_path)
+      def url(relative_path)
         URI.join(@base_uri, relative_path)
       end
-
     end
   end
 end

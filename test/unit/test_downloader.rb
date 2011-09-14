@@ -24,13 +24,13 @@ class DownloaderTest < Test::Unit::TestCase
   end
 
   should 'join relative and base paths to get fully valid uri' do
-    absolute_path = @downloader.send :absolute_path, 'first/test'
+    absolute_path = @downloader.send :url, 'first/test'
     assert_equal absolute_path, URI.parse(@base_uri + '/first/test')
 
-    absolute_path = @downloader.send :absolute_path, '/second/test'
+    absolute_path = @downloader.send :url, '/second/test'
     assert_equal absolute_path, URI.parse(@base_uri + '/second/test')
 
-    absolute_path = @downloader.send :absolute_path, '/third/test/'
+    absolute_path = @downloader.send :url, '/third/test/'
     assert_equal absolute_path, URI.parse(@base_uri + '/third/test/')
 
   end
@@ -74,7 +74,7 @@ class DownloaderTest < Test::Unit::TestCase
 
   context 'file lists' do
     should 'get a list of files from a directory html page' do
-      files = @downloader.send(:html_directory_content_list, '/img')
+      files = @downloader.send(:html_directory_list, '/img')
       assert files.size == 3
       assert files.include?("testimage1.png")
       assert files.include?("testimage2.png")
@@ -83,7 +83,7 @@ class DownloaderTest < Test::Unit::TestCase
     end
 
     should 'not return subdirectories if included in file list' do
-      files = @downloader.send(:html_directory_content_list, '/img')
+      files = @downloader.send(:html_directory_list, '/img')
       assert_same false, files.include?("backgrounds/")
     end
   end
