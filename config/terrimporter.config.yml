@@ -43,10 +43,10 @@ images:
 
 # MODULES - multiple entries allowed
 modules:
-  - name:                 #Use mod_name (or skn_name if you only want to import the skin
-    module_template:      #The module template used, required
-    template_only: false  #Only import template without surrounding divs, default: false
-    destination_path: #Destination path of
+#  - name:                 #Use mod_name (or skn_name if you only want to import the skin
+#    module_template:      #The module template used, required
+#    template_only: false  #Only import template without surrounding divs, default: false
+#    destination_path: #Destination path of
 
 #-------------------------------------------------------------------------------
 # ADVANCED EDITING - Only edit the following if you know what you're doing...
