@@ -2,7 +2,7 @@ class Logger
   attr_accessor :level
 
   LOG_LEVELS = {:debug => 0, :info => 1, :warn => 2, :error=> 3, :fatal => 4}
-  LOG_COLORS = {:debug =>'0;37', :info =>'32', :warn =>'33', :error=>'31', :fatal =>'31'}
+  LOG_COLORS = {:debug =>'33', :info =>'32', :warn =>'33', :error=>'31', :fatal =>'31'}
 
   # more infos: https://wiki.archlinux.org/index.php/Color_Bash_Prompt
   #\033[0m      Text reset
@@ -13,7 +13,7 @@ class Logger
   #\033[037m    White
 
   # %s => [datetime], %s => color, %-5s => severity, %s => message
-  LOG_FORMAT = "\033[0;37m %s \033[0m[\033[%sm %-5s\033[0m]: %s \n"
+  LOG_FORMAT = "\033[0;37m %s \033[0m[\033[%sm%-5s\033[0m]: %s \n"
   TIME_FORMAT = "%H:%M:%S"
 
   def initialize
@@ -28,8 +28,12 @@ class Logger
     log(:info, message)
   end
 
+  def debug(message)
+    log(:debug, message)
+  end
+
   def log(severity, message)
-    return if LOG_LEVELS[self.level] > LOG_LEVELS[severity]
+    return if LOG_LEVELS[severity] < LOG_LEVELS[self.level]
 
     color = LOG_COLORS[severity]
     if LOG_LEVELS[severity] >= LOG_LEVELS[:error]

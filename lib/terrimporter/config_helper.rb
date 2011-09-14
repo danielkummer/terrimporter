@@ -28,10 +28,10 @@ module ConfigHelper
     LOG.info "Creating configuration file..."
     case backup_or_replace
       when :backup
-        LOG.info "Backing up old configuration file to #{config_working_directory_path}.bak"
+        LOG.debug "Backing up old configuration file to #{config_working_directory_path}.bak"
         FileUtils.mv(config_working_directory_path, config_working_directory_path + '.bak')
       when :replace
-        LOG.info "Replacing old configuration file"
+        LOG.debug "Replacing old configuration file"
         FileUtils.rm_f(config_working_directory_path) if File.exists? config_working_directory_path
     end
     FileUtils.cp(config_example_path, config_working_directory_path)

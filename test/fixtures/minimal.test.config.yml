@@ -6,9 +6,9 @@ export_settings:
   debug: false
   cache: false
 stylesheets:
-  relative_destination_path: test/tmp/public/stylesheets/
+  destination_path: test/tmp/public/stylesheets/
 javascripts:
-  relative_destination_path: test/tmp/public/javascripts/
+  destination_path: test/tmp/public/javascripts/
 images:
 modules:
 

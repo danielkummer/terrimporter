@@ -1,13 +1,23 @@
 #-------------------------------------------------------------------------------
-# terrimporter configuration, adjust as needed. Don't mess with indentation!
+# terrimporter configuration, adjust as needed.
 #-------------------------------------------------------------------------------
+# Important notes READ THEM:
+# * Don't mess with indentation!
+# * All local paths are relative to the running directory
+# * multiple entries have the following format (stylesheet replacement example):
+# - what: /replacethis/
+#   with: /withthis/
+# - what: /another/
+#   with: /replacement/
+
+# APPLICATION
 # url: Terrific base url
 application_url: http://terrific.project.url
 
 # STYLESHEETS
 stylesheets:
 # The destination directory, relative from the current running directory
-  relative_destination_path: public/stylesheets/
+  destination_path: public/stylesheets/
 # Additional stylesheets, you can but don't have to add the .css extension
 #  styles: ie, ie6, ie7.css
 # replace_strings: Define string replacements in css files 
@@ -19,16 +29,16 @@ stylesheets:
 # JAVASCRIPTS
 javascripts:
 # Destination path of the javascript base.js file
-  relative_destination_path: public/javascripts/
+  destination_path: public/javascripts/
 # Dynamic libraries definition, you can but don't have to add the .js extension
 #  dynamic_libraries: foo_lib.js bar_lib.js
 # Destination path of the dynamic libraries (relative)
-#  libraries_relative_destination_path:  public/javascripts/libraries/
+#  libraries_destination_path:  public/javascripts/libraries/
 
 # IMAGES - multiple entries allowed
 images:
 #  - server_path: / # The server path is appended to the image_server_path
-#    relative_destination_path: public/images/  # The relative destination path
+#    destination_path: public/images/  # The relative destination path
 #    file_types: jpg, png, gif  # Image file endings to be downloaded
 
 # MODULES - multiple entries allowed
@@ -36,7 +46,7 @@ modules:
   - name:                 #Use mod_name (or skn_name if you only want to import the skin
     module_template:      #The module template used, required
     template_only: false  #Only import template without surrounding divs, default: false
-    relative_destination_path: #Destination path of
+    destination_path: #Destination path of
 
 #-------------------------------------------------------------------------------
 # ADVANCED EDITING - Only edit the following if you know what you're doing...

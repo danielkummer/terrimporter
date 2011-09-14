@@ -19,8 +19,8 @@ class TestOptions < Test::Unit::TestCase
   context "default options" do
     setup { setup_options }
 
-    should "be in verbose mode" do
-      assert_equal true, @options[:verbose]
+    should "not be in verbose mode" do
+      assert_equal false, @options[:verbose]
     end
 
     should "have no default import statement" do

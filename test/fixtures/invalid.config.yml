@@ -14,7 +14,7 @@
     javascripts:
       dest: test/tmp/public/javascripts/
       dynamic_libraries: dynlib.js
-      libraries_relative_destination_path: /lib
+      libraries_destination_path: /lib
     images:
       - server_path: /
         dest: test/tmp/public/images/

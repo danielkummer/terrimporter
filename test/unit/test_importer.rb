@@ -56,22 +56,22 @@ class TestImporter < Test::Unit::TestCase
 
     should 'raise an error on wrongly supplied arguments' do
       assert_raise TerrImporter::DefaultError do
-        @importer.send(:construct_export_path, :invalid)
+        @importer.send(:export_path, :invalid)
       end
     end
 
     should 'construct a valid js path for the base.js file' do
-      path = @importer.send(:construct_export_path, :js)
+      path = @importer.send(:export_path, :js)
       assert path.include? 'base.js'
     end
 
     should 'construct a valid js path for the base.js file and merge supplied options' do
-      path = @importer.send(:construct_export_path, :js, {:additional => 'option'})
+      path = @importer.send(:export_path, :js, {:additional => 'option'})
       assert path.include? 'additional=option'
     end
 
     should 'construct a valid js path for the base.css file' do
-      path = @importer.send(:construct_export_path, :css)
+      path = @importer.send(:export_path, :css)
       assert path.include? 'base.css'
       assert path.include? 'appbaseurl='
     end

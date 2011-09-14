@@ -6,28 +6,28 @@
       debug: false
       cache: false
     stylesheets:
-      relative_destination_path: test/tmp/public/stylesheets/
+      destination_path: test/tmp/public/stylesheets/
       styles: ie.css
       replace_strings:
         - what: /img/
           with: /images/
     javascripts:
-      relative_destination_path: test/tmp/public/javascripts/
+      destination_path: test/tmp/public/javascripts/
       dynamic_libraries: dynlib
-      libraries_relative_destination_path: test/tmp/public/javascripts/lib
+      libraries_destination_path: test/tmp/public/javascripts/lib
     images:
       - server_path: /
-        relative_destination_path: test/tmp/public/images/
+        destination_path: test/tmp/public/images/
         file_types: jpg, png, gif
       - server_path: /backgrounds
-        relative_destination_path: test/tmp/public/images/backgrounds/
+        destination_path: test/tmp/public/images/backgrounds/
         file_types: jpg
     modules:
       - name: mod_list
-        relative_destination_path: modules/
+        destination_path: modules/
         module_template: template1
       - name: skn_test
-        relative_destination_path: modules/
+        destination_path: modules/
         module_template: template2
         template_only: true
 

@@ -34,8 +34,11 @@ module TerrImporter
             return 0
           end
 
-          if options[:verbose]
-            LOG.level = :debug
+          case options[:verbose]
+            when true
+              LOG.level = :debug
+            when false
+              LOG.level = :info
           end
 
 

@@ -15,7 +15,7 @@ module TerrImporter
 
       def load_configuration
         config_file_path = determine_config_file_path
-        LOG.info "Configuration file located, load from #{config_file_path}"
+        LOG.debug "Configuration file located, load from #{config_file_path}"
         validate_and_load_config(config_file_path)
       end
 
@@ -43,7 +43,7 @@ module TerrImporter
       end
 
       def validate_and_load_config(file)
-        LOG.info "Validating configuration..."
+        LOG.debug "Validating configuration..."
 
         parser = Kwalify::Yaml::Parser.new(load_validator)
         document = parser.parse_file(file)
@@ -58,7 +58,7 @@ module TerrImporter
       end
 
       def load_validator
-        LOG.info "Loading validator from #{schema_file_path}"
+        LOG.debug "Loading validator from #{schema_file_path}"
         schema = Kwalify::Yaml.load_file(schema_file_path)
         Kwalify::Validator.new(schema)
       end
@@ -102,7 +102,7 @@ module TerrImporter
         if additional_stylesheets?
           stylesheets = stylesheets + self['stylesheets']['styles'].to_s.robust_split
         else
-          LOG.info "No additional stylesheets defined."
+          LOG.debug "No additional stylesheets defined."
         end
         stylesheets.add_if_missing!('.css')
       end
@@ -117,10 +117,10 @@ module TerrImporter
       end
 
       def libraries_destination_path
-        if !self['javascripts']['libraries_relative_destination_path'].nil?
-          File.join(self['javascripts']['libraries_relative_destination_path'])
+        if !self['javascripts']['libraries_destination_path'].nil?
+          File.join(self['javascripts']['libraries_destination_path'])
         else
-          File.join(self['javascripts']['relative_destination_path'])
+          File.join(self['javascripts']['destination_path'])
         end
       end
 

@@ -28,8 +28,8 @@ class ConfigurationTest < Test::Unit::TestCase
   end
 
   should 'use the normal libraries path if no dynamic libraries are specified' do
-    @configuration['javascripts']['libraries_relative_destination_path'] = nil
-    assert  @configuration['javascripts']['relative_destination_path'], @configuration.libraries_destination_path
+    @configuration['javascripts']['libraries_destination_path'] = nil
+    assert  @configuration['javascripts']['destination_path'], @configuration.libraries_destination_path
   end
 
   should 'have style replacement strings' do
@@ -159,7 +159,7 @@ class ConfigurationTest < Test::Unit::TestCase
     #todo why is this failing?
 =begin
     should 'return javascript destination path if libraries destination path is undefined' do
-      assert_equal @configuration['javascripts']['relative_destination_path'], @configuration.libraries_destination_path
+      assert_equal @configuration['javascripts']['destination_path'], @configuration.libraries_destination_path
     end
 =end
   end

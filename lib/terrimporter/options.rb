@@ -8,7 +8,7 @@ module TerrImporter
 
         @orig_args = args.clone
 
-        self[:verbose] = true
+        self[:verbose] = false
         self[:show_help] = false
 
         require 'optparse'
