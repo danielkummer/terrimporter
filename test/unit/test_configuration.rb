@@ -2,7 +2,7 @@ require "test_helper"
 
 
 class ConfigurationTest < Test::Unit::TestCase
-  include ConfigHelper
+  include ConfigurationHelper
 
   def setup
     @configuration = TerrImporter::Application::Configuration.new test_config_file_path

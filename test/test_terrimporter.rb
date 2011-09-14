@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class TestTerrimporter < Test::Unit::TestCase
-  include ConfigHelper
+  include ConfigurationHelper
 
   def setup
     ENV['TERRIMPORTER_OPTS'] = nil

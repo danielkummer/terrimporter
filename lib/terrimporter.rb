@@ -5,7 +5,7 @@ require 'terrimporter/app_logger'
 require 'terrimporter/options'
 require 'terrimporter/importer_helper'
 require 'terrimporter/importer'
-require 'terrimporter/config_helper'
+require 'terrimporter/configuration_helper'
 require 'terrimporter/configuration'
 require 'terrimporter/downloader'
 require 'terrimporter/string_monkeypatch'
@@ -20,7 +20,7 @@ module TerrImporter
   class Application
     class << self
       include Shellwords
-      include ConfigHelper
+      include ConfigurationHelper
 
       def run!(*arguments)
         options = build_options(arguments)

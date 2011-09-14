@@ -1,4 +1,4 @@
-module ConfigHelper
+module ConfigurationHelper
 
   def config_default_name
     'terrimporter.yml'

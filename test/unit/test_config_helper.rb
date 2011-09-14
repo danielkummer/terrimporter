@@ -2,7 +2,7 @@ require "test_helper"
 
 
 class ConfigValidatorTest < Test::Unit::TestCase
-  include ConfigHelper
+  include ConfigurationHelper
 
   def teardown
     FileUtils.remove(config_working_directory_path + '.bak') if File.exists? config_working_directory_path + '.bak'

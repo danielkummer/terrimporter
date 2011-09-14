@@ -4,7 +4,7 @@
 module TerrImporter
   class Application
     class Configuration < Hash
-      include ConfigHelper
+      include ConfigurationHelper
 
       attr_accessor :validations, :config_file
 
