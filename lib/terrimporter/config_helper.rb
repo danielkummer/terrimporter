@@ -1,7 +1,7 @@
 module ConfigHelper
 
   def config_default_name
-    'terrimporter.config.yml'
+    'terrimporter.yml'
   end
 
   def schema_default_name
