@@ -42,7 +42,6 @@ module TerrImporter
         ]
       end
 
-      #todo split!
       def validate_and_load_config(file)
         LOG.info "Validating configuration..."
 
@@ -75,12 +74,8 @@ module TerrImporter
       def determine_configuration_values_from_html(raw_html)
         css_result, js_result = raw_html.scan(/(\/terrific\/base\/(.*?)\/public\/.*base.(css|js).php)\?.*application=(.*?)(&amp;|&)/)
 
-        if css_result.nil? or css_result.size < 5
-          raise ConfigurationError, "Unable to extract css information from application url, content is: #{raw_html}"
-        end
-        if js_result.nil? or js_result.size < 5
-          raise ConfigurationError, "Unable to extract javascript information from application url, content is: #{raw_html}"
-        end
+        raise ConfigurationError, "Unable to extract css information from application url, content is: #{raw_html}" if css_result.nil? or css_result.size < 5
+        raise ConfigurationError, "Unable to extract javascript information from application url, content is: #{raw_html}" if js_result.nil? or js_result.size < 5
 
         css_export_path = css_result[0]
         js_export_path = js_result[0]
@@ -101,8 +96,6 @@ module TerrImporter
         self['export_settings']['application'] = application #todo error here
         self['export_path'] = {'css' => css_export_path, 'js' => js_export_path}
       end
-
-
 
       def stylesheets
         stylesheets = ["base.css"]

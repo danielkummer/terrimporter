@@ -9,6 +9,7 @@ class TestTerrimporter < Test::Unit::TestCase
 
   def teardown
     File.delete config_file if File.exists? config_file
+    File.delete config_file + ".bak" if File.exists? config_file + ".bak"
   end
 
   should 'build options as a combination form argument options and environment options' do
@@ -19,7 +20,7 @@ class TestTerrimporter < Test::Unit::TestCase
     assert merged_options.include?(:import_css)
   end
 
-    should 'merge environment and argument options' do
+  should 'merge environment and argument options' do
     ENV['TERRIMPORTER_OPTS'] = '-j -c'
     merged_options = TerrImporter::Application.build_options([''] + ['-i', '--verbose'])
     expected_options = {:application_url => "",
@@ -45,7 +46,7 @@ class TestTerrimporter < Test::Unit::TestCase
 
   should 'run the importer with the init command and a non existing configuration file' do
     TerrImporter::Application.run!(["test"], '--init')
-    TerrImporter::Application.run!(["test"], '--init','backup')
+    TerrImporter::Application.run!(["test"], '--init', 'backup')
     assert File.exists? config_file
   end
 

@@ -4,6 +4,7 @@ require 'uri'
 module TerrImporter
   class Application
     class Downloader
+      include DownloadHelper
 
       def initialize(base_uri)
         @base_uri = base_uri
@@ -14,15 +15,13 @@ module TerrImporter
         absolute_uri = absolute_path(remote_path)
         begin
           if local_path.nil? #download to buffer
-            data = StringIO.new
-
             LOG.info "Download #{absolute_uri} to buffer"
-
+            data = StringIO.new
             absolute_uri.open { |io| data = io.read }
             data.to_s
           else
+            create_dir_path File.dirname(local_path)
             LOG.info "Download #{absolute_uri} to local path #{local_path}"
-
             open(local_path, "wb") { |file|
               file.write(absolute_uri.open.read)
             }
@@ -35,6 +34,7 @@ module TerrImporter
 
       def batch_download(remote_path, relative_dest_path, type_filter = "")
         source_path = absolute_path(remote_path)
+        create_dir_path relative_dest_path
 
         LOG.info "Download multiple files from #{source_path} to #{relative_dest_path} #{"allowed extensions: " + type_filter unless type_filter.empty?}"
 

@@ -49,32 +49,6 @@ class TestImporter < Test::Unit::TestCase
     end
   end
 
-  context 'file creation' do
-
-    should 'create a directory if it doesn\'t exist' do
-      directory = File.join(File.dirname(__FILE__), '..', 'tmp', 'test_mkdir')
-      created_or_exists = @importer.send(:check_and_create_dir, directory)
-      assert File.directory? directory
-      assert created_or_exists
-      #cleanup
-      FileUtils.rmdir directory
-    end
-
-    should 'not create a directory if it doesnt exist and create isnt used' do
-      directory = File.join(File.dirname(__FILE__), '..', 'tmp', 'test_mkdir')
-      created_or_exists = @importer.send(:check_and_create_dir, directory, false)
-      assert_equal false, File.directory?(directory)
-      assert !created_or_exists
-    end
-
-    should 'not create a directory if it exists, but report that it exists' do
-      directory = File.join(File.dirname(__FILE__), '..', 'tmp')
-      created_or_exists= @importer.send(:check_and_create_dir, directory)
-      assert created_or_exists
-    end
-
-  end
-
   context 'css and js export path construction' do
     setup do
       @importer.config['export_path'] = {'css' => 'base.css', 'js' => 'base.js'}

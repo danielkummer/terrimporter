@@ -46,9 +46,6 @@ module TerrImporter
         end
 
         unclean_suffix = "_unclean"
-
-        check_and_create_dir config['stylesheets']['relative_destination_path']
-
         styles = config.stylesheets
 
         styles.each do |css|
@@ -83,7 +80,6 @@ module TerrImporter
         unless config.mandatory_present?
           config.determine_configuration_values_from_html @downloader.download('')
         end
-        check_and_create_dir config['javascripts']['relative_destination_path']
         relative_destination_path = File.join(config['javascripts']['relative_destination_path'], "base.js")
         js_source_url = construct_export_path :js
 
@@ -95,7 +91,6 @@ module TerrImporter
         if config.additional_dynamic_javascripts?
 
           libraries_destination_path = config.libraries_destination_path
-          check_and_create_dir libraries_destination_path
           js_libraries = config.dynamic_libraries
 
           LOG.info "Import libraries from #{config['libraries_server_path']} to #{libraries_destination_path}"
@@ -121,7 +116,6 @@ module TerrImporter
           LOG.info "Import images"
 
           config['images'].each do |image|
-            check_and_create_dir image['relative_destination_path']
             image_source_path = File.join(config['image_server_path'], image['server_path'])
             @downloader.batch_download(image_source_path, image['relative_destination_path'], image['file_types'])
           end
@@ -139,7 +133,6 @@ module TerrImporter
           LOG.info "Module import"
 
           config['modules'].each do |mod|
-            check_and_create_dir mod['relative_destination_path']
 
             name, skin = extract_module_and_skin_name(mod['name'])
 
@@ -165,28 +158,13 @@ module TerrImporter
       def construct_export_path(for_what = :js, options={})
         raise DefaultError, "Specify js or css url" unless for_what == :js or for_what == :css
         export_settings = config['export_settings'].clone
-
         export_settings.merge!(options)
+
         export_settings['appbaseurl'] = "" if for_what == :css
 
         export_path = config['export_path'][for_what.to_s].clone
         export_path << '?' << export_settings.map { |k, v| "#{URI.escape(k.to_s)}=#{URI.escape(v.to_s)}" }.join("&")
         export_path
-      end
-
-      #todo remove from here, must be handled in downloader
-      def check_and_create_dir(dir, create = true)
-        created_or_exists = false
-        unless File.directory?(dir)
-          LOG.info "Directory #{dir} does not exists... it will #{"not" unless create} be created"
-          if create
-            FileUtils.mkpath(dir)
-            created_or_exists = true
-          end
-        else
-          created_or_exists = true
-        end
-        created_or_exists
       end
 
       #todo refactor config access away

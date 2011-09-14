@@ -73,20 +73,38 @@ class DownloaderTest < Test::Unit::TestCase
   end
 
   context 'file lists' do
-      should 'get a list of files from a directory html page' do
-        files = @downloader.send(:html_directory_content_list, '/img')
-        assert files.size == 3
-        assert files.include?("testimage1.png")
-        assert files.include?("testimage2.png")
-        assert files.include?("testimage3.png")
-        assert files[0] == ("testimage1.png")
-      end
-
-      should 'not return subdirectories if included in file list' do
-        files = @downloader.send(:html_directory_content_list, '/img')
-        assert_same false, files.include?("backgrounds/")
-      end
+    should 'get a list of files from a directory html page' do
+      files = @downloader.send(:html_directory_content_list, '/img')
+      assert files.size == 3
+      assert files.include?("testimage1.png")
+      assert files.include?("testimage2.png")
+      assert files.include?("testimage3.png")
+      assert files[0] == ("testimage1.png")
     end
 
+    should 'not return subdirectories if included in file list' do
+      files = @downloader.send(:html_directory_content_list, '/img')
+      assert_same false, files.include?("backgrounds/")
+    end
+  end
+
+    context 'file creation' do
+
+    should 'create a directory if it doesn\'t exist' do
+      directory = File.join(File.dirname(__FILE__), '..', 'tmp', 'test_mkdir')
+      created_or_exists = @downloader.create_dir_path directory
+      assert File.directory? directory
+      assert created_or_exists
+      #cleanup
+      FileUtils.rmdir directory
+    end
+
+    should 'not create a directory if it exists, but report that it exists' do
+      directory = File.join(File.dirname(__FILE__), '..', 'tmp')
+      created_or_exists= @downloader.create_dir_path directory
+      assert created_or_exists
+    end
+
+  end
 
 end
