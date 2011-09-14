@@ -63,7 +63,7 @@ module TerrImporter
               File.open(relative_destination_path + unclean_suffix, 'r') do |s|
                 lines = s.readlines
                 lines.each do |line|
-                  d.print stylesheet_replace_strings!(line)
+                  d.print replace_stylesheet_lines!(line)
                 end
               end
             end
@@ -167,19 +167,19 @@ module TerrImporter
         export_path
       end
 
-      #todo refactor config access away
-      def stylesheet_replace_strings!(line)
+      def replace_stylesheet_lines!(line)
         config['stylesheets']['replace_strings'].each do |replace|
-          what = replace['what']
-          with = replace['with']
-          what = Regexp.new "#{$1}" if what.match(/^r\/(.*)\//)
-
-          LOG.info "Replacing #{what.to_s} with #{with}"
-
-          line.gsub! what, with
+          replace_line!(line,replace['what'],replace['with'])
         end
         line
       end
+
+      def replace_line!(line, what, with)
+        what = Regexp.new "#{$1}" if what.match(/^r\/(.*)\//)
+        LOG.info "Replacing #{what.to_s} with #{with}"
+        line.gsub! what, with
+      end
+
     end
   end
 end

@@ -30,14 +30,14 @@ class TestImporter < Test::Unit::TestCase
   context 'css string replacement' do
     should 'replace a string in the stylesheet with the configured string' do
       line = "this line should replace the /img/ string with images"
-      @importer.send(:stylesheet_replace_strings!, line)
+      @importer.send(:replace_stylesheet_lines!, line)
       assert line.include? "/images/"
     end
 
     should 'replace a string in the stylesheet with the configured regex' do
       @importer.config['stylesheets']['replace_strings'][0]['what'] = "r/(re.+ex)/"
       line = "this line should replace the regex string with images"
-      @importer.send(:stylesheet_replace_strings!, line)
+      @importer.send(:replace_stylesheet_lines!, line)
       assert line.include?("/images/"), "result not expected, is #{line}"
     end
 
