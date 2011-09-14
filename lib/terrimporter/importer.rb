@@ -40,10 +40,7 @@ module TerrImporter
 
       def import_css
         LOG.info("Importing stylesheets")
-        #todo refactor away with metaprogramming
-        unless config.mandatory_present?
-          config.determine_configuration_values_from_html @downloader.download('')
-        end
+        complete_config!
 
         unclean_suffix = "_unclean"
         stylesheets = config.stylesheets
@@ -75,10 +72,7 @@ module TerrImporter
 
       def import_js
         LOG.info("Importing javascripts")
-        #todo refactor away with metaprogramming
-        unless config.mandatory_present?
-          config.determine_configuration_values_from_html @downloader.download('')
-        end
+        complete_config!
         file_path = File.join(config['javascripts']['destination_path'], "base.js")
         js_source_url = export_path(:js)
         LOG.debug "Import base.js from #{js_source_url} to #{file_path}"
@@ -99,10 +93,7 @@ module TerrImporter
       end
 
       def import_images
-        #todo refactor away with metaprogramming
-        unless config.mandatory_present?
-          config.determine_configuration_values_from_html @downloader.download('')
-        end
+        complete_config!
         if config.images?
           LOG.info "Import images"
           config['images'].each do |image|
@@ -114,20 +105,23 @@ module TerrImporter
         end
       end
 
-      def import_modules
-        #todo refactor away with metaprogramming
+      def complete_config!
         unless config.mandatory_present?
           config.determine_configuration_values_from_html @downloader.download('')
         end
+      end
+
+      def import_modules
+        complete_config!
         if config.modules?
           LOG.info "Module import"
-
           config['modules'].each do |mod|
-
-            name, skin = extract_module_and_skin_name(mod['name'])
-
+            name = mod['name']
+            skin = mod['skin']
             module_source_url = module_path(name, mod['module_template'], skin, mod['template_only'])
-            @downloader.download(module_source_url, File.join(mod['destination_path'], mod['name'] + '.html'))
+            filename = name
+            filename << "_#{skin}" unless skin.empty?
+            @downloader.download(module_source_url, File.join(mod['destination_path'], filename + '.html'))
           end
         else
           LOG.debug "Skipping module import"
@@ -136,11 +130,9 @@ module TerrImporter
 
       def module_path(name, module_template, skin = nil, template = nil)
         skin = '' if skin.nil?
-        #todo add not empty check to name and module_template -> most probably in configuration file
-        # todo complete!
-        #todo refactor export path to be more universal
+        raise ConfigurationError, "Name cannot be empty for template" if name.nil?
+        raise ConfigurationError, "Module template missing in configuration for template #{name}" if module_template.nil?
         export_path = config['application_url'].clone
-        #todo moduletemplate missing!
         export_path << "/terrific/module/details/#{name}/#{module_template}/#{skin}/format/module#{"content" if template}"
         export_path
       end

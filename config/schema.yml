@@ -84,6 +84,10 @@ mapping:
           "name":
             type: str
             required: yes
+          "skin":
+            type: str
+            required: no
+            default: ""
           "destination_path":
             type: str
             required: yes

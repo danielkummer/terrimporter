@@ -20,6 +20,11 @@ class TestImporter < Test::Unit::TestCase
     FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic", :body => File.expand_path('test/fixtures/html/js_dyn_dir.html'), :content_type => 'text/html')
     FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/", :body => File.expand_path('test/fixtures/html/js_dyn_dir.html'), :content_type => 'text/html')
     FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/dynlib.js", :body => File.expand_path('test/fixtures/js/dynlib.js'), :content_type => 'text/plain')
+    FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/", :body => File.expand_path('test/fixtures/html/module.html'), :content_type => 'text/html')
+    FakeWeb.register_uri(:get, "http://terrific.url/terrific/module/details/moduleName/moduleTemplate//format/modulecontent", :body => File.expand_path('test/fixtures/html/modulecontent.html'), :content_type => 'text/html')
+    FakeWeb.register_uri(:get, "http://terrific.url/terrific/module/details/moduleName/moduleTemplate//format/module", :body => File.expand_path('test/fixtures/html/module.html'), :content_type => 'text/html')
+    FakeWeb.register_uri(:get, "http://terrific.url/terrific/module/details/moduleName/moduleTemplate/Skin/format/modulecontent", :body => File.expand_path('test/fixtures/html/modulecontent.html'), :content_type => 'text/html')
+    FakeWeb.register_uri(:get, "http://terrific.url/terrific/module/details/moduleName/moduleTemplate/Skin/format/module", :body => File.expand_path('test/fixtures/html/module.html'), :content_type => 'text/html')
   end
 
   def teardown
@@ -99,8 +104,9 @@ class TestImporter < Test::Unit::TestCase
     end
 
     should 'import all module files' do
-      fluke "implement and test!"
       @importer.import_modules
+      assert exists_in_tmp?('modules/moduleName.html')
+      assert exists_in_tmp?('modules/moduleName_moduleSkin.html')
     end
 
   end
@@ -152,27 +158,8 @@ class TestImporter < Test::Unit::TestCase
 
   end
 
-  context 'module name extraction' do
-    should 'get a module and skin name' do
-      mod = 'skn_test'
-      name, skin = @importer.extract_module_and_skin_name mod
-      assert_equal 'mod_test', name
-      assert_equal 'skn_test', skin
-    end
-
-    should 'only get module name if not prefixed with skn' do
-      mod = 'mod_test'
-      name, skin = @importer.extract_module_and_skin_name mod
-      assert_equal 'mod_test', name
-      assert_equal nil, skin
-    end
-
-    should 'not return anything if module name invalid' do
-      mod = 'invalid'
-      name, skin = @importer.extract_module_and_skin_name mod
-      assert_equal nil, name
-      assert_equal nil, skin
-    end
+  context 'module import' do
+    #todo tests missing
   end
 
 end
