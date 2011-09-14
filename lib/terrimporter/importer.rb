@@ -10,7 +10,6 @@ module TerrImporter
   end
 
   class Application
-    #todo split importer -> subclass from baseimporter into specified css, img, js and module importer classes
     class Importer
       include ImporterHelper
       attr_accessor :options, :config
@@ -40,6 +39,7 @@ module TerrImporter
       end
 
       def import_css
+        LOG.info("Importing stylesheets")
         #todo refactor away with metaprogramming
         unless config.mandatory_present?
           config.determine_configuration_values_from_html @downloader.download('')
@@ -52,9 +52,7 @@ module TerrImporter
           file_path = File.join(config['stylesheets']['destination_path'], css)
           options = {}
           options[:suffix] = $1 if css =~ /(ie.*).css$/ #add ie option if in array
-
           source_url = export_path(:css, options)
-
           @downloader.download(source_url, file_path + unclean_suffix)
 
           if config.replace_style_strings?
@@ -76,34 +74,27 @@ module TerrImporter
       end
 
       def import_js
+        LOG.info("Importing javascripts")
         #todo refactor away with metaprogramming
         unless config.mandatory_present?
           config.determine_configuration_values_from_html @downloader.download('')
         end
-        destination_path = File.join(config['javascripts']['destination_path'], "base.js")
-        js_source_url = export_path :js
-
-        LOG.info "Import base.js from #{js_source_url} to #{destination_path}"
-
-        @downloader.download(js_source_url, destination_path)
-
+        file_path = File.join(config['javascripts']['destination_path'], "base.js")
+        js_source_url = export_path(:js)
+        LOG.debug "Import base.js from #{js_source_url} to #{file_path}"
+        @downloader.download(js_source_url, file_path)
 
         if config.additional_dynamic_javascripts?
-
-          libraries_destination_path = config.libraries_destination_path
-          js_libraries = config.dynamic_libraries
-
-          LOG.info "Import libraries from #{config['libraries_server_path']} to #{libraries_destination_path}"
-
           if config['libraries_server_path'].nil?
             LOG.info "Define 'libraries_server_path' in configuration file"
           else
+            libraries_file_path = config.libraries_destination_path
+            LOG.info "Import libraries from #{config['libraries_server_path']} to #{libraries_file_path}"
+            js_libraries = config.dynamic_libraries
             js_libraries.each do |lib|
-              @downloader.download(File.join(config['libraries_server_path'], lib), File.join(libraries_destination_path, lib))
+              @downloader.download(File.join(config['libraries_server_path'], lib), File.join(libraries_file_path, lib))
             end
-
           end
-
         end
       end
 
