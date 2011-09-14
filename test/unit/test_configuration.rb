@@ -88,7 +88,7 @@ class ConfigurationTest < Test::Unit::TestCase
       @configuration['export_settings'] = {'application' => 'present'}
       @configuration['application_url'] = 'present'
 
-      assert @configuration.required_present?
+      assert @configuration.mandatory_present?
     end
   end
 
@@ -126,6 +126,35 @@ class ConfigurationTest < Test::Unit::TestCase
     should 'not have additional modules' do
       assert !@configuration.modules?
     end
+
+    context 'read additional configuration values from parent page' do
+
+    should 'extract version and app path from parent page' do
+      raw_html = File.open(File.expand_path('test/fixtures/html/application_root.html')).read
+      assert_nothing_raised do
+        @configuration.determine_configuration_values_from_html raw_html
+      end
+
+      assert !@configuration['version'].nil?
+      assert !@configuration['export_settings']['application'].nil?
+      assert !@configuration['export_path']['js'].nil?
+      assert !@configuration['export_path']['css'].nil?
+    end
+
+    should 'throw a configuration error if the parent pages js values can\'t be read correctly' do
+      raw_html = File.open(File.expand_path('test/fixtures/html/application_root_js_error.html')).read
+      assert_raises TerrImporter::ConfigurationError do
+        @configuration.determine_configuration_values_from_html raw_html
+      end
+    end
+
+    should 'throw a configuration error if the parent pages css values can\'t be read correctly' do
+      raw_html = File.open(File.expand_path('test/fixtures/html/application_root_css_error.html')).read
+      assert_raises TerrImporter::ConfigurationError do
+        @configuration.determine_configuration_values_from_html raw_html
+      end
+    end
+  end
 
     #todo why is this failing?
 =begin

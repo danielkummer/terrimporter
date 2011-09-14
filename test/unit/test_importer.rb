@@ -161,33 +161,6 @@ class TestImporter < Test::Unit::TestCase
 
   end
 
-  context 'read additional configuration values from parent page' do
-    should 'extract version and app path from parent page' do
-      assert_nothing_raised do
-        @importer.determine_configuration_values_from_uri
-      end
-
-      assert !@importer.config['version'].nil?
-      assert !@importer.config['export_settings']['application'].nil?
-      assert !@importer.config['export_path']['js'].nil?
-      assert !@importer.config['export_path']['css'].nil?
-    end
-
-    should 'throw a configuration error if the parent pages js values can\'t be read correctly' do
-      FakeWeb.register_uri(:get, "http://terrific.url", :body => File.expand_path('test/fixtures/html/application_root_js_error.html'), :content_type => 'text/plain')
-      assert_raises TerrImporter::ConfigurationError do
-        @importer.determine_configuration_values_from_uri
-      end
-    end
-
-    should 'throw a configuration error if the parent pages css values can\'t be read correctly' do
-      FakeWeb.register_uri(:get, "http://terrific.url", :body => File.expand_path('test/fixtures/html/application_root_css_error.html'), :content_type => 'text/plain')
-      assert_raises TerrImporter::ConfigurationError do
-        @importer.determine_configuration_values_from_uri
-      end
-    end
-  end
-
   context 'missing configuration values' do
     should 'run through but not throw an error if the servers library path is not specified' do
       @importer.config['libraries_server_path'] = nil
@@ -203,6 +176,29 @@ class TestImporter < Test::Unit::TestCase
       end
     end
 
+  end
+
+  context 'module name extraction' do
+    should 'get a module and skin name' do
+      mod = 'skn_test'
+      name, skin = @importer.extract_module_and_skin_name mod
+      assert_equal 'mod_test', name
+      assert_equal 'skn_test', skin
+    end
+
+    should 'only get module name if not prefixed with skn' do
+      mod = 'mod_test'
+      name, skin = @importer.extract_module_and_skin_name mod
+      assert_equal 'mod_test', name
+      assert_equal nil, skin
+    end
+
+    should 'not return anything if module name invalid' do
+      mod = 'invalid'
+      name, skin = @importer.extract_module_and_skin_name mod
+      assert_equal nil, name
+      assert_equal nil, skin
+    end
   end
 
 end

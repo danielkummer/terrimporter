@@ -12,7 +12,7 @@ module TerrImporter
   class Application
     #todo split importer -> subclass from baseimporter into specified css, img, js and module importer classes
     class Importer
-
+      include ImporterHelper
       attr_accessor :options, :config
 
       def initialize(options = {})
@@ -23,8 +23,6 @@ module TerrImporter
       end
 
       def run
-
-
         if options[:all] != nil and options[:all] == true
           LOG.info "Import everything"
           import_js
@@ -41,41 +39,12 @@ module TerrImporter
         end
       end
 
-      #todo at the wrong place, move to configuration
-      def determine_configuration_values_from_uri
-        result = @downloader.download('')
-        #result =~ /\/terrific\/base\/(.*?)\/public\/.*application=(.*?)(&amp;|&)/
-        #result =~ /(\/terrific\/base\/(.*?)\/public\/.*base.(css|js).php).*application=(.*?)(&amp;|&)/
-
-        css_result, js_result = result.scan(/(\/terrific\/base\/(.*?)\/public\/.*base.(css|js).php)\?.*application=(.*?)(&amp;|&)/)
-
-
-        if css_result.nil? or css_result.size < 5
-          raise ConfigurationError, "Unable to extract css information from application url, content is: #{result}"
-        end
-        if js_result.nil? or js_result.size < 5
-          raise ConfigurationError, "Unable to extract javascript information from application url, content is: #{result}"
-        end
-
-        css_export_path = css_result[0]
-        js_export_path = js_result[0]
-        terrific_version = css_result[1]
-        application = css_result[3]
-
-        raise ConfigurationError, "Unable to determine css export path from application url" if css_export_path.nil?
-        raise ConfigurationError, "Unable to determine js export path from application url" if js_export_path.nil?
-
-        LOG.info "Determined the following configuration values from #{config['application_url']}:\n" +
-                     "terrific version: #{terrific_version} \n" +
-                     "application path: #{application}"
-
-        config['version'] = terrific_version
-        config['export_settings']['application'] = application
-        config['export_path'] = {'css' => css_export_path, 'js' => js_export_path}
-      end
-
       def import_css
-        check_and_complete_config!
+        #todo refactor away with metaprogramming
+        unless config.mandatory_present?
+          config.determine_configuration_values_from_html @downloader.download('')
+        end
+
         unclean_suffix = "_unclean"
 
         check_and_create_dir config['stylesheets']['relative_destination_path']
@@ -110,7 +79,10 @@ module TerrImporter
       end
 
       def import_js
-        check_and_complete_config!
+        #todo refactor away with metaprogramming
+        unless config.mandatory_present?
+          config.determine_configuration_values_from_html @downloader.download('')
+        end
         check_and_create_dir config['javascripts']['relative_destination_path']
         relative_destination_path = File.join(config['javascripts']['relative_destination_path'], "base.js")
         js_source_url = construct_export_path :js
@@ -141,7 +113,10 @@ module TerrImporter
       end
 
       def import_images
-        check_and_complete_config!
+        #todo refactor away with metaprogramming
+        unless config.mandatory_present?
+          config.determine_configuration_values_from_html @downloader.download('')
+        end
         if config.images?
           LOG.info "Import images"
 
@@ -156,6 +131,10 @@ module TerrImporter
       end
 
       def import_modules
+        #todo refactor away with metaprogramming
+        unless config.mandatory_present?
+          config.determine_configuration_values_from_html @downloader.download('')
+        end
         if config.modules?
           LOG.info "Module import"
 
@@ -168,14 +147,6 @@ module TerrImporter
             @downloader.download(module_source_url, File.join(mod['relative_destination_path'], mod['name'] + '.html'))
           end
         end
-      end
-
-      def extract_module_and_skin_name(module_name)
-        names = []
-        module_name =~ /^(.*)_(.*)/
-        names << 'mod_' + $2
-        names << module_name if $1 == 'skn'
-        names
       end
 
       def construct_module_path(name, module_template, skin = nil, template = nil)
@@ -230,12 +201,6 @@ module TerrImporter
           line.gsub! what, with
         end
         line
-      end
-
-      def check_and_complete_config!
-        unless config.required_present?
-          determine_configuration_values_from_uri
-        end
       end
     end
   end

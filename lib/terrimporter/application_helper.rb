@@ -1,8 +1,11 @@
 module ApplicationHelper
 
-  def class_name
-    banned = ["TERRIMPORTER", "APPLICATION", "INFO"]
-    self.name.split('::').remove(banned).join(' ')
+  #todo use this for directory creation
+  def create_dir_path(dir)
+    unless File.directory?(dir) and File.file?(dir)
+      LOG.info "Creating directory #{dir}"
+      FileUtils.mkpath(dir)
+    end
   end
 
 end

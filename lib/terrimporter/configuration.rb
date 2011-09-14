@@ -64,13 +64,45 @@ module TerrImporter
         Kwalify::Validator.new(schema)
       end
 
-      def required_present?
+      def mandatory_present?
         if self['export_path'].nil? or self['export_settings']['application'].nil? or self['application_url'].nil?
           false
         else
           true
         end
       end
+
+      def determine_configuration_values_from_html(raw_html)
+        css_result, js_result = raw_html.scan(/(\/terrific\/base\/(.*?)\/public\/.*base.(css|js).php)\?.*application=(.*?)(&amp;|&)/)
+
+        if css_result.nil? or css_result.size < 5
+          raise ConfigurationError, "Unable to extract css information from application url, content is: #{raw_html}"
+        end
+        if js_result.nil? or js_result.size < 5
+          raise ConfigurationError, "Unable to extract javascript information from application url, content is: #{raw_html}"
+        end
+
+        css_export_path = css_result[0]
+        js_export_path = js_result[0]
+        terrific_version = css_result[1]
+        application = css_result[3]
+
+        raise ConfigurationError, "Unable to determine css export path" if css_export_path.nil?
+        raise ConfigurationError, "Unable to determine js export path " if js_export_path.nil?
+        raise ConfigurationError, "Unable to determine terrific version" if terrific_version.nil?
+        raise ConfigurationError, "Unable to determine application path" if application.nil?
+
+        LOG.info "Determined the following configuration values from #{self['application_url']}:\n" +
+                     "terrific version: #{terrific_version} \n" +
+                     "application path: #{application}"
+
+        self['version'] = terrific_version
+        self['export_settings'] ||= {}
+        self['export_settings']['application'] = application #todo error here
+        self['export_path'] = {'css' => css_export_path, 'js' => js_export_path}
+      end
+
+
 
       def stylesheets
         stylesheets = ["base.css"]
