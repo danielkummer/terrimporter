@@ -93,7 +93,7 @@ module TerrImporter
 
         self['version'] = terrific_version
         self['export_settings'] ||= {}
-        self['export_settings']['application'] = application #todo error here
+        self['export_settings']['application'] = application
         self['export_path'] = {'css' => css_export_path, 'js' => js_export_path}
       end
 

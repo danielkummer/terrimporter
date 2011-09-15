@@ -50,6 +50,7 @@ class TestImporter < Test::Unit::TestCase
     should 'not do any string replacement if not configured' do
       @importer.config['stylesheets']['replace_strings'] = nil
       @importer.import_css
+
       assert true
     end
   end
