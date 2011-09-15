@@ -23,8 +23,8 @@ class TestImporter < Test::Unit::TestCase
     FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/", :body => File.expand_path('test/fixtures/html/module.html'), :content_type => 'text/html')
     FakeWeb.register_uri(:get, "http://terrific.url/terrific/module/details/moduleName/moduleTemplate//format/modulecontent", :body => File.expand_path('test/fixtures/html/modulecontent.html'), :content_type => 'text/html')
     FakeWeb.register_uri(:get, "http://terrific.url/terrific/module/details/moduleName/moduleTemplate//format/module", :body => File.expand_path('test/fixtures/html/module.html'), :content_type => 'text/html')
-    FakeWeb.register_uri(:get, "http://terrific.url/terrific/module/details/moduleName/moduleTemplate/Skin/format/modulecontent", :body => File.expand_path('test/fixtures/html/modulecontent.html'), :content_type => 'text/html')
-    FakeWeb.register_uri(:get, "http://terrific.url/terrific/module/details/moduleName/moduleTemplate/Skin/format/module", :body => File.expand_path('test/fixtures/html/module.html'), :content_type => 'text/html')
+    FakeWeb.register_uri(:get, "http://terrific.url/terrific/module/details/moduleName/moduleTemplate/moduleSkin/format/modulecontent", :body => File.expand_path('test/fixtures/html/modulecontent.html'), :content_type => 'text/html')
+    FakeWeb.register_uri(:get, "http://terrific.url/terrific/module/details/moduleName/moduleTemplate/moduleSkin/format/module", :body => File.expand_path('test/fixtures/html/module.html'), :content_type => 'text/html')
   end
 
   def teardown
@@ -153,6 +153,13 @@ class TestImporter < Test::Unit::TestCase
       @importer.config['images'] = nil
       assert_nothing_raised do
         @importer.import_images
+      end
+    end
+
+    should 'run through but not throw an error if no modules are specified' do
+      @importer.config['modules'] = nil
+      assert_nothing_raised do
+        @importer.import_modules
       end
     end
 

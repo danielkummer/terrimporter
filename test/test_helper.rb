@@ -17,6 +17,27 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib', 'terrimporter'
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'terrimporter'
 
+require 'stringio'
+module Kernel
+  def capture_stdout
+    out = StringIO.new
+    $stdout = out
+    yield
+    return out
+  ensure
+    $stdout = STDOUT
+  end
+
+  def capture_stderr
+    out = StringIO.new
+    $stderr = out
+    yield
+    return out
+  ensure
+    $stderr = STDERR
+  end
+end
+
 class Test::Unit::TestCase
   def schema_file_path
     File.join(File.dirname(__FILE__), '..', 'config', schema_default_name)

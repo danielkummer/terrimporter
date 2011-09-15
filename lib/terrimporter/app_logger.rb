@@ -47,9 +47,6 @@ class Logger
     time.strftime(TIME_FORMAT)
   end
 
-  def output(value)
-    puts value
-  end
 end
 
 LOG = Logger.new

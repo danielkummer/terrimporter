@@ -119,8 +119,8 @@ module TerrImporter
             name = mod['name']
             skin = mod['skin']
             module_source_url = module_path(name, mod['module_template'], skin, mod['template_only'])
-            filename = name
-            filename << "_#{skin}" unless skin.empty?
+            filename = name.clone
+            filename << "_#{skin}" unless skin.to_s.strip.length == 0
             @downloader.download(module_source_url, File.join(mod['destination_path'], filename + '.html'))
           end
         else

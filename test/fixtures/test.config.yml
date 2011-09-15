@@ -25,10 +25,10 @@
     modules:
       - name: moduleName
         skin: moduleSkin
-        destination_path: modules/
+        destination_path: test/tmp/modules/
         module_template: moduleTemplate
       - name: moduleName
-        destination_path: modules/
+        destination_path: test/tmp/modules/
         module_template: moduleTemplate
         template_only: true
 

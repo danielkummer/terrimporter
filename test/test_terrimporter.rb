@@ -74,6 +74,17 @@ class TestTerrimporter < Test::Unit::TestCase
   should 'run the importer show version and return' do
     return_code = TerrImporter::Application.run!(["test"], '--version')
     assert return_code == 0
+    end
+
+  should 'run the importer in verbose mode' do
+    return_code = TerrImporter::Application.run!(["test"], '-v')
+    assert return_code == 1 #configuration missing because not initialized
+  end
+
+  should 'run the importer with the init command and a non existing configuration file' do
+    TerrImporter::Application.run!(["http://terrific.url"], '--init')
+    return_code = TerrImporter::Application.run!(["http://terrific.url"], '-a') #full run
+    assert return_code == 0
   end
 
   def config_file
