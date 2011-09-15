@@ -1,7 +1,7 @@
 = terrimporter - terrific javascript, css and image importer
 
 This package contains terrimporter, a simple command line utility to help import terrific (http://www.terrifically.org/)
-files such as javascripts, css files and images into your web project.
+files such as javascripts, stylesheets, images and modules into your web project.
 
 terrimporter has the following features:
 
@@ -13,6 +13,7 @@ terrimporter has the following features:
 * Import images with the option to filter file endings
 * String and regex replacement in css files
 * Definable target directories
+* Import terrific module html files
 
 == Installation
 
@@ -23,7 +24,6 @@ It is strongly encouraged to use such a ruby version management tool in order to
 Download and install terrimporter with the following.
 
    gem install terrimporter
-
 
 
 == Usage
@@ -57,6 +57,7 @@ Afterwards a few simple commands allow you to import terrific files into your lo
     $ terrimporter -c
 * Import image files
     $ terrimporter -i
+* Import module files
 
 A complete set of commands is available with
     $ terrimporter -h
@@ -66,6 +67,7 @@ Common options:
     -c, --css                        export configured css files
     -i, --img                        export configured image files
     -j, --js                         export configured javascript files
+    -m, --module                     import configured module files
         --init [CONFIG_EXISTS]       create configuration file in current working directory. use optional argument to force file replacement (backup, replace)
     -f, --config CONFIG_FILE         use alternative configuration file
 
