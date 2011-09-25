@@ -38,7 +38,6 @@ module TerrImporter
             Dir.pwd,
             File.join(Dir.pwd, 'config'),
             File.join(Dir.pwd, '.config'),
-            Etc.getpwuid.dir
         ]
       end
 
