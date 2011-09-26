@@ -112,7 +112,9 @@ module TerrImporter
       end
 
       def replace_style_strings?
-        !self['stylesheets'].nil? and !self['stylesheets']['replace_strings'].nil?
+        !self['stylesheets'].nil? and
+        !self['stylesheets']['replace_strings'].nil? and
+        !self['stylesheets']['replace_strings'].first.nil?
       end
 
       def libraries_destination_path

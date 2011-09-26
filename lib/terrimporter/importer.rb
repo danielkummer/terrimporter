@@ -50,12 +50,14 @@ module TerrImporter
           options = {}
           options[:suffix] = $1 if css =~ /(ie.*).css$/ #add ie option if in array
           source_url = export_path(:css, options)
-          @downloader.download(source_url, file_path + unclean_suffix)
+          unclean_file_path = file_path + unclean_suffix;
+          constructed_file_path = (config.replace_style_strings? ? unclean_file_path : file_path)
+          @downloader.download(source_url, constructed_file_path)
 
           if config.replace_style_strings?
-            LOG.debug "CSS line replacements"
+            LOG.info "CSS line replacements"
             File.open(file_path, 'w') do |d|
-              File.open(file_path + unclean_suffix, 'r') do |s|
+              File.open(constructed_file_path, 'r') do |s|
                 lines = s.readlines
                 lines.each do |line|
                   d.print replace_stylesheet_lines!(line)
@@ -65,8 +67,11 @@ module TerrImporter
           else
             LOG.debug "Skipping css line replacements"
           end
-          LOG.debug "Deleting unclean css files"
-          FileUtils.remove file_path + unclean_suffix
+
+          if File.exists?(unclean_file_path)
+            LOG.debug "Deleting unclean css files"
+            #FileUtils.remove unclean_file_path
+          end
         end
       end
 
