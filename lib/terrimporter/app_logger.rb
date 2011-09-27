@@ -15,7 +15,7 @@ class Logger
 
   # %s => [datetime], %s => color, %-5s => severity, %s => message
   LOG_FORMAT_UNIX = "\033[0;37m %s \033[0m[\033[%sm%-5s\033[0m]: %s \n"
-  LOG_FORMAT_WINDOWS = "\033[0;37m %s \033[0m[\033[%sm%-5s\033[0m]: %s \n"
+  LOG_FORMAT_WINDOWS = "%s %s[%-5s]: %s \n"
   TIME_FORMAT = "%H:%M:%S"
 
   def initialize
@@ -43,7 +43,11 @@ class Logger
   def log(severity, message)
     return if LOG_LEVELS[severity] < LOG_LEVELS[self.level]
 
-    color = LOG_COLORS[severity]
+    color = ''
+    unless on_windows?
+      color = LOG_COLORS[severity]
+    end
+
     if LOG_LEVELS[severity] >= LOG_LEVELS[:error]
       $stderr.puts(self.log_format % [format_datetime(Time.now), color, severity.to_s.upcase, message])
     else
