@@ -1,5 +1,6 @@
 class Logger
-  attr_accessor :level
+  include ApplicationHelper
+  attr_accessor :level, :log_format
 
   LOG_LEVELS = {:debug => 0, :info => 1, :warn => 2, :error=> 3, :fatal => 4}
   LOG_COLORS = {:debug =>'33', :info =>'32', :warn =>'33', :error=>'31', :fatal =>'31'}
@@ -13,11 +14,18 @@ class Logger
   #\033[037m    White
 
   # %s => [datetime], %s => color, %-5s => severity, %s => message
-  LOG_FORMAT = "\033[0;37m %s \033[0m[\033[%sm%-5s\033[0m]: %s \n"
+  LOG_FORMAT_UNIX = "\033[0;37m %s \033[0m[\033[%sm%-5s\033[0m]: %s \n"
+  LOG_FORMAT_WINDOWS = "\033[0;37m %s \033[0m[\033[%sm%-5s\033[0m]: %s \n"
   TIME_FORMAT = "%H:%M:%S"
 
   def initialize
     self.level = :debug
+
+    unless on_windows?
+      self.log_format = LOG_FORMAT_UNIX
+    else
+      self.log_format = LOG_FORMAT_WINDOWS
+    end
   end
 
   def error(message)
@@ -37,9 +45,9 @@ class Logger
 
     color = LOG_COLORS[severity]
     if LOG_LEVELS[severity] >= LOG_LEVELS[:error]
-      $stderr.puts(LOG_FORMAT % [format_datetime(Time.now), color, severity.to_s.upcase, message])
+      $stderr.puts(self.log_format % [format_datetime(Time.now), color, severity.to_s.upcase, message])
     else
-      $stdout.puts(LOG_FORMAT % [format_datetime(Time.now), color, severity.to_s.upcase, message])
+      $stdout.puts(self.log_format % [format_datetime(Time.now), color, severity.to_s.upcase, message])
     end
   end
 
