@@ -88,7 +88,7 @@ module TerrImporter
         LOG.debug "Import base.js from #{js_source_url} to #{file_path}"
         @downloader.download(js_source_url, file_path)
 
-        if config.additional_dynamic_javascripts?
+        if config.has_dynamic_javascripts?
           if config['libraries_server_path'].nil?
             LOG.info "Define 'libraries_server_path' in configuration file"
           else
@@ -104,7 +104,7 @@ module TerrImporter
 
       def import_images
         complete_config!
-        if config.images?
+        if config.has_images?
           LOG.info "Import images"
           config['images'].each do |image|
             image_source_path = File.join(config['image_server_path'], image['server_path'])
@@ -116,14 +116,14 @@ module TerrImporter
       end
 
       def complete_config!
-        unless config.mandatory_present?
+        unless config.mandatory_values_present?
           config.determine_configuration_values_from_html @downloader.download('')
         end
       end
 
       def import_modules
         complete_config!
-        if config.modules?
+        if config.has_modules?
           LOG.info "Module import"
           config['modules'].each do |mod|
             name = mod['name']

@@ -1,5 +1,5 @@
 class Array
-  def add_if_missing!(ending)
+  def add_missing_extension!(ending)
     self.collect! do |item|
       unless item =~ /#{ending}$/
         item + ending

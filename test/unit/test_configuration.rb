@@ -16,15 +16,15 @@ class ConfigurationTest < Test::Unit::TestCase
   end
 
   should 'have an image configuration' do
-    assert @configuration.images?
+    assert @configuration.has_images?
   end
 
   should 'have dynamic libraries' do
-    assert @configuration.additional_dynamic_javascripts?
+    assert @configuration.has_dynamic_javascripts?
   end
 
   should 'have modules' do
-    assert @configuration.modules?
+    assert @configuration.has_modules?
   end
 
   should 'use the normal libraries path if no dynamic libraries are specified' do
@@ -37,7 +37,7 @@ class ConfigurationTest < Test::Unit::TestCase
   end
 
   should 'have additional stylesheets configured' do
-    assert @configuration.additional_stylesheets?
+    assert @configuration.has_stylesheets?
   end
 
   context 'no configuration file around' do
@@ -88,7 +88,7 @@ class ConfigurationTest < Test::Unit::TestCase
       @configuration['export_settings'] = {'application' => 'present'}
       @configuration['application_url'] = 'present'
 
-      assert @configuration.mandatory_present?
+      assert @configuration.mandatory_values_present?
     end
   end
 
@@ -104,11 +104,11 @@ class ConfigurationTest < Test::Unit::TestCase
     end
 
     should 'not have an image configuration' do
-      assert !@configuration.images?
+      assert !@configuration.has_images?
     end
 
     should 'not have dynamic libraries' do
-      assert !@configuration.additional_dynamic_javascripts?
+      assert !@configuration.has_dynamic_javascripts?
     end
 
     should 'not have style replacement strings' do
@@ -116,7 +116,7 @@ class ConfigurationTest < Test::Unit::TestCase
     end
 
     should 'not have additional stylesheets configured' do
-      assert !@configuration.additional_stylesheets?
+      assert !@configuration.has_stylesheets?
     end
 
     should 'only get the base.css file' do
@@ -124,7 +124,7 @@ class ConfigurationTest < Test::Unit::TestCase
     end
 
     should 'not have additional modules' do
-      assert !@configuration.modules?
+      assert !@configuration.has_modules?
     end
 
     context 'read additional configuration values from parent page' do

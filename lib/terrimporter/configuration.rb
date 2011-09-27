@@ -1,6 +1,3 @@
-#require 'etc'
-#require 'kwalify'
-
 module TerrImporter
   class Application
     class Configuration < Hash
@@ -10,7 +7,6 @@ module TerrImporter
 
       def initialize(config_file = nil)
         self.config_file = config_file unless config_file.nil?
-
       end
 
       def load_configuration
@@ -20,50 +16,42 @@ module TerrImporter
       end
 
       def determine_config_file_path
-        unless self.config_file.nil?
-          return self.config_file
+        return self.config_file unless self.config_file.nil?
+
+        config_search_paths.each do |path|
+          file_path = File.join(path, config_default_name)
+          #default config supplied with terrimporter NOT valid
+          return file_path if File.exists?(file_path) and not file_path.include?(File.join('terrimporter', 'config'))
         end
 
-        valid_config_paths.each do |path|
-          file_path = File.join path, config_default_name
-          return file_path if File.exists?(file_path) and not file_path.include?(File.join('terrimporter', 'config')) #default config NOT valid
-        end
-
-        raise ConfigurationError, %Q{config file #{config_default_name} not found in search paths. Search paths are:
-        #{valid_config_paths.join "\n"} \n If this is a new project, run with the option --init}
-      end
-
-      def valid_config_paths
-        [
-            Dir.pwd,
-            File.join(Dir.pwd, 'config'),
-            File.join(Dir.pwd, '.config'),
-        ]
+        raise ConfigurationError, %Q{Configuration file #{config_default_name} not found in search paths. Search paths are:
+        #{config_search_paths.join "\n"} \n If this is a new project, run with the option --init}
       end
 
       def validate_and_load_config(file)
-        LOG.debug "Validating configuration..."
-
+        LOG.debug "Validate configuration file"
         parser = Kwalify::Yaml::Parser.new(load_validator)
         document = parser.parse_file(file)
-
         errors = parser.errors()
+
         if errors && !errors.empty?
           error_message = errors.inject("") { |result, e| result << "#{e.linenum}:#{e.column} [#{e.path}] #{e.message}\n" }
           raise ConfigurationError, error_message
         end
-        self.merge! document
 
+        self.merge! document
       end
 
       def load_validator
-        LOG.debug "Loading validator from #{schema_file_path}"
+        LOG.debug "Loading configuration file validator from #{schema_file_path}"
         schema = Kwalify::Yaml.load_file(schema_file_path)
         Kwalify::Validator.new(schema)
       end
 
-      def mandatory_present?
-        if self['export_path'].nil? or self['export_settings']['application'].nil? or self['application_url'].nil?
+      def mandatory_values_present?
+        if self['export_path'].nil? or
+            self['export_settings']['application'].nil? or
+            self['application_url'].nil?
           false
         else
           true
@@ -97,24 +85,24 @@ module TerrImporter
       end
 
       def stylesheets
-        stylesheets = ["base.css"]
-        if additional_stylesheets?
-          stylesheets = stylesheets + self['stylesheets']['styles'].to_s.robust_split
+        stylesheet_list = ["base.css"]
+        if has_stylesheets?
+          stylesheet_list = stylesheet_list + self['stylesheets']['styles'].to_s.robust_split
         else
-          LOG.debug "No additional stylesheets defined."
+          LOG.debug "No additional stylesheets defined in configuration file."
         end
-        stylesheets.add_if_missing!('.css')
+        stylesheet_list.add_missing_extension!('.css')
       end
 
       def dynamic_libraries
         libraries = self['javascripts']['dynamic_libraries'].robust_split
-        libraries.add_if_missing!('.js')
+        libraries.add_missing_extension!('.js')
       end
 
       def replace_style_strings?
         !self['stylesheets'].nil? and
-        !self['stylesheets']['replace_strings'].nil? and
-        !self['stylesheets']['replace_strings'].first.nil?
+            !self['stylesheets']['replace_strings'].nil? and
+            !self['stylesheets']['replace_strings'].first.nil?
       end
 
       def libraries_destination_path
@@ -125,19 +113,19 @@ module TerrImporter
         end
       end
 
-      def additional_stylesheets?
+      def has_stylesheets?
         !self['stylesheets'].nil? and !self['stylesheets']['styles'].nil?
       end
 
-      def additional_dynamic_javascripts?
+      def has_dynamic_javascripts?
         !self['javascripts'].nil? and !self['javascripts']['dynamic_libraries'].nil?
       end
 
-      def images?
+      def has_images?
         !self['images'].nil?
       end
 
-      def modules?
+      def has_modules?
         !self['modules'].nil?
       end
 

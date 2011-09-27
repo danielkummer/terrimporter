@@ -8,6 +8,14 @@ module ConfigurationHelper
     'schema.yml'
   end
 
+  def config_search_paths
+    [
+        Dir.pwd,
+        File.join(Dir.pwd, 'config'),
+        File.join(Dir.pwd, '.config'),
+    ]
+  end
+
   def config_working_directory_path
     File.expand_path config_default_name
   end
@@ -24,16 +32,18 @@ module ConfigurationHelper
     File.join(base_config_path, schema_default_name)
   end
 
-  def create_config_file(backup_or_replace = nil, application_url = nil)
+  def backup_config_file
+    LOG.debug "Backing up old configuration file to #{config_working_directory_path}.bak"
+    FileUtils.mv(config_working_directory_path, config_working_directory_path + '.bak')
+  end
+
+  def remove_config_file
+    LOG.debug "Removing old configuration file"
+    FileUtils.rm_f(config_working_directory_path) if File.exists? config_working_directory_path
+  end
+
+  def create_config_file(application_url = nil)
     LOG.info "Creating configuration file..."
-    case backup_or_replace
-      when :backup
-        LOG.debug "Backing up old configuration file to #{config_working_directory_path}.bak"
-        FileUtils.mv(config_working_directory_path, config_working_directory_path + '.bak')
-      when :replace
-        LOG.debug "Replacing old configuration file"
-        FileUtils.rm_f(config_working_directory_path) if File.exists? config_working_directory_path
-    end
     FileUtils.cp(config_example_path, config_working_directory_path)
 
     unless application_url.nil?
