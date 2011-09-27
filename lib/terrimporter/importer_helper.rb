@@ -1,5 +1,7 @@
 module ImporterHelper
 
+  CSS_PATTERN = /^[a-zA-Z]+/ #only check if a line starts with characters, not comments
+
   def replace_line!(line, what, with)
     what = Regexp.new "#{$1}" if what.match(/^r\/(.*)\//)
     LOG.info "Replacing #{what.to_s} with #{with}"
@@ -7,15 +9,16 @@ module ImporterHelper
   end
 
   def file_contains_valid_css?(file_path)
+    css_valid = false
     File.open(file_path) do |f|
-      valid = false
       f.each_line do |line|
-        if line.include?(pattern)
-
+        if line =~ CSS_PATTERN
+          css_valid = true
+          break
         end
       end
-    return true
     end
+    css_valid
   end
-
 end
+

@@ -50,8 +50,17 @@ class TestImporter < Test::Unit::TestCase
     should 'not do any string replacement if not configured' do
       @importer.config['stylesheets']['replace_strings'] = nil
       @importer.import_css
-
       assert true
+    end
+  end
+
+  context 'invalid css recognition' do
+    should 'return false if an invalid css file is passed' do
+      assert_equal false, @importer.file_contains_valid_css?(File.expand_path('test/fixtures/css/invalid.css'))
+    end
+
+    should 'return true if a valid css file is passed' do
+      assert_equal true, @importer.file_contains_valid_css?(File.expand_path('test/fixtures/css/base.css'))
     end
   end
 
@@ -120,8 +129,7 @@ class TestImporter < Test::Unit::TestCase
     end
 
     should 'import js, css and images, not using the :all statement' do
-      @importer.run
-      #only cherry-pick tests
+      @importer.run #only cherry-pick tests
       assert exists_in_tmp?('public/images/testimage1.png')
       assert exists_in_tmp?('public/stylesheets/base.css')
       assert exists_in_tmp?('public/javascripts/base.js')

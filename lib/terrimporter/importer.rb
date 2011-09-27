@@ -54,7 +54,7 @@ module TerrImporter
           constructed_file_path = (config.replace_style_strings? ? unclean_file_path : file_path)
           @downloader.download(source_url, constructed_file_path)
 
-          if file_contains_valid_css?(file_path)
+          if file_contains_valid_css?(constructed_file_path)
             if config.replace_style_strings?
               LOG.info "CSS line replacements"
               File.open(file_path, 'w') do |d|
