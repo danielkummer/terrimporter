@@ -1,14 +1,4 @@
 module TerrImporter
-
-  class DefaultError < StandardError
-  end
-
-  class ConfigurationError < StandardError
-  end
-
-  class ConfigurationMissingError < StandardError
-  end
-
   class Application
     class Importer
       include ImporterHelper
@@ -18,22 +8,34 @@ module TerrImporter
         self.options = options
         self.config = Configuration.new options[:config_file]
         self.config.load_configuration
+        initialize_downloader
+      end
+
+      def initialize_downloader
         @downloader = Downloader.new config['application_url']
       end
 
       def run
         if options[:all] != nil and options[:all] == true
-          LOG.info "Import everything"
-          import_js
-          import_css
-          import_images
-          import_modules
+          run_all_imports
         else
-          options.each do |option, value|
-            if option.to_s =~ /^import_/ and value == true
-              LOG.info "Import of #{option.to_s.split('_').last} started"
-              self.send option.to_s
-            end
+          run_specific_imports
+        end
+      end
+
+      def run_all_imports
+        LOG.info "Import everything"
+        import_js
+        import_css
+        import_images
+        import_modules
+      end
+
+      def run_specific_imports
+        options.each do |option, value|
+          if option.to_s =~ /^import_/ and value == true
+            LOG.info "Import of #{option.to_s.split('_').last} started"
+            self.send option.to_s
           end
         end
       end

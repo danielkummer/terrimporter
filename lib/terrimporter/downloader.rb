@@ -15,23 +15,31 @@ module TerrImporter
         remote_url = url(remote_path)
         begin
           if local_path.nil? #download to buffer
-            LOG.debug "Download #{remote_url} to buffer"
-            data = StringIO.new
-            remote_url.open { |io| data = io.read }
-            data.to_s
+            download_to_buffer(remote_url)
           else
-            LOG.info "Download #{remote_url} to local path #{local_path}"
-            create_dir_path File.dirname(local_path)
-            open(local_path, "wb") { |file| file.write(remote_url.open.read) }
+            download_to_file(remote_url, local_path)
           end
         rescue SocketError => e
           raise DefaultError, "Error opening url #{remote_url}: \n #{e.message}"
         end
       end
 
+      def download_to_buffer(remote_url)
+        LOG.debug "Download #{remote_url} to buffer"
+        data = StringIO.new
+        remote_url.open { |io| data = io.read }
+        data.to_s
+      end
+
+      def download_to_file(remote_url, local_path)
+        LOG.info "Download #{remote_url} to local path #{local_path}"
+        create_directory File.dirname(local_path)
+        open(local_path, "wb") { |file| file.write(remote_url.open.read) }
+      end
+
       def batch_download(remote_path, local_path, type_filter = "")
         source_path = url(remote_path)
-        create_dir_path local_path
+        create_directory local_path
         LOG.debug "Download multiple files from #{source_path} to #{local_path} #{"allowed extensions: " + type_filter unless type_filter.empty?}"
 
         files = html_directory_list(source_path)

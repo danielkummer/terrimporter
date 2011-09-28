@@ -35,14 +35,25 @@ class DownloaderTest < Test::Unit::TestCase
 
   end
 
-  should 'download a remote uri to string' do
+  should 'download a remote path to string' do
     result = @downloader.download 'js/libraries/dynamic/dynlib.js'
+    assert result.include?('This file represents a dynamic js library'), "result wrong, contains #{result.to_s}"
+  end
+
+  should 'download a remote uri to string' do
+    result = @downloader.download_to_buffer URI('http://terrific.url/js/libraries/dynamic/dynlib.js')
     assert result.include?('This file represents a dynamic js library'), "result wrong, contains #{result.to_s}"
   end
 
   should 'download a file to the tmp folder' do
     @target_dir = File.expand_path('/tmp/dynlib.js')
     @downloader.download @base_uri + '/js/libraries/dynamic/dynlib.js', @target_dir
+    assert File.exists?(@target_dir), "File doesn't exist #{@target_dir}"
+  end
+
+  should 'download a file to the tmp folder' do
+    @target_dir = File.expand_path('/tmp/dynlib.js')
+    @downloader.download_to_file URI(@base_uri + '/js/libraries/dynamic/dynlib.js'), @target_dir
     assert File.exists?(@target_dir), "File doesn't exist #{@target_dir}"
   end
 
@@ -88,11 +99,11 @@ class DownloaderTest < Test::Unit::TestCase
     end
   end
 
-    context 'file creation' do
+  context 'file creation' do
 
     should 'create a directory if it doesn\'t exist' do
       directory = File.join(File.dirname(__FILE__), '..', 'tmp', 'test_mkdir')
-      created_or_exists = @downloader.create_dir_path directory
+      created_or_exists = @downloader.create_directory directory
       assert File.directory? directory
       assert created_or_exists
       #cleanup
@@ -101,10 +112,9 @@ class DownloaderTest < Test::Unit::TestCase
 
     should 'not create a directory if it exists, but report that it exists' do
       directory = File.join(File.dirname(__FILE__), '..', 'tmp')
-      created_or_exists= @downloader.create_dir_path directory
+      created_or_exists= @downloader.create_directory directory
       assert created_or_exists
     end
 
   end
-
 end
