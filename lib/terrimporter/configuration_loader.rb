@@ -74,12 +74,7 @@ module TerrImporter
         #self['export_settings']['application'] = application
         #self['css_export_path'] = css_export_path
         #self['js_export_path'] = js_export_path
-        {
-            'version' => terrific_version,
-            'export_settings' => {'application' => application},
-            'css_export_path' => css_export_path,
-            'js_export_path' => js_export_path
-        }
+        [terrific_version, application, css_export_path, js_export_path]
       end
 
       def config_default_name

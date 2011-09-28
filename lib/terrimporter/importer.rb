@@ -1,5 +1,6 @@
 module TerrImporter
   class Application
+    #todo split importer into css_importer, image_importer, module_importer, js_importer
     class Importer
       include ImporterHelper
       attr_accessor :options, :config
@@ -7,8 +8,6 @@ module TerrImporter
       def initialize(options = {})
         self.options = options
         self.config = ConfigurationLoader.new(options[:config_file]).load_configuration
-        #self.config = Configuration.new(options[:config_file]
-        #self.config.load_configuration
         initialize_downloader
       end
 

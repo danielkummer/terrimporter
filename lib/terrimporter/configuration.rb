@@ -4,9 +4,6 @@ module TerrImporter
 
       attr_accessor :validations
 
-      def initialize
-      end
-
       #maybe deprecated... still need to check
       def mandatory_values_present?
         if self['export_path'].nil? or
