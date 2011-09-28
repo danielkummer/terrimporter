@@ -3,6 +3,10 @@
 This package contains terrimporter, a simple command line utility to help import terrific (http://www.terrifically.org/)
 files such as javascripts, stylesheets, images and modules into your web project.
 
+terrimporter is compatible and has been tested against terrific 0.5.
+Backwards compatibility cannot be guaranteed!
+It will be updated to support newer terrific versions, especially the next 0.6 release with big api changes.
+
 terrimporter has the following features:
 
 * Import the generated base.js file
