@@ -1,6 +1,6 @@
 require 'shellwords'
+require 'sane/os'
 require 'terrimporter/error'
-require 'terrimporter/application_helper'
 require 'terrimporter/version'
 require 'terrimporter/download_helper'
 require 'terrimporter/app_logger'

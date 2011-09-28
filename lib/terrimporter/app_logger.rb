@@ -1,5 +1,6 @@
+
+
 class Logger
-  include ApplicationHelper
   attr_accessor :level, :log_format
 
   LOG_LEVELS = {:debug => 0, :info => 1, :warn => 2, :error=> 3, :fatal => 4}
@@ -20,7 +21,7 @@ class Logger
 
   def initialize
     self.level = :debug
-    self.log_format = on_windows? ? LOG_FORMAT_WINDOWS : LOG_FORMAT_UNIX
+    self.log_format = OS.windows? ? LOG_FORMAT_WINDOWS : LOG_FORMAT_UNIX
   end
 
   def error(message)
@@ -37,7 +38,7 @@ class Logger
 
   def log(severity, message)
     return if LOG_LEVELS[severity] < LOG_LEVELS[self.level]
-    color = on_windows? ? '' : LOG_COLORS[severity]
+    color = OS.windows? ? '' : LOG_COLORS[severity]
     out = LOG_LEVELS[severity] >= LOG_LEVELS[:error] ? $stderr : $stdout
     out.puts(self.log_format % [format_datetime(Time.now), color, severity.to_s.upcase, message])
   end
