@@ -12,7 +12,7 @@ module TerrImporter
       end
 
       def initialize_downloader
-        @downloader = Downloader.new config['application_url']
+        @downloader = Downloader.new config.application_url
       end
 
       def run
@@ -48,7 +48,7 @@ module TerrImporter
         stylesheets = config.stylesheets
 
         stylesheets.each do |css|
-          file_path = File.join(config['stylesheets']['destination_path'], css)
+          file_path = File.join(config.stylesheets_destination, css)
           options = {}
           options[:suffix] = $1 if css =~ /(ie.*).css$/ #add ie option if in array
           source_url = export_path(:css, options)
@@ -85,20 +85,20 @@ module TerrImporter
       def import_js
         LOG.info("Importing javascripts")
         complete_config!
-        file_path = File.join(config['javascripts']['destination_path'], "base.js")
+        file_path = File.join(config.javascripts_destination, "base.js")
         js_source_url = export_path(:js)
         LOG.debug "Import base.js from #{js_source_url} to #{file_path}"
         @downloader.download(js_source_url, file_path)
 
         if config.has_dynamic_javascripts?
-          if config['libraries_server_path'].nil?
+          if config.libraries_server_path.nil?
             LOG.info "Define 'libraries_server_path' in configuration file"
           else
             libraries_file_path = config.libraries_destination_path
-            LOG.info "Import libraries from #{config['libraries_server_path']} to #{libraries_file_path}"
+            LOG.info "Import libraries from #{config.libraries_server_path} to #{libraries_file_path}"
             js_libraries = config.dynamic_libraries
             js_libraries.each do |lib|
-              @downloader.download(File.join(config['libraries_server_path'], lib), File.join(libraries_file_path, lib))
+              @downloader.download(File.join(config.libraries_server_path, lib), File.join(libraries_file_path, lib))
             end
           end
         end
@@ -108,8 +108,8 @@ module TerrImporter
         complete_config!
         if config.has_images?
           LOG.info "Import images"
-          config['images'].each do |image|
-            image_source_path = File.join(config['image_server_path'], image['server_path'])
+          config.images.each do |image|
+            image_source_path = File.join(config.images_server_path, image['server_path'])
             @downloader.batch_download(image_source_path, image['destination_path'], image['file_types'])
           end
         else
@@ -127,7 +127,7 @@ module TerrImporter
         complete_config!
         if config.has_modules?
           LOG.info "Module import"
-          config['modules'].each do |mod|
+          config.modules.each do |mod|
             name = mod['name']
             skin = mod['skin']
             module_source_url = module_path(name, mod['module_template'], skin, mod['template_only'])
@@ -144,7 +144,7 @@ module TerrImporter
         skin = '' if skin.nil?
         raise ConfigurationError, "Name cannot be empty for template" if name.nil?
         raise ConfigurationError, "Module template missing in configuration for template #{name}" if module_template.nil?
-        export_path = config['application_url'].clone
+        export_path = config.application_url.clone
         export_path << "/terrific/module/details/#{name}/#{module_template}/#{skin}/format/module#{"content" if template}"
         export_path
       end
@@ -153,17 +153,17 @@ module TerrImporter
 
       def export_path(for_what = :js, options={})
         raise DefaultError, "Specify js or css url" unless for_what == :js or for_what == :css
-        export_settings = config['export_settings'].clone
+        export_settings = config.export_settings.clone
         export_settings.merge!(options)
         export_settings['appbaseurl'] = "" if for_what == :css
 
-        export_path = config['export_path'][for_what.to_s].clone
+        export_path = for_what == :js ? config.js_export_path.clone : config.css_export_path.clone
         export_path << '?' << export_settings.map { |k, v| "#{URI.escape(k.to_s)}=#{URI.escape(v.to_s)}" }.join("&")
         export_path
       end
 
       def replace_stylesheet_lines!(line)
-        config['stylesheets']['replace_strings'].each do |replace|
+        config.stylesheet_replace_strings.each do |replace|
           replace_line!(line, replace['what'], replace['with'])
         end
         line

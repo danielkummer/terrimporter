@@ -81,7 +81,32 @@ module TerrImporter
         self['version'] = terrific_version
         self['export_settings'] ||= {}
         self['export_settings']['application'] = application
-        self['export_path'] = {'css' => css_export_path, 'js' => js_export_path}
+        self['css_export_path'] = css_export_path
+        self['js_export_path'] = js_export_path
+      end
+
+      def application_url
+        self['application_url']
+      end
+
+      def css_export_path
+        self['css_export_path']
+      end
+
+      def js_export_path
+        self['js_export_path']
+      end
+
+      def stylesheets_destination
+        self['stylesheets']['destination_path']
+      end
+
+      def stylesheet_replace_strings
+        self['stylesheets']['replace_strings']
+      end
+
+      def javascripts_destination
+        self['javascripts']['destination_path']
       end
 
       def stylesheets
@@ -92,6 +117,22 @@ module TerrImporter
           LOG.debug "No additional stylesheets defined in configuration file."
         end
         stylesheet_list.add_missing_extension!('.css')
+      end
+
+      def images
+        self['images']
+      end
+
+      def modules
+        self['modules']
+      end
+
+      def images_server_path
+        self['image_server_path']
+      end
+
+      def libraries_server_path
+        self['libraries_server_path']
       end
 
       def dynamic_libraries
@@ -111,6 +152,10 @@ module TerrImporter
         else
           File.join(self['javascripts']['destination_path'])
         end
+      end
+
+      def export_settings
+        self['export_settings']
       end
 
       def has_stylesheets?
