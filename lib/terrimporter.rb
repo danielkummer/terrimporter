@@ -25,6 +25,7 @@ module TerrImporter
       include ConfigurationHelper
       include ApplicationHelper
 
+      #todo refactor into smaller methods
       def run!(*arguments)
         options = build_options(arguments)
 
@@ -49,7 +50,6 @@ module TerrImporter
             when false
               LOG.level = :info
           end
-
 
           if options[:invalid_argument]
             $stderr.puts options[:invalid_argument]
