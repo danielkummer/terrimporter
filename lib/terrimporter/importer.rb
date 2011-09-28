@@ -6,8 +6,9 @@ module TerrImporter
 
       def initialize(options = {})
         self.options = options
-        self.config = Configuration.new options[:config_file]
-        self.config.load_configuration
+        self.config = ConfigurationLoader.new(options[:config_file]).load_configuration
+        #self.config = Configuration.new(options[:config_file]
+        #self.config.load_configuration
         initialize_downloader
       end
 
@@ -117,6 +118,7 @@ module TerrImporter
         end
       end
 
+      #deprecated
       def complete_config!
         unless config.mandatory_values_present?
           config.determine_configuration_values_from_html @downloader.download('')

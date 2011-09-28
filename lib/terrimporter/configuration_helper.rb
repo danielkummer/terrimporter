@@ -1,37 +1,5 @@
 module ConfigurationHelper
 
-  def config_default_name
-    'terrimporter.yml'
-  end
-
-  def schema_default_name
-    'schema.yml'
-  end
-
-  def config_search_paths
-    [
-        Dir.pwd,
-        File.join(Dir.pwd, 'config'),
-        File.join(Dir.pwd, '.config'),
-    ]
-  end
-
-  def config_working_directory_path
-    File.expand_path config_default_name
-  end
-
-  def config_working_directory_exists?
-    File.exists? config_working_directory_path
-  end
-
-  def config_example_path
-    File.join(base_config_path, config_default_name)
-  end
-
-  def schema_file_path
-    File.join(base_config_path, schema_default_name)
-  end
-
   def backup_config_file
     LOG.debug "Backing up old configuration file to #{config_working_directory_path}.bak"
     FileUtils.mv(config_working_directory_path, config_working_directory_path + '.bak')
@@ -53,11 +21,6 @@ module ConfigurationHelper
     end
 
     LOG.info "done! You should take a look an edit it to your needs..."
-  end
-
-  private
-  def base_config_path
-    File.join(File.dirname(__FILE__), '..', '..', 'config')
   end
 
 end
