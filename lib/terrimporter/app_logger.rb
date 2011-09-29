@@ -1,3 +1,4 @@
+require 'rbconfig'
 
 
 class Logger
@@ -13,15 +14,18 @@ class Logger
   #\033[033m    Yellow
   #\033[031m    Red
   #\033[037m    White
-
   # %s => [datetime], %s => color, %-5s => severity, %s => message
   LOG_FORMAT_UNIX = "\033[0;37m %s \033[0m[\033[%sm%-5s\033[0m]: %s \n"
   LOG_FORMAT_WINDOWS = "%s %s[%-5s]: %s \n"
   TIME_FORMAT = "%H:%M:%S"
 
+  def is_windows
+     !((Config::CONFIG['host_os'] =~ /mswin|mingw/).nil?)
+  end
+
   def initialize
     self.level = :debug
-    self.log_format = OS.windows? ? LOG_FORMAT_WINDOWS : LOG_FORMAT_UNIX
+    self.log_format = is_windows ? LOG_FORMAT_WINDOWS : LOG_FORMAT_UNIX
   end
 
   def error(message)
@@ -38,7 +42,7 @@ class Logger
 
   def log(severity, message)
     return if LOG_LEVELS[severity] < LOG_LEVELS[self.level]
-    color = OS.windows? ? '' : LOG_COLORS[severity]
+    color = is_windows ? '' : LOG_COLORS[severity]
     out = LOG_LEVELS[severity] >= LOG_LEVELS[:error] ? $stderr : $stdout
     out.puts(self.log_format % [format_datetime(Time.now), color, severity.to_s.upcase, message])
   end

@@ -3,8 +3,9 @@ require "test_helper"
 class TestImporter < Test::Unit::TestCase
   def setup
     create_tmp_test_directory
-    @importer = TerrImporter::Application::Importer.new({:config_file => test_config_file_path})
     FakeWeb.register_uri(:get, "http://terrific.url", :body => File.expand_path('test/fixtures/html/application_root.html'), :content_type => 'text/plain')
+
+    @importer = TerrImporter::Application::Importer.new({:config_file => test_config_file_path})
     FakeWeb.register_uri(:get, "http://terrific.url/", :body => File.expand_path('test/fixtures/html/application_root.html'), :content_type => 'text/plain')
     FakeWeb.register_uri(:get, "http://terrific.url/terrific/base/0.5/public/css/base/base.css.php?appbaseurl=&application=/terrific/webapp/path&layout=project&debug=false&cache=false", :body => File.expand_path('test/fixtures/css/base.css'), :content_type => 'text/plain')
     FakeWeb.register_uri(:get, "http://terrific.url/terrific/base/0.5/public/css/base/base.css.php?appbaseurl=&application=/terrific/webapp/path&layout=project&suffix=ie&debug=false&cache=false", :body => File.expand_path('test/fixtures/css/ie.css'), :content_type => 'text/plain')

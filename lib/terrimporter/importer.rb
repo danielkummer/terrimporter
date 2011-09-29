@@ -7,12 +7,13 @@ module TerrImporter
 
       def initialize(options = {})
         self.options = options
-        self.config = ConfigurationLoader.new(options[:config_file]).load_configuration
+        loader = ConfigurationLoader.new(options[:config_file])
+        self.config = loader.load_configuration
         initialize_downloader
       end
 
       def initialize_downloader
-        @downloader = Downloader.new config.application_url
+        @downloader = Downloader.new(config.application_url)
       end
 
       def run
@@ -42,7 +43,6 @@ module TerrImporter
 
       def import_css
         LOG.info("Importing stylesheets")
-        complete_config!
 
         unclean_suffix = "_unclean"
         stylesheets = config.stylesheets
@@ -76,7 +76,7 @@ module TerrImporter
               FileUtils.remove unclean_file_path
             end
           else
-            File.remove(file_path)
+            FileUtils.remove(file_path)
             LOG.debug "Deleting empty"
           end
         end
@@ -84,7 +84,6 @@ module TerrImporter
 
       def import_js
         LOG.info("Importing javascripts")
-        complete_config!
         file_path = File.join(config.javascripts_destination, "base.js")
         js_source_url = export_path(:js)
         LOG.debug "Import base.js from #{js_source_url} to #{file_path}"
@@ -105,7 +104,7 @@ module TerrImporter
       end
 
       def import_images
-        complete_config!
+
         if config.has_images?
           LOG.info "Import images"
           config.images.each do |image|
@@ -117,15 +116,8 @@ module TerrImporter
         end
       end
 
-      #deprecated
-      def complete_config!
-        unless config.mandatory_values_present?
-          config.determine_configuration_values_from_html @downloader.download('')
-        end
-      end
-
       def import_modules
-        complete_config!
+
         if config.has_modules?
           LOG.info "Module import"
           config.modules.each do |mod|

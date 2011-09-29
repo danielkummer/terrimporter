@@ -1,5 +1,4 @@
 require 'shellwords'
-require 'sane/os'
 require 'terrimporter/error'
 require 'terrimporter/version'
 require 'terrimporter/download_helper'
@@ -7,8 +6,8 @@ require 'terrimporter/app_logger'
 require 'terrimporter/options'
 require 'terrimporter/importer_helper'
 require 'terrimporter/importer'
-require 'terrimporter/configuration_loader'
 require 'terrimporter/configuration_helper'
+require 'terrimporter/configuration_loader'
 require 'terrimporter/configuration'
 require 'terrimporter/downloader'
 require 'terrimporter/string_monkeypatch'
@@ -24,7 +23,6 @@ module TerrImporter
     class << self
       include Shellwords
       include ConfigurationHelper
-      include ApplicationHelper
 
       #todo refactor into smaller methods
       def run!(*arguments)

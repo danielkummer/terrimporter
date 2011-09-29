@@ -22,7 +22,6 @@ Gem::Specification.new do |s|
   s.default_executable = 'bin/terrimporter'
 
   s.add_dependency "kwalify", [">= 0.7.2"]
-  s.add_dependency "sane"
 
   s.add_development_dependency "shoulda", [">= 0"]
   s.add_development_dependency "bundler", ["~> 1.0.0"]

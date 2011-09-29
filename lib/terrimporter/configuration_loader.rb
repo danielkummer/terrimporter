@@ -1,6 +1,7 @@
 module TerrImporter
   class Application
     class ConfigurationLoader
+      include ConfigurationHelper
 
       attr_accessor :config_file
 
@@ -12,7 +13,8 @@ module TerrImporter
       def load_configuration
         config_file_path = determine_config_file_path
         LOG.debug "Configuration file located, load from #{config_file_path}"
-        c = validate_and_load_config(config_file_path)
+        c = Configuration.new
+        c.merge!(validate_and_load_config(config_file_path))
         c['version'], c['export_settings']['application'], c['css_export_path'], c['js_export_path'] = determine_configuration_values_from_html(Downloader.new(c['application_url']).download(''))
         c
       end
@@ -65,7 +67,7 @@ module TerrImporter
         raise ConfigurationError, "Unable to determine terrific version" if terrific_version.nil?
         raise ConfigurationError, "Unable to determine application path" if application.nil?
 
-        LOG.info "Determined the following configuration values from #{self['application_url']}:\n" +
+        LOG.info "Determined the following configuration values:\n" +
                      "terrific version: #{terrific_version} \n" +
                      "application path: #{application}"
 
@@ -77,41 +79,7 @@ module TerrImporter
         [terrific_version, application, css_export_path, js_export_path]
       end
 
-      def config_default_name
-        'terrimporter.yml'
-      end
 
-      def schema_default_name
-        'schema.yml'
-      end
-
-      def config_search_paths
-        [
-            Dir.pwd,
-            File.join(Dir.pwd, 'config'),
-            File.join(Dir.pwd, '.config'),
-        ]
-      end
-
-      def config_working_directory_path
-        File.expand_path config_default_name
-      end
-
-      def config_working_directory_exists?
-        File.exists? config_working_directory_path
-      end
-
-      def config_example_path
-        File.join(base_config_path, config_default_name)
-      end
-
-      def schema_file_path
-        File.join(base_config_path, schema_default_name)
-      end
-
-      def base_config_path
-        File.join(File.dirname(__FILE__), '..', '..', 'config')
-      end
     end
   end
 end
