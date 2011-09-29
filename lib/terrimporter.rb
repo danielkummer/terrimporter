@@ -1,5 +1,6 @@
 require 'shellwords'
 require 'terrimporter/error'
+require 'terrimporter/statistic'
 require 'terrimporter/version'
 require 'terrimporter/download_helper'
 require 'terrimporter/app_logger'
@@ -72,6 +73,7 @@ module TerrImporter
 
           importer = TerrImporter::Application::Importer.new(options)
           importer.run
+          STAT.print_summary
           return 0
         rescue TerrImporter::ConfigurationError
           $stderr.puts %Q{Configuration Error #{ $!.message }}
