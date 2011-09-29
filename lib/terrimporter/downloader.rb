@@ -19,16 +19,21 @@ module TerrImporter
           else
             download_to_file(remote_url, local_path)
           end
-        rescue SocketError => e
-          raise DefaultError, "Error opening url #{remote_url}: \n #{e.message}"
+        rescue Exception => e
+          raise DefaultError, "Error opening url: #{remote_url}"
         end
       end
 
       def download_to_buffer(remote_url)
         LOG.debug "Download #{remote_url} to buffer"
         data = StringIO.new
-        remote_url.open { |io| data = io.read }
-        data.to_s
+        begin
+          remote_url.open { |io| data = io.read }
+          data.to_s
+        rescue Exception => e
+          raise DefaultError, "Error opening url: #{remote_url}"
+        end
+
       end
 
       def download_to_file(remote_url, local_path)

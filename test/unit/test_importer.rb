@@ -21,6 +21,7 @@ class TestImporter < Test::Unit::TestCase
     FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic", :body => File.expand_path('test/fixtures/html/js_dyn_dir.html'), :content_type => 'text/html')
     FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/", :body => File.expand_path('test/fixtures/html/js_dyn_dir.html'), :content_type => 'text/html')
     FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/dynlib.js", :body => File.expand_path('test/fixtures/js/dynlib.js'), :content_type => 'text/plain')
+    FakeWeb.register_uri(:get, "http://terrific.url/js/plugins/dynamic/dynplugin.js", :body => File.expand_path('test/fixtures/js/dynplugin.js'), :content_type => 'text/plain')
     FakeWeb.register_uri(:get, "http://terrific.url/js/libraries/dynamic/", :body => File.expand_path('test/fixtures/html/module.html'), :content_type => 'text/html')
     FakeWeb.register_uri(:get, "http://terrific.url/terrific/module/details/moduleName/moduleTemplate//format/modulecontent", :body => File.expand_path('test/fixtures/html/modulecontent.html'), :content_type => 'text/html')
     FakeWeb.register_uri(:get, "http://terrific.url/terrific/module/details/moduleName/moduleTemplate//format/module", :body => File.expand_path('test/fixtures/html/module.html'), :content_type => 'text/html')

@@ -4,17 +4,6 @@ module TerrImporter
 
       attr_accessor :validations
 
-      #maybe deprecated... still need to check
-      def mandatory_values_present?
-        if self['export_path'].nil? or
-            self['export_settings']['application'].nil? or
-            self['application_url'].nil?
-          false
-        else
-          true
-        end
-      end
-
       def application_url
         self['application_url']
       end
@@ -65,8 +54,17 @@ module TerrImporter
         self['libraries_server_path']
       end
 
+      def plugins_server_path
+        self['plugins_server_path']
+      end
+
       def dynamic_libraries
         libraries = self['javascripts']['dynamic_libraries'].robust_split
+        libraries.add_missing_extension!('.js')
+      end
+
+      def dynamic_plugins
+        libraries = self['javascripts']['dynamic_plugins'].robust_split
         libraries.add_missing_extension!('.js')
       end
 
@@ -84,6 +82,14 @@ module TerrImporter
         end
       end
 
+      def plugins_destination_path
+        if !self['javascripts']['plugins_destination_path'].nil?
+          File.join(self['javascripts']['plugins_destination_path'])
+        else
+          File.join(self['javascripts']['destination_path'])
+        end
+      end
+
       def export_settings
         self['export_settings']
       end
@@ -94,6 +100,10 @@ module TerrImporter
 
       def has_dynamic_javascripts?
         !self['javascripts'].nil? and !self['javascripts']['dynamic_libraries'].nil?
+      end
+
+      def has_dynamic_plugins?
+        !self['javascripts'].nil? and !self['javascripts']['dynamic_plugins'].nil?
       end
 
       def has_images?

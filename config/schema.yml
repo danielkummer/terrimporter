@@ -8,6 +8,10 @@ mapping:
     type: str
     required: yes
     pattern:  /\/.*/
+  "plugins_server_path":
+    type: str
+    required: yes
+    pattern:  /\/.*/
   "image_server_path":
       type: str
       required: yes
@@ -58,6 +62,12 @@ mapping:
         type: str
         required: no
       "libraries_destination_path":
+        type: str
+        required: no
+      "dynamic_plugins":
+        type: str
+        required: no
+      "plugins_destination_path":
         type: str
         required: no
   "images":

@@ -101,6 +101,19 @@ module TerrImporter
             end
           end
         end
+
+        if config.has_dynamic_plugins?
+          if config.plugins_server_path.nil?
+            LOG.info "Define 'plugins_server_path' in configuration file"
+          else
+          plugins_file_path = config.plugins_destination_path
+          LOG.info "Import plugins from #{config.plugins_server_path} to #{plugins_file_path}"
+          js_plugins = config.dynamic_plugins
+          js_plugins.each do |lib|
+            @downloader.download(File.join(config.plugins_server_path, lib), File.join(plugins_file_path, lib))
+          end
+            end
+        end
       end
 
       def import_images

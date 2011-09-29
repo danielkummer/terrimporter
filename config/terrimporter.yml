@@ -34,6 +34,9 @@ javascripts:
 #  dynamic_libraries: foo_lib.js bar_lib.js
 # Destination path of the dynamic libraries (relative)
 #  libraries_destination_path:  public/javascripts/libraries/
+# Destination path of the dynamic plugins
+#  dynamic_plugins: dynamic.js
+#  plugins_destination_path: public/javascript/plugins/
 
 # IMAGES - multiple entries allowed
 images:
@@ -58,8 +61,9 @@ export_settings:
   cache: false      # You most probably won't have to change this
   layout: project   # You most probably won't have to change this
 
-# The server side library source path for the dynamic libraries
+# The server side libraries and plugins source path for the dynamic libraries and dynamic plugins
 libraries_server_path: /js/libraries/dynamic
+plugins_server_path: /js/plugins/dynamic
 
 # The server side image base path
 image_server_path: /img

@@ -1,5 +1,6 @@
 application_url:          http://terrific.url
 libraries_server_path: /js/libraries/dynamic
+plugins_server_path: /js/plugins/dynamic
 image_server_path: /img
 export_settings:
   layout: project
