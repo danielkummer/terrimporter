@@ -21,7 +21,8 @@ module TerrImporter
             STAT.add(:download)
           end
         rescue Exception => e
-          raise DefaultError, "Error opening url: #{remote_url}, message: #{e.message}"
+          #todo currently a failed download quits the program, should only log and continue
+          raise DownloadError, "Error downloading from url: #{remote_url}, message: #{e.message}"
         end
       end
 
@@ -63,7 +64,6 @@ module TerrImporter
         LOG.debug "Get html directory list"
         output = self.download(remote_path)
         files = []
-
         output.scan(/<a\shref=\"([^\"]+)\"/) do |res|
           files << res[0] if not res[0] =~ /^\?/ and not res[0] =~ /.*\/$/ and res[0].size > 1
         end

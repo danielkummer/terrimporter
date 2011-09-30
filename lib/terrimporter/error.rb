@@ -7,4 +7,7 @@ module TerrImporter
 
   class ConfigurationMissingError < StandardError
   end
+
+  class DownloadError < DefaultError
+  end
 end

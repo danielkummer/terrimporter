@@ -21,11 +21,8 @@ class Statistic
   end
 
   def print_summary
-    @header.each do |h|
-      puts h
-    end
+    @header.each { |h| puts h }
     self.statistics.each do |key, value|
-
       puts "* %3s : %s" % [value[:count], value[:message]] unless value[:count] == 0
     end
   end

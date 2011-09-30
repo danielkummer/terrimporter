@@ -59,7 +59,7 @@ class DownloaderTest < Test::Unit::TestCase
   end
 
   should 'raise DefaultError, raised by invalid url socket error' do
-    assert_raises TerrImporter::DefaultError do
+    assert_raises TerrImporter::DownloadError do
       @downloader = TerrImporter::Application::Downloader.new 'http://url.doesntex.ist'
       @downloader.download('')
     end

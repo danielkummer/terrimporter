@@ -9,7 +9,6 @@ module TerrImporter
         self.config_file = config_file unless config_file.nil?
       end
 
-      #todo also complete missing values here, after this step everything should work...
       def load_configuration
         config_file_path = determine_config_file_path
         LOG.debug "Configuration file located, load from #{config_file_path}"
@@ -20,6 +19,7 @@ module TerrImporter
       end
 
       def determine_config_file_path
+        #todo this line seems wrong, remove!
         return self.config_file unless self.config_file.nil?
 
         config_search_paths.each do |path|
@@ -59,8 +59,7 @@ module TerrImporter
         css_result =results.select{|v| v[2] == "css"}.first
         js_result =results.select{|v| v[2] == "js"}.first
 
-
-        raise ConfigurationError, "Unable to extract javascript information from application url, content is: #{raw_html}" if js_result.nil? or js_result.size < 5
+        raise ConfigurationError, "Unable to extract configuration information from application url, content is: #{raw_html}" if js_result.nil? or js_result.size < 5
 
         css_export_path = css_result[0]
         js_export_path = js_result[0]
@@ -84,8 +83,6 @@ module TerrImporter
 
         [terrific_version, application, css_export_path, js_export_path]
       end
-
-
     end
   end
 end

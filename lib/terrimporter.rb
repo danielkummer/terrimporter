@@ -19,11 +19,11 @@ require 'fileutils'
 require 'yaml'
 require 'uri'
 
-STAT.add_message(:download, "total files downloaded")
 STAT.add_message(:css, "stylesheets downloaded")
 STAT.add_message(:js, "javascripts downloaded")
 STAT.add_message(:image, "images downloaded")
 STAT.add_message(:module, "html modules downloaded")
+STAT.add_message(:download, "files downloaded in total")
 
 module TerrImporter
   class Application
@@ -36,38 +36,14 @@ module TerrImporter
         options = build_options(arguments)
 
         begin
+          init_verbosity(options[:verbose])
+
           if !options[:init].nil?
-            if config_working_directory_exists? and options[:init] != :backup and options[:init] != :replace
-              raise TerrImporter::ConfigurationError, "Configuration already exists, use the override or backup option"
-            end
-            case options[:init]
-              when :backup
-                backup_config_file
-              when :replace
-                remove_config_file
-            end
-            create_config_file(options[:application_url])
+            init_configuration(options[:init], options[:application_url])
             return 0
           end
 
-          case options[:verbose]
-            when true
-              LOG.level = :debug
-            when false
-              LOG.level = :info
-          end
-
-          if options[:invalid_argument]
-            $stderr.puts options[:invalid_argument]
-            options[:show_help] = true
-          end
-
-          if options[:invalid_option]
-            $stderr.puts options[:invalid_option]
-            options[:show_help] = true
-          end
-
-          if options[:show_help]
+          if display_help?(options)
             $stderr.puts options.opts
             return 1
           end
@@ -88,6 +64,38 @@ module TerrImporter
           $stderr.puts %Q{Unspecified Error #{ $!.message }}
           return 1
         end
+      end
+
+      def init_configuration(file_operation, application_url)
+        if config_working_directory_exists? and
+            file_operation != :backup and
+            file_operation != :replace
+          raise TerrImporter::ConfigurationError, "Configuration already exists, use the override or backup option"
+        end
+        case file_operation
+          when :backup
+            backup_config_file
+          when :replace
+            remove_config_file
+        end
+        create_config_file(application_url)
+      end
+
+      def display_help?(options)
+        display = (options[:show_help] ? true : false)
+        if options[:invalid_argument]
+          $stderr.puts options[:invalid_argument]
+          display = true
+        end
+        if options[:invalid_option]
+          $stderr.puts options[:invalid_option]
+          display = true
+        end
+        display
+      end
+
+      def init_verbosity(verbose)
+        verbose ? LOG.level = :debug : LOG.level = :info
       end
 
       def build_options(arguments)
