@@ -2,25 +2,22 @@ class Statistic
   attr_accessor :statistics, :times
 
   def initialize
-    @header = ["-------------------------------",
-               " SUMMARY ",
-               "-------------------------------"]
-
-    self.statistics = {
-        :download => {:count => 0, :message => ""},
-        :js => {:count => 0, :message => ""},
-        :css => {:count => 0, :message => ""},
-        :image => {:count => 0, :message => ""},
-        :error => {:count => 0, :message => ""}
-    }
+    @header = ["---SUMMARY Date: #{Time.now.strftime("%d.%m.%Y %H:%M:%S")}" ]
+    self.statistics = {}
   end
 
   def add_message(type, message)
+    init_data(type)
     self.statistics[type][:message] = message
   end
 
-  def add(type, count)
-    self.statistics[type][:count] += count
+  def add(type)
+    init_data(type)
+    self.statistics[type][:count] += 1
+  end
+
+  def init_data(type)
+    self.statistics[type] = {:count => 0, :message => ""} if self.statistics[type].nil?
   end
 
   def print_summary
@@ -28,7 +25,8 @@ class Statistic
       puts h
     end
     self.statistics.each do |key, value|
-      puts "#{key.to_s.upcase}: [#{value[:count]}] #{value[:message]}" unless value[:count] == 0
+
+      puts "* %3s : %s" % [value[:count], value[:message]] unless value[:count] == 0
     end
   end
 

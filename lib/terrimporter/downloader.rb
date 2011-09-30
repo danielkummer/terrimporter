@@ -18,10 +18,10 @@ module TerrImporter
             download_to_buffer(remote_url)
           else
             download_to_file(remote_url, local_path)
-            STAT.add(:download, 1)
+            STAT.add(:download)
           end
         rescue Exception => e
-          raise DefaultError, "Error opening url: #{remote_url}"
+          raise DefaultError, "Error opening url: #{remote_url}, message: #{e.message}"
         end
       end
 
@@ -38,7 +38,7 @@ module TerrImporter
         open(local_path, "wb") { |file| file.write(remote_url.open.read) }
       end
 
-      def batch_download(remote_path, local_path, type_filter = "")
+      def batch_download(remote_path, local_path, type_filter = "", statistics_key = nil)
         source_path = url(remote_path)
         create_directory local_path
         LOG.debug "Download multiple files from #{source_path} to #{local_path} #{"allowed extensions: " + type_filter unless type_filter.empty?}"
@@ -54,6 +54,7 @@ module TerrImporter
         files.each do |file|
           local_file_path = File.join(local_path.to_s, file)
           self.download(File.join(source_path.to_s, file), local_file_path)
+          STAT.add(statistics_key) unless statistics_key.nil?
         end
       end
 

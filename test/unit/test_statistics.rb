@@ -7,13 +7,13 @@ class StatisticTest < Test::Unit::TestCase
 end
 
   should 'add an entry to the statistic' do
-    @stat.add(:download, 1)
+    @stat.add(:download)
     assert @stat.statistics[:download][:count] == 1
   end
 
   should 'update an entry in the statistics' do
-    @stat.add(:download, 1)
-    @stat.add(:download, 1)
+    @stat.add(:download)
+    @stat.add(:download)
     assert @stat.statistics[:download][:count] == 2
   end
 
@@ -30,9 +30,9 @@ end
 
   should 'output the messages added' do
     @stat.add_message(:download, "Downloads")
-    @stat.add(:download, 1)
+    @stat.add(:download)
     @stat.add_message(:css, "CSS")
-    @stat.add(:css, 1)
+    @stat.add(:css)
 
     out = capture_stdout do
       @stat.print_summary

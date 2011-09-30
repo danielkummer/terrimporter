@@ -55,7 +55,7 @@ module TerrImporter
           unclean_file_path = file_path + unclean_suffix;
           constructed_file_path = (config.replace_style_strings? ? unclean_file_path : file_path)
           @downloader.download(source_url, constructed_file_path)
-
+          STAT.add(:css)
           if file_contains_valid_css?(constructed_file_path)
             if config.replace_style_strings?
               LOG.info "CSS line replacements"
@@ -88,7 +88,7 @@ module TerrImporter
         js_source_url = export_path(:js)
         LOG.debug "Import base.js from #{js_source_url} to #{file_path}"
         @downloader.download(js_source_url, file_path)
-
+        STAT.add(:js)
         if config.has_dynamic_javascripts?
           if config.libraries_server_path.nil?
             LOG.info "Define 'libraries_server_path' in configuration file"
@@ -98,6 +98,7 @@ module TerrImporter
             js_libraries = config.dynamic_libraries
             js_libraries.each do |lib|
               @downloader.download(File.join(config.libraries_server_path, lib), File.join(libraries_file_path, lib))
+              STAT.add(:js)
             end
           end
         end
@@ -111,6 +112,7 @@ module TerrImporter
           js_plugins = config.dynamic_plugins
           js_plugins.each do |lib|
             @downloader.download(File.join(config.plugins_server_path, lib), File.join(plugins_file_path, lib))
+            STAT.add(:js)
           end
             end
         end
@@ -122,7 +124,7 @@ module TerrImporter
           LOG.info "Import images"
           config.images.each do |image|
             image_source_path = File.join(config.images_server_path, image['server_path'])
-            @downloader.batch_download(image_source_path, image['destination_path'], image['file_types'])
+            @downloader.batch_download(image_source_path, image['destination_path'], image['file_types'], :image)
           end
         else
           LOG.debug "Skipping image import"
@@ -140,6 +142,7 @@ module TerrImporter
             filename = name.clone
             filename << "_#{skin}" unless skin.to_s.strip.length == 0
             @downloader.download(module_source_url, File.join(mod['destination_path'], filename + '.html'))
+            STAT.add(:module)
           end
         else
           LOG.debug "Skipping module import"
@@ -163,7 +166,7 @@ module TerrImporter
         export_settings.merge!(options)
         export_settings['appbaseurl'] = "" if for_what == :css
 
-        export_path = for_what == :js ? config.js_export_path.clone : config.css_export_path.clone
+        export_path = (for_what == :js) ? config.js_export_path.clone : config.css_export_path.clone
         export_path << '?' << export_settings.map { |k, v| "#{URI.escape(k.to_s)}=#{URI.escape(v.to_s)}" }.join("&")
         export_path
       end

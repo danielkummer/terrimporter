@@ -52,30 +52,36 @@ module TerrImporter
       end
 
       def determine_configuration_values_from_html(raw_html)
-        css_result, js_result = raw_html.scan(/(\/terrific\/base\/(.*?)\/public\/.*base.(css|js).php)\?.*application=(.*?)(&amp;|&)/)
+        #todo this regex does it wrong, it extracts all references and can't decide between js and css. also the version is wrongly extracted if the base path isn't correct
+        results = raw_html.scan(/(\/terrific\/base\/(.*?)\/public\/.*base.(css|js).php)\?.*application=(.*?)(&amp;|&)/)
+        results.uniq!
 
-        raise ConfigurationError, "Unable to extract css information from application url, content is: #{raw_html}" if css_result.nil? or css_result.size < 5
+        css_result =results.select{|v| v[2] == "css"}.first
+        js_result =results.select{|v| v[2] == "js"}.first
+
+
         raise ConfigurationError, "Unable to extract javascript information from application url, content is: #{raw_html}" if js_result.nil? or js_result.size < 5
 
         css_export_path = css_result[0]
         js_export_path = js_result[0]
-        terrific_version = css_result[1]
+        terrific_version = css_result[1]     #todo: if it looks like this tags/0.4.0 -> extract number, remove everything before and inclusive /
         application = css_result[3]
 
-        raise ConfigurationError, "Unable to determine css export path" if css_export_path.nil?
-        raise ConfigurationError, "Unable to determine js export path " if js_export_path.nil?
-        raise ConfigurationError, "Unable to determine terrific version" if terrific_version.nil?
-        raise ConfigurationError, "Unable to determine application path" if application.nil?
+        case nil
+          when css_export_path
+            raise ConfigurationError, "Unable to determine css export path"
+          when js_export_path
+            raise ConfigurationError, "Unable to determine js export path"
+          when terrific_version
+            raise ConfigurationError, "Unable to determine terrific version"
+          when application
+            raise ConfigurationError, "Unable to determine application path"
+        end
 
         LOG.info "Determined the following configuration values:\n" +
                      "terrific version: #{terrific_version} \n" +
                      "application path: #{application}"
 
-        #self['version'] = terrific_version
-        #self['export_settings'] ||= {}
-        #self['export_settings']['application'] = application
-        #self['css_export_path'] = css_export_path
-        #self['js_export_path'] = js_export_path
         [terrific_version, application, css_export_path, js_export_path]
       end
 

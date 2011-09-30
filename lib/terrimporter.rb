@@ -19,6 +19,12 @@ require 'fileutils'
 require 'yaml'
 require 'uri'
 
+STAT.add_message(:download, "total files downloaded")
+STAT.add_message(:css, "stylesheets downloaded")
+STAT.add_message(:js, "javascripts downloaded")
+STAT.add_message(:image, "images downloaded")
+STAT.add_message(:module, "html modules downloaded")
+
 module TerrImporter
   class Application
     class << self
