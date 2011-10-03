@@ -10,8 +10,16 @@ module TerrImporter
           self.class.send(:define_method, "#{key}=", proc { |value| self.instance_variable_set("@#{key}", value) })
           value.each_key do |key2|
             self.class.send(:define_method, "#{key}_#{key2}", proc { self.instance_variable_get("@#{key}")["#{key2}"] })
+            self.class.send(:define_method, "#{key}_#{key2}", proc { self.instance_variable_get("@#{key}")["#{key2}"] })
           end if value.kind_of? Hash
         end
+      end
+
+      def method_missing(sym, *args, &block)
+        if sym.to_s.match(/^has_.*/) #if has_* then assume config doesn't exist
+          return false
+        end
+        super(sym, *args, &block)
       end
 
       def list_stylesheets

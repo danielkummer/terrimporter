@@ -116,7 +116,7 @@ module TerrImporter
         end
 
         if config.has_plugins?
-          if config.plugins_server_dir.nil?
+          unless config.has_plugins_server_dir?
             LOG.info "Define 'plugins_server_dir' in configuration file"
           else
             plugins_file_path = config.plugins_target_dir

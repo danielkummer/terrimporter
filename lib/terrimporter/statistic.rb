@@ -29,7 +29,6 @@ class Statistic
       puts "%25s : %3s" % [value[:message], value[:count]] unless value[:count] == 0
     end
   end
-
 end
 
 STAT = Statistic.new
