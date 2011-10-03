@@ -97,7 +97,7 @@ module TerrImporter
         LOG.debug "Import base.js from #{js_source_url} to #{file_path}"
         @downloader.download(js_source_url, file_path)
         STAT.add(:js)
-        if config.has_dynamic_javascripts?
+        if config.has_libraries?
           if config.libraries_server_dir.nil?
             LOG.info "Define 'libraries_server_dir' in configuration file"
           else

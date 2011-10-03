@@ -41,23 +41,14 @@ module TerrImporter
       end
 
       def libraries_target_dir
-        if !@javascripts['libraries_target_dir'].nil?
-          File.join(@javascripts['libraries_target_dir'])
-        else
-          File.join(@javascripts['target_dir'])
-        end
+        !@javascripts['libraries_target_dir'].nil? ? File.join(@javascripts['libraries_target_dir']) : File.join(@javascripts['target_dir'])
       end
 
       def plugins_target_dir
-        if !@javascripts['plugins_target_dir'].nil?
-          File.join(@javascripts['plugins_target_dir'])
-        else
-          File.join(@javascripts['target_dir'])
-        end
+        !@javascripts['plugins_target_dir'].nil? ? File.join(@javascripts['plugins_target_dir']) : File.join(@javascripts['target_dir'])
       end
 
-
-      def has_dynamic_javascripts?
+      def has_libraries?
         has_javascripts? and !@javascripts['libraries'].nil?
       end
 
