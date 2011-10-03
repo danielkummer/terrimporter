@@ -1,8 +1,11 @@
 class Statistic
   attr_accessor :statistics, :times
 
+  def header
+    ["* SUMMARY Date: #{Time.now.strftime("%d.%m.%Y %H:%M:%S")}" ]
+  end
+
   def initialize
-    @header = ["* SUMMARY Date: #{Time.now.strftime("%d.%m.%Y %H:%M:%S")}" ]
     self.statistics = {}
   end
 
@@ -21,9 +24,9 @@ class Statistic
   end
 
   def print_summary
-    @header.each { |h| puts h }
+    header.each { |h| puts h }
     self.statistics.each do |key, value|
-      puts "* %3s : %s" % [value[:count], value[:message]] unless value[:count] == 0
+      puts "%25s : %3s" % [value[:message], value[:count]] unless value[:count] == 0
     end
   end
 

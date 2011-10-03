@@ -42,7 +42,7 @@ class TestImporter < Test::Unit::TestCase
     end
 
     should 'replace a string in the stylesheet with the configured regex' do
-      @importer.config['stylesheets']['replace_strings'][0]['what'] = "r/(re.+ex)/"
+      @importer.config.stylesheets['replace_strings'][0]['what'] = "r/(re.+ex)/"
       line = "this line should replace the regex string with images"
       @importer.send(:replace_stylesheet_lines!, line)
       assert line.include?("/images/"), "result not expected, is #{line}"
@@ -50,7 +50,7 @@ class TestImporter < Test::Unit::TestCase
 
     #todo this tests is a fluke and not clean!
     should 'not do any string replacement if not configured' do
-      @importer.config['stylesheets']['replace_strings'] = nil
+      @importer.config.stylesheets['replace_strings'] = nil
       @importer.import_css
       assert true
     end
@@ -68,7 +68,8 @@ class TestImporter < Test::Unit::TestCase
 
   context 'css and js export path construction' do
     setup do
-      @importer.config['export_path'] = {'css' => 'base.css', 'js' => 'base.js'}
+      @importer.config.js_export_path = 'base.js'
+      @importer.config.css_export_path = 'base.css'
     end
 
     should 'raise an error on wrongly supplied arguments' do
@@ -154,21 +155,21 @@ class TestImporter < Test::Unit::TestCase
 
   context 'missing configuration values' do
     should 'run through but not throw an error if the servers library path is not specified' do
-      @importer.config['libraries_server_path'] = nil
+      @importer.config.libraries_server_path = nil
       assert_nothing_raised do
         @importer.import_js
       end
     end
 
     should 'run through but not throw an error if the images path is not specified' do
-      @importer.config['images'] = nil
+      @importer.config.images = nil
       assert_nothing_raised do
         @importer.import_images
       end
     end
 
     should 'run through but not throw an error if no modules are specified' do
-      @importer.config['modules'] = nil
+      @importer.config.modules = nil
       assert_nothing_raised do
         @importer.import_modules
       end

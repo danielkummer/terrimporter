@@ -2,118 +2,68 @@ module TerrImporter
   class Application
     class Configuration < Hash
 
-      attr_accessor :validations
-
-      def application_url
-        self['application_url']
+      def initialize(hash)
+        hash.each do |key, value|
+          self.instance_variable_set("@#{key}", value)
+          self.class.send(:define_method, key, proc { self.instance_variable_get("@#{key}") })
+          self.class.send(:define_method, "has_#{key}?", proc { !self.instance_variable_get("@#{key}").nil? and !self.instance_variable_get("@#{key}").empty? })
+          self.class.send(:define_method, "#{key}=", proc { |value| self.instance_variable_set("@#{key}", value) })
+          value.each_key do |key2|
+            self.class.send(:define_method, "#{key}_#{key2}", proc { self.instance_variable_get("@#{key}")["#{key2}"] })
+          end if value.kind_of? Hash
+        end
       end
 
-      def css_export_path
-        self['css_export_path']
-      end
-
-      def js_export_path
-        self['js_export_path']
-      end
-
-      def stylesheets_destination
-        self['stylesheets']['destination_path']
-      end
-
-      def stylesheet_replace_strings
-        self['stylesheets']['replace_strings']
-      end
-
-      def javascripts_destination
-        self['javascripts']['destination_path']
-      end
-
-      def stylesheets
+      def list_stylesheets
         stylesheet_list = ["base.css"]
-        if has_stylesheets?
-          stylesheet_list = stylesheet_list + self['stylesheets']['styles'].to_s.robust_split
+        unless @stylesheets['styles'].nil?
+          stylesheet_list = stylesheet_list + @stylesheets['styles'].to_s.robust_split
         else
           LOG.debug "No additional stylesheets defined in configuration file."
         end
         stylesheet_list.add_missing_extension!('.css')
       end
 
-      def images
-        self['images']
-      end
-
-      def modules
-        self['modules']
-      end
-
-      def images_server_path
-        self['image_server_path']
-      end
-
-      def libraries_server_path
-        self['libraries_server_path']
-      end
-
-      def plugins_server_path
-        self['plugins_server_path']
-      end
-
-      def dynamic_libraries
-        libraries = self['javascripts']['dynamic_libraries'].robust_split
+      def list_dynamic_libraries
+        libraries = @javascripts['dynamic_libraries'].robust_split
         libraries.add_missing_extension!('.js')
       end
 
-      def dynamic_plugins
-        libraries = self['javascripts']['dynamic_plugins'].robust_split
+      def list_dynamic_plugins
+        libraries = @javascripts['dynamic_plugins'].robust_split
         libraries.add_missing_extension!('.js')
       end
 
       def replace_style_strings?
-        !self['stylesheets'].nil? and
-            !self['stylesheets']['replace_strings'].nil? and
-            !self['stylesheets']['replace_strings'].first.nil?
+        has_stylesheets? and
+            !@stylesheets['replace_strings'].nil? and
+            !@stylesheets['replace_strings'].first.nil?
       end
 
       def libraries_destination_path
-        if !self['javascripts']['libraries_destination_path'].nil?
-          File.join(self['javascripts']['libraries_destination_path'])
+        if !@javascripts['libraries_destination_path'].nil?
+          File.join(@javascripts['libraries_destination_path'])
         else
-          File.join(self['javascripts']['destination_path'])
+          File.join(@javascripts['destination_path'])
         end
       end
 
       def plugins_destination_path
-        if !self['javascripts']['plugins_destination_path'].nil?
-          File.join(self['javascripts']['plugins_destination_path'])
+        if !@javascripts['plugins_destination_path'].nil?
+          File.join(@javascripts['plugins_destination_path'])
         else
-          File.join(self['javascripts']['destination_path'])
+          File.join(@javascripts['destination_path'])
         end
       end
 
-      def export_settings
-        self['export_settings']
-      end
-
-      def has_stylesheets?
-        !self['stylesheets'].nil? and !self['stylesheets']['styles'].nil?
-      end
 
       def has_dynamic_javascripts?
-        !self['javascripts'].nil? and !self['javascripts']['dynamic_libraries'].nil?
+        has_javascripts? and !@javascripts['dynamic_libraries'].nil?
       end
 
       def has_dynamic_plugins?
-        !self['javascripts'].nil? and !self['javascripts']['dynamic_plugins'].nil?
+        has_javascripts? and !@javascripts['dynamic_plugins'].nil?
       end
-
-      def has_images?
-        !self['images'].nil?
-      end
-
-      def has_modules?
-        !self['modules'].nil?
-      end
-
     end
   end
 end

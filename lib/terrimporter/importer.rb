@@ -45,10 +45,10 @@ module TerrImporter
         LOG.info("Importing stylesheets")
 
         unclean_suffix = "_unclean"
-        stylesheets = config.stylesheets
+        stylesheets = config.list_stylesheets
 
         stylesheets.each do |css|
-          file_path = File.join(config.stylesheets_destination, css)
+          file_path = File.join(config.stylesheets_destination_path, css)
           options = {}
           options[:suffix] = $1 if css =~ /(ie.*).css$/ #add ie option if in array
           source_url = export_path(:css, options)
@@ -92,7 +92,7 @@ module TerrImporter
 
       def import_js
         LOG.info("Importing javascripts")
-        file_path = File.join(config.javascripts_destination, "base.js")
+        file_path = File.join(config.javascripts_destination_path, "base.js")
         js_source_url = export_path(:js)
         LOG.debug "Import base.js from #{js_source_url} to #{file_path}"
         @downloader.download(js_source_url, file_path)
@@ -103,7 +103,7 @@ module TerrImporter
           else
             libraries_file_path = config.libraries_destination_path
             LOG.info "Import libraries from #{config.libraries_server_path} to #{libraries_file_path}"
-            js_libraries = config.dynamic_libraries
+            js_libraries = config.list_dynamic_libraries
             js_libraries.each do |lib|
               begin
                 @downloader.download(File.join(config.libraries_server_path, lib), File.join(libraries_file_path, lib))
@@ -121,7 +121,7 @@ module TerrImporter
           else
             plugins_file_path = config.plugins_destination_path
             LOG.info "Import plugins from #{config.plugins_server_path} to #{plugins_file_path}"
-            js_plugins = config.dynamic_plugins
+            js_plugins = config.list_dynamic_plugins
             js_plugins.each do |lib|
               begin
                 @downloader.download(File.join(config.plugins_server_path, lib), File.join(plugins_file_path, lib))
@@ -138,7 +138,7 @@ module TerrImporter
         if config.has_images?
           LOG.info "Import images"
           config.images.each do |image|
-            image_source_path = File.join(config.images_server_path, image['server_path'])
+            image_source_path = File.join(config.image_server_path, image['server_path'])
             @downloader.batch_download(image_source_path, image['destination_path'], image['file_types'], :image)
           end
         else
@@ -191,7 +191,7 @@ module TerrImporter
       end
 
       def replace_stylesheet_lines!(line)
-        config.stylesheet_replace_strings.each do |replace|
+        config.stylesheets_replace_strings.each do |replace|
           replace_line!(line, replace['what'], replace['with'])
         end
         line

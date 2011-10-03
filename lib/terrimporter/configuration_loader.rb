@@ -12,10 +12,9 @@ module TerrImporter
       def load_configuration
         config_file_path = determine_config_file_path
         LOG.debug "Configuration file located, load from #{config_file_path}"
-        c = Configuration.new
-        c.merge!(validate_and_load_config(config_file_path))
-        c['version'], c['export_settings']['application'], c['css_export_path'], c['js_export_path'] = determine_configuration_values_from_html(Downloader.new(c['application_url']).download(''))
-        c
+        config_hash = validate_and_load_config(config_file_path)
+        config_hash['version'], config_hash['export_settings']['application'], config_hash['css_export_path'], config_hash['js_export_path'] = determine_configuration_values_from_html(Downloader.new(config_hash['application_url']).download(''))
+        Configuration.new(config_hash)
       end
 
       def determine_config_file_path

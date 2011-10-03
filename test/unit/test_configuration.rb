@@ -22,8 +22,8 @@ class ConfigurationTest < Test::Unit::TestCase
   end
 
   should 'use the normal libraries path if no dynamic libraries are specified' do
-    @configuration['javascripts']['libraries_destination_path'] = nil
-    assert @configuration['javascripts']['destination_path'], @configuration.libraries_destination_path
+    @configuration.javascripts['libraries_destination_path'] = nil
+    assert @configuration.javascripts['destination_path'], @configuration.libraries_destination_path
   end
 
   should 'have style replacement strings' do
@@ -59,11 +59,11 @@ class ConfigurationTest < Test::Unit::TestCase
     end
 
     should 'not have additional stylesheets configured' do
-      assert !@configuration.has_stylesheets?
+      assert !@configuration.stylesheets['styles']
     end
 
     should 'only get the base.css file' do
-      assert_equal ["base.css"], @configuration.stylesheets
+      assert_equal ["base.css"], @configuration.list_stylesheets
     end
 
     should 'not have additional modules' do
