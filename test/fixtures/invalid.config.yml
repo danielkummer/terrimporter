@@ -1,7 +1,7 @@
     url:          http://terrific.url
-    libraries_server_path: /js/libraries/dynamic
-    plugins_server_path: /js/plugins/dynamic
-    image_server_path: /img
+    libraries_server_dir: /js/libraries/dynamic
+    plugins_server_dir: /js/plugins/dynamic
+    images_server_dir: /img
     export_settings:
       layout: project
       debug: false
@@ -9,18 +9,18 @@
     stylesheets:
       dest: test/tmp/public/stylesheets/
       styles: ie.css
-      replace_strings:
+      replace:
         - what: /img/
           with: /images/
     javascripts:
       dest: test/tmp/public/javascripts/
-      dynamic_libraries: dynlib.js
-      libraries_destination_path: /lib
+      libraries: dynlib.js
+      libraries_target_dir: /lib
     images:
-      - server_path: /
+      - server_dir: /
         dest: test/tmp/public/images/
         file_types: jpg png gif
-      - server_path: /backgrounds
+      - server_dir: /backgrounds
         dest: test/tmp/public/images/backgrounds/
         file_types: jpg
     modules:

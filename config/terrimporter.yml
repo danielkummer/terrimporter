@@ -1,56 +1,49 @@
 #-------------------------------------------------------------------------------
 # terrimporter configuration, adjust as needed.
 #-------------------------------------------------------------------------------
-# Important notes READ THEM:
+# Important notes READ:
 # * Don't mess with indentation!
-# * All local paths are relative to the running directory
+# * All local paths are relative to the current working directory
+# * Target_dir always refers to the local destination "target" directory
 # * multiple entries have the following format (stylesheet replacement example):
 # - what: /replacethis/
 #   with: /withthis/
 # - what: /another/
 #   with: /replacement/
 
+
 # APPLICATION
-# url: Terrific base url
-application_url: http://terrific.project.url
+application_url: http://terrific.project.url  # Terrific project base url
 
 # STYLESHEETS
 stylesheets:
-# The destination directory, relative from the current running directory
-  destination_path: public/stylesheets/
-# Additional stylesheets, you can but don't have to add the .css extension
-#  styles: ie, ie6, ie7.css
-# replace_strings: Define string replacements in css files 
-# (use multiple replacements by repeating the '-what: with:' statements)
-  replace_strings:
-#    - what: /img/     # What to replace, format: [string] or [r/regex/]
-#      with: /images/  # Replace with [string]
+  target_dir: public/stylesheets/
+#  styles: ie, ie6, ie7.css       # Additional stylesheets, .css extension optional
+  replace:                        # Define multiple string replacements in css files
+#    - what: /img/                # What to replace, format: [string] or [r/regex/]
+#      with: /images/             # Replace with [string]
 
 # JAVASCRIPTS
 javascripts:
-# Destination path of the javascript base.js file
-  destination_path: public/javascripts/
-# Dynamic libraries definition, you can but don't have to add the .js extension
-#  dynamic_libraries: foo_lib.js bar_lib.js
-# Destination path of the dynamic libraries (relative)
-#  libraries_destination_path:  public/javascripts/libraries/
-# Destination path of the dynamic plugins
-#  dynamic_plugins: dynamic.js
-#  plugins_destination_path: public/javascript/plugins/
+  target_dir: public/javascripts/
+#  libraries: foo_lib.js bar_lib.js # Dynamic libraries definition, .css extension optional
+#  libraries_target_dir:  public/javascripts/libraries/ #  target_dir is used if unspecified
+#  plugins: dynamic.js  # Dynamic plugins definition, .css extension optional
+#  plugins_target_dir: public/javascript/plugins/ # target_dir is used if unspecified
 
 # IMAGES - multiple entries allowed
 images:
-#  - server_path: / # The server path is appended to the image_server_path
-#    destination_path: public/images/  # The relative destination path
+#  - server_dir: / # The server directory is appended to images_server_dir
+#    target_dir: public/images/
 #    file_types: jpg, png, gif  # Image file endings to be downloaded
 
 # MODULES - multiple entries allowed
 modules:
-#  - name:                 #Module name
+#  - name: samplemodule    #Module name
 #    skin:                 #Skin name, if used
-#    module_template:      #The module template used, required
+#    module_template: tmpl #The module template used, required
 #    template_only: false  #Only import template without surrounding divs, default: false
-#    destination_path: #Destination path of
+#    target_dir: public/modules/
 
 #-------------------------------------------------------------------------------
 # ADVANCED EDITING - Only edit the following if you know what you're doing...
@@ -61,9 +54,6 @@ export_settings:
   cache: false      # You most probably won't have to change this
   layout: project   # You most probably won't have to change this
 
-# The server side libraries and plugins source path for the dynamic libraries and dynamic plugins
-libraries_server_path: /js/libraries/dynamic
-plugins_server_path: /js/plugins/dynamic
-
-# The server side image base path
-image_server_path: /img
+libraries_server_dir: /js/libraries/dynamic # Server side libraries base path
+plugins_server_dir: /js/plugins/dynamic # Server side plugins base path
+images_server_dir: /img # Server side image base path

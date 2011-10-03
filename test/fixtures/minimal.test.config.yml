@@ -1,15 +1,15 @@
 application_url:          http://terrific.url
-libraries_server_path: /js/libraries/dynamic
-plugins_server_path: /js/plugins/dynamic
-image_server_path: /img
+libraries_server_dir: /js/libraries/dynamic
+plugins_server_dir: /js/plugins/dynamic
+images_server_dir: /img
 export_settings:
   layout: project
   debug: false
   cache: false
 stylesheets:
-  destination_path: test/tmp/public/stylesheets/
+  target_dir: test/tmp/public/stylesheets/
 javascripts:
-  destination_path: test/tmp/public/javascripts/
+  target_dir: test/tmp/public/javascripts/
 images:
 modules:
 

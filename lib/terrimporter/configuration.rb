@@ -24,45 +24,45 @@ module TerrImporter
         stylesheet_list.add_missing_extension!('.css')
       end
 
-      def list_dynamic_libraries
-        libraries = @javascripts['dynamic_libraries'].robust_split
+      def list_libraries
+        libraries = @javascripts['libraries'].robust_split
         libraries.add_missing_extension!('.js')
       end
 
-      def list_dynamic_plugins
-        libraries = @javascripts['dynamic_plugins'].robust_split
+      def list_plugins
+        libraries = @javascripts['plugins'].robust_split
         libraries.add_missing_extension!('.js')
       end
 
       def replace_style_strings?
         has_stylesheets? and
-            !@stylesheets['replace_strings'].nil? and
-            !@stylesheets['replace_strings'].first.nil?
+            !@stylesheets['replace'].nil? and
+            !@stylesheets['replace'].first.nil?
       end
 
-      def libraries_destination_path
-        if !@javascripts['libraries_destination_path'].nil?
-          File.join(@javascripts['libraries_destination_path'])
+      def libraries_target_dir
+        if !@javascripts['libraries_target_dir'].nil?
+          File.join(@javascripts['libraries_target_dir'])
         else
-          File.join(@javascripts['destination_path'])
+          File.join(@javascripts['target_dir'])
         end
       end
 
-      def plugins_destination_path
-        if !@javascripts['plugins_destination_path'].nil?
-          File.join(@javascripts['plugins_destination_path'])
+      def plugins_target_dir
+        if !@javascripts['plugins_target_dir'].nil?
+          File.join(@javascripts['plugins_target_dir'])
         else
-          File.join(@javascripts['destination_path'])
+          File.join(@javascripts['target_dir'])
         end
       end
 
 
       def has_dynamic_javascripts?
-        has_javascripts? and !@javascripts['dynamic_libraries'].nil?
+        has_javascripts? and !@javascripts['libraries'].nil?
       end
 
-      def has_dynamic_plugins?
-        has_javascripts? and !@javascripts['dynamic_plugins'].nil?
+      def has_plugins?
+        has_javascripts? and !@javascripts['plugins'].nil?
       end
     end
   end

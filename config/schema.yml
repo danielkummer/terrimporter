@@ -4,15 +4,15 @@ mapping:
     type: str
     required: yes
     pattern: /^(http|https):\/\/.*$/
-  "libraries_server_path":
+  "libraries_server_dir":
     type: str
     required: yes
     pattern:  /\/.*/
-  "plugins_server_path":
+  "plugins_server_dir":
     type: str
     required: yes
     pattern:  /\/.*/
-  "image_server_path":
+  "images_server_dir":
       type: str
       required: yes
       pattern:  /\/.*/
@@ -33,13 +33,13 @@ mapping:
     type: map
     required: yes
     mapping:
-      "destination_path":
+      "target_dir":
         type: str
         required: yes
       "styles":
          type: str
          required: no
-      "replace_strings":
+      "replace":
         type: seq
         required: no
         sequence:
@@ -55,19 +55,19 @@ mapping:
     type: map
     required: yes
     mapping:
-      "destination_path":
+      "target_dir":
         type: str
         required: yes
-      "dynamic_libraries":
+      "libraries":
         type: str
         required: no
-      "libraries_destination_path":
+      "libraries_target_dir":
         type: str
         required: no
-      "dynamic_plugins":
+      "plugins":
         type: str
         required: no
-      "plugins_destination_path":
+      "plugins_target_dir":
         type: str
         required: no
   "images":
@@ -76,10 +76,10 @@ mapping:
     sequence:
       - type: map
         mapping:
-          "server_path":
+          "server_dir":
             type: str
             required: yes
-          "destination_path":
+          "target_dir":
             type: str
             required: yes
           "file_types":
@@ -98,7 +98,7 @@ mapping:
             type: str
             required: no
             default: ""
-          "destination_path":
+          "target_dir":
             type: str
             required: yes
           "module_template":

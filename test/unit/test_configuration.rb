@@ -22,8 +22,8 @@ class ConfigurationTest < Test::Unit::TestCase
   end
 
   should 'use the normal libraries path if no dynamic libraries are specified' do
-    @configuration.javascripts['libraries_destination_path'] = nil
-    assert @configuration.javascripts['destination_path'], @configuration.libraries_destination_path
+    @configuration.javascripts['libraries_target_dir'] = nil
+    assert @configuration.javascripts['target_dir'], @configuration.libraries_target_dir
   end
 
   should 'have style replacement strings' do

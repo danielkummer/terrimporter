@@ -48,7 +48,7 @@ module TerrImporter
         stylesheets = config.list_stylesheets
 
         stylesheets.each do |css|
-          file_path = File.join(config.stylesheets_destination_path, css)
+          file_path = File.join(config.stylesheets_target_dir, css)
           options = {}
           options[:suffix] = $1 if css =~ /(ie.*).css$/ #add ie option if in array
           source_url = export_path(:css, options)
@@ -92,21 +92,21 @@ module TerrImporter
 
       def import_js
         LOG.info("Importing javascripts")
-        file_path = File.join(config.javascripts_destination_path, "base.js")
+        file_path = File.join(config.javascripts_target_dir, "base.js")
         js_source_url = export_path(:js)
         LOG.debug "Import base.js from #{js_source_url} to #{file_path}"
         @downloader.download(js_source_url, file_path)
         STAT.add(:js)
         if config.has_dynamic_javascripts?
-          if config.libraries_server_path.nil?
-            LOG.info "Define 'libraries_server_path' in configuration file"
+          if config.libraries_server_dir.nil?
+            LOG.info "Define 'libraries_server_dir' in configuration file"
           else
-            libraries_file_path = config.libraries_destination_path
-            LOG.info "Import libraries from #{config.libraries_server_path} to #{libraries_file_path}"
-            js_libraries = config.list_dynamic_libraries
+            libraries_file_path = config.libraries_target_dir
+            LOG.info "Import libraries from #{config.libraries_server_dir} to #{libraries_file_path}"
+            js_libraries = config.list_libraries
             js_libraries.each do |lib|
               begin
-                @downloader.download(File.join(config.libraries_server_path, lib), File.join(libraries_file_path, lib))
+                @downloader.download(File.join(config.libraries_server_dir, lib), File.join(libraries_file_path, lib))
                 STAT.add(:js)
               rescue DownloadError => e
                 LOG.error(e)
@@ -115,16 +115,16 @@ module TerrImporter
           end
         end
 
-        if config.has_dynamic_plugins?
-          if config.plugins_server_path.nil?
-            LOG.info "Define 'plugins_server_path' in configuration file"
+        if config.has_plugins?
+          if config.plugins_server_dir.nil?
+            LOG.info "Define 'plugins_server_dir' in configuration file"
           else
-            plugins_file_path = config.plugins_destination_path
-            LOG.info "Import plugins from #{config.plugins_server_path} to #{plugins_file_path}"
-            js_plugins = config.list_dynamic_plugins
+            plugins_file_path = config.plugins_target_dir
+            LOG.info "Import plugins from #{config.plugins_server_dir} to #{plugins_file_path}"
+            js_plugins = config.list_plugins
             js_plugins.each do |lib|
               begin
-                @downloader.download(File.join(config.plugins_server_path, lib), File.join(plugins_file_path, lib))
+                @downloader.download(File.join(config.plugins_server_dir, lib), File.join(plugins_file_path, lib))
                 STAT.add(:js)
               rescue DownloadError => e
                 LOG.error(e)
@@ -138,8 +138,8 @@ module TerrImporter
         if config.has_images?
           LOG.info "Import images"
           config.images.each do |image|
-            image_source_path = File.join(config.image_server_path, image['server_path'])
-            @downloader.batch_download(image_source_path, image['destination_path'], image['file_types'], :image)
+            image_source_path = File.join(config.images_server_dir, image['server_dir'])
+            @downloader.batch_download(image_source_path, image['target_dir'], image['file_types'], :image)
           end
         else
           LOG.debug "Skipping image import"
@@ -157,7 +157,7 @@ module TerrImporter
             filename = name.clone
             filename << "_#{skin}" unless skin.to_s.strip.length == 0
             begin
-              @downloader.download(module_source_url, File.join(mod['destination_path'], filename + '.html'))
+              @downloader.download(module_source_url, File.join(mod['target_dir'], filename + '.html'))
               STAT.add(:module)
             rescue DownloadError => e
               LOG.error(e)
@@ -191,7 +191,7 @@ module TerrImporter
       end
 
       def replace_stylesheet_lines!(line)
-        config.stylesheets_replace_strings.each do |replace|
+        config.stylesheets_replace.each do |replace|
           replace_line!(line, replace['what'], replace['with'])
         end
         line

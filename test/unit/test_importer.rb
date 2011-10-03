@@ -42,7 +42,7 @@ class TestImporter < Test::Unit::TestCase
     end
 
     should 'replace a string in the stylesheet with the configured regex' do
-      @importer.config.stylesheets['replace_strings'][0]['what'] = "r/(re.+ex)/"
+      @importer.config.stylesheets['replace'][0]['what'] = "r/(re.+ex)/"
       line = "this line should replace the regex string with images"
       @importer.send(:replace_stylesheet_lines!, line)
       assert line.include?("/images/"), "result not expected, is #{line}"
@@ -50,7 +50,7 @@ class TestImporter < Test::Unit::TestCase
 
     #todo this tests is a fluke and not clean!
     should 'not do any string replacement if not configured' do
-      @importer.config.stylesheets['replace_strings'] = nil
+      @importer.config.stylesheets['replace'] = nil
       @importer.import_css
       assert true
     end
@@ -155,7 +155,7 @@ class TestImporter < Test::Unit::TestCase
 
   context 'missing configuration values' do
     should 'run through but not throw an error if the servers library path is not specified' do
-      @importer.config.libraries_server_path = nil
+      @importer.config.libraries_server_dir = nil
       assert_nothing_raised do
         @importer.import_js
       end
