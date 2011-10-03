@@ -83,6 +83,7 @@ module TerrImporter
 
         [terrific_version, application, css_export_path, js_export_path]
       end
+
     end
   end
 end

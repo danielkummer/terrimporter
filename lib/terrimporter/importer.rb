@@ -54,30 +54,38 @@ module TerrImporter
           source_url = export_path(:css, options)
           unclean_file_path = file_path + unclean_suffix;
           constructed_file_path = (config.replace_style_strings? ? unclean_file_path : file_path)
-          @downloader.download(source_url, constructed_file_path)
-          STAT.add(:css)
-          if file_contains_valid_css?(constructed_file_path)
-            if config.replace_style_strings?
-              LOG.info "CSS line replacements"
-              File.open(file_path, 'w') do |d|
-                File.open(constructed_file_path, 'r') do |s|
-                  lines = s.readlines
-                  lines.each do |line|
-                    d.print replace_stylesheet_lines!(line)
+
+          begin
+
+            @downloader.download(source_url, constructed_file_path)
+            STAT.add(:css)
+
+            #todo move to method
+            if file_contains_valid_css?(constructed_file_path)
+              if config.replace_style_strings?
+                LOG.info "CSS line replacements"
+                File.open(file_path, 'w') do |d|
+                  File.open(constructed_file_path, 'r') do |s|
+                    lines = s.readlines
+                    lines.each do |line|
+                      d.print replace_stylesheet_lines!(line)
+                    end
                   end
                 end
+              else
+                LOG.debug "Skipping css line replacements"
+              end
+
+              if File.exists?(unclean_file_path)
+                LOG.debug "Deleting unclean css files"
+                FileUtils.remove unclean_file_path
               end
             else
-              LOG.debug "Skipping css line replacements"
+              FileUtils.remove(file_path)
+              LOG.debug "Deleting empty"
             end
-
-            if File.exists?(unclean_file_path)
-              LOG.debug "Deleting unclean css files"
-              FileUtils.remove unclean_file_path
-            end
-          else
-            FileUtils.remove(file_path)
-            LOG.debug "Deleting empty"
+          rescue DownloadError => e
+            LOG.error(e)
           end
         end
       end
@@ -97,8 +105,12 @@ module TerrImporter
             LOG.info "Import libraries from #{config.libraries_server_path} to #{libraries_file_path}"
             js_libraries = config.dynamic_libraries
             js_libraries.each do |lib|
-              @downloader.download(File.join(config.libraries_server_path, lib), File.join(libraries_file_path, lib))
-              STAT.add(:js)
+              begin
+                @downloader.download(File.join(config.libraries_server_path, lib), File.join(libraries_file_path, lib))
+                STAT.add(:js)
+              rescue DownloadError => e
+                LOG.error(e)
+              end
             end
           end
         end
@@ -107,19 +119,22 @@ module TerrImporter
           if config.plugins_server_path.nil?
             LOG.info "Define 'plugins_server_path' in configuration file"
           else
-          plugins_file_path = config.plugins_destination_path
-          LOG.info "Import plugins from #{config.plugins_server_path} to #{plugins_file_path}"
-          js_plugins = config.dynamic_plugins
-          js_plugins.each do |lib|
-            @downloader.download(File.join(config.plugins_server_path, lib), File.join(plugins_file_path, lib))
-            STAT.add(:js)
-          end
+            plugins_file_path = config.plugins_destination_path
+            LOG.info "Import plugins from #{config.plugins_server_path} to #{plugins_file_path}"
+            js_plugins = config.dynamic_plugins
+            js_plugins.each do |lib|
+              begin
+                @downloader.download(File.join(config.plugins_server_path, lib), File.join(plugins_file_path, lib))
+                STAT.add(:js)
+              rescue DownloadError => e
+                LOG.error(e)
+              end
             end
+          end
         end
       end
 
       def import_images
-
         if config.has_images?
           LOG.info "Import images"
           config.images.each do |image|
@@ -141,8 +156,12 @@ module TerrImporter
             module_source_url = module_path(name, mod['module_template'], skin, mod['template_only'])
             filename = name.clone
             filename << "_#{skin}" unless skin.to_s.strip.length == 0
-            @downloader.download(module_source_url, File.join(mod['destination_path'], filename + '.html'))
-            STAT.add(:module)
+            begin
+              @downloader.download(module_source_url, File.join(mod['destination_path'], filename + '.html'))
+              STAT.add(:module)
+            rescue DownloadError => e
+              LOG.error(e)
+            end
           end
         else
           LOG.debug "Skipping module import"

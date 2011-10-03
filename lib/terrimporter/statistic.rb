@@ -2,7 +2,7 @@ class Statistic
   attr_accessor :statistics, :times
 
   def initialize
-    @header = ["---SUMMARY Date: #{Time.now.strftime("%d.%m.%Y %H:%M:%S")}" ]
+    @header = ["* SUMMARY Date: #{Time.now.strftime("%d.%m.%Y %H:%M:%S")}" ]
     self.statistics = {}
   end
 

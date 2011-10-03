@@ -24,6 +24,7 @@ STAT.add_message(:js, "javascripts downloaded")
 STAT.add_message(:image, "images downloaded")
 STAT.add_message(:module, "html modules downloaded")
 STAT.add_message(:download, "files downloaded in total")
+STAT.add_message(:error, "errors occured")
 
 module TerrImporter
   class Application

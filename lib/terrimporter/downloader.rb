@@ -21,7 +21,7 @@ module TerrImporter
             STAT.add(:download)
           end
         rescue Exception => e
-          #todo currently a failed download quits the program, should only log and continue
+          STAT.add(:error)
           raise DownloadError, "Error downloading from url: #{remote_url}, message: #{e.message}"
         end
       end
@@ -29,8 +29,8 @@ module TerrImporter
       def download_to_buffer(remote_url)
         LOG.debug "Download #{remote_url} to buffer"
         data = StringIO.new
-          remote_url.open { |io| data = io.read }
-          data.to_s
+        remote_url.open { |io| data = io.read }
+        data.to_s
       end
 
       def download_to_file(remote_url, local_path)
@@ -54,8 +54,12 @@ module TerrImporter
         LOG.info "Download #{files.size} files..."
         files.each do |file|
           local_file_path = File.join(local_path.to_s, file)
-          self.download(File.join(source_path.to_s, file), local_file_path)
-          STAT.add(statistics_key) unless statistics_key.nil?
+          begin
+            self.download(File.join(source_path.to_s, file), local_file_path)
+            STAT.add(statistics_key) unless statistics_key.nil?
+          rescue DownloadError => e
+            LOG.error(e)
+          end
         end
       end
 
