@@ -8,17 +8,26 @@ module Filer
     line.gsub! what, with
   end
 
-  def file_contains_valid_css?(file_path)
-    css_valid = false
+  def file_contents_valid?(file_path, content_type)
+    case content_type
+      when :js
+        pattern = CSS_PATTERN
+      when :css
+        pattern = JS_PATTERN
+      else
+        return true
+    end
+
+    valid = false
     File.open(file_path) do |f|
       f.each_line do |line|
-        if line =~ CSS_PATTERN
-          css_valid = true
+        if line =~ pattern
+          valid = true
           break
         end
       end
     end
-    css_valid
+    valid
   end
 end
 

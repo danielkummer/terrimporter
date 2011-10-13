@@ -70,6 +70,18 @@ mapping:
       "plugins_target_dir":
         type: str
         required: no
+      "replace":
+        type: seq
+        required: no
+        sequence:
+          - type: map
+            mapping:
+              "what":
+                type: str
+                required: yes
+              "with":
+                type: str
+                required: yes
   "images":
     type: seq
     required: no

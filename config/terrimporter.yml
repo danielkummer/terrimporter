@@ -30,6 +30,9 @@ javascripts:
 #  libraries_target_dir:  public/javascripts/libraries/ #  target_dir is used if unspecified
 #  plugins: dynamic.js  # Dynamic plugins definition, .css extension optional
 #  plugins_target_dir: public/javascript/plugins/ # target_dir is used if unspecified
+  replace:                        # Define multiple string replacements in css files
+#    - what: /img/                # What to replace, format: [string] or [r/regex/]
+#      with: /images/             # Replace with [string]
 
 # IMAGES - multiple entries allowed
 images:

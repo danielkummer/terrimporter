@@ -18,6 +18,9 @@
       libraries_target_dir: test/tmp/public/javascripts/lib
       plugins: dynplugin
       plugins_target_dir: test/tmp/public/javascripts/plugins
+      replace:
+        - what: /replacethis/
+          with: /withthat/
     images:
       - server_dir: /
         target_dir: test/tmp/public/images/

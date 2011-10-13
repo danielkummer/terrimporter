@@ -52,62 +52,74 @@ module TerrImporter
           options = {}
           options[:suffix] = $1 if css =~ /(ie.*).css$/ #add ie option if in array
           source_url = export_path(:css, options)
-          unclean_file_path = file_path + unclean_suffix;
-          constructed_file_path = (config.replace_style_strings? ? unclean_file_path : file_path)
-
           begin
-
-            @downloader.download(source_url, constructed_file_path)
+            @downloader.download(source_url, file_path)
             STAT.add(:css)
-
-            #todo move to method
-            if file_contains_valid_css?(constructed_file_path)
-              if config.replace_style_strings?
-                LOG.info "CSS line replacements"
-                File.open(file_path, 'w') do |d|
-                  File.open(constructed_file_path, 'r') do |s|
-                    lines = s.readlines
-                    lines.each do |line|
-                      d.print replace_stylesheet_lines!(line)
-                    end
-                  end
-                end
-              else
-                LOG.debug "Skipping css line replacements"
-              end
-
-              if File.exists?(unclean_file_path)
-                LOG.debug "Deleting unclean css files"
-                FileUtils.remove unclean_file_path
-              end
-            else
-              FileUtils.remove(file_path)
-              LOG.debug "Deleting empty"
-            end
+            do_file_replacements(file_path, config.stylesheet_replace)
           rescue DownloadError => e
             LOG.error(e)
           end
         end
       end
 
+      #todo refactor
+      def do_file_replacements(file_path, replacements)
+        constructed_file_path = file_path + "_unclean"
+        valid_file = file_contents_valid?(file_path)
+        if replacements_valid?(replacements) and valid_file
+          File.open(file_path, 'w') do |d|
+            File.open(constructed_file_path, 'r') do |s|
+              lines = s.readlines
+              lines.each do |line|
+                d.print replace_lines!(line, replacements)
+              end
+            end
+          end
+
+          if File.exists?(unclean_file_path)
+            LOG.debug "Deleting unclean files"
+            FileUtils.remove unclean_file_path
+          end
+        else
+          LOG.debug "Skipping line replacements"
+          if !valid_file
+          else
+            FileUtils.remove(file_path)
+            LOG.debug "Deleting invalid file #{file_path}"
+          end
+        end
+      end
+
+
+      def replace_lines!(line, replacements)
+        replacements.each do |replace|
+          replace_line!(line, replace['what'], replace['with'])
+        end
+        line
+      end
+
       def import_js
         LOG.info("Importing javascripts")
-        file_path = File.join(config.javascripts_target_dir, "base.js")
+        file_path = File.join(self.config.javascripts_target_dir, "base.js")
         js_source_url = export_path(:js)
         LOG.debug "Import base.js from #{js_source_url} to #{file_path}"
-        @downloader.download(js_source_url, file_path)
+
+        @downloader.download(js_source_url, constructed_file_path)
         STAT.add(:js)
-        if config.has_javascripts_libraries?
-          if config.libraries_server_dir.nil?
+        do_file_replacements(file_path, config.javascripts_replace)
+
+        if self.config.has_javascripts_libraries?
+          if self.config.libraries_server_dir.nil?
             LOG.info "Define 'libraries_server_dir' in configuration file"
           else
-            libraries_file_path = config.libraries_target_dir
-            LOG.info "Import libraries from #{config.libraries_server_dir} to #{libraries_file_path}"
-            js_libraries = config.list_libraries
+            libraries_file_path = self.config.libraries_target_dir
+            LOG.info "Import libraries from #{self.config.libraries_server_dir} to #{libraries_file_path}"
+            js_libraries = self.config.list_libraries
             js_libraries.each do |lib|
               begin
-                @downloader.download(File.join(config.libraries_server_dir, lib), File.join(libraries_file_path, lib))
+                @downloader.download(File.join(self.config.libraries_server_dir, lib), File.join(libraries_file_path, lib))
                 STAT.add(:js)
+                do_file_replacements(file_path, config.javascripts_libraries_replace)
               rescue DownloadError => e
                 LOG.error(e)
               end
@@ -115,17 +127,18 @@ module TerrImporter
           end
         end
 
-        if config.has_javascripts_plugins?
-          unless config.has_plugins_server_dir?
+        if self.config.has_javascripts_plugins?
+          unless self.config.has_plugins_server_dir?
             LOG.info "Define 'plugins_server_dir' in configuration file"
           else
-            plugins_file_path = config.plugins_target_dir
-            LOG.info "Import plugins from #{config.plugins_server_dir} to #{plugins_file_path}"
-            js_plugins = config.list_plugins
+            plugins_file_path = self.config.plugins_target_dir
+            LOG.info "Import plugins from #{self.config.plugins_server_dir} to #{plugins_file_path}"
+            js_plugins = self.config.list_plugins
             js_plugins.each do |lib|
               begin
-                @downloader.download(File.join(config.plugins_server_dir, lib), File.join(plugins_file_path, lib))
+                @downloader.download(File.join(self.config.plugins_server_dir, lib), File.join(plugins_file_path, lib))
                 STAT.add(:js)
+                do_file_replacements(file_path, config.javascripts_plugins_replace)
               rescue DownloadError => e
                 LOG.error(e)
               end
@@ -135,10 +148,10 @@ module TerrImporter
       end
 
       def import_images
-        if config.has_images?
+        if self.config.has_images?
           LOG.info "Import images"
-          config.images.each do |image|
-            image_source_path = File.join(config.images_server_dir, image['server_dir'])
+          self.config.images.each do |image|
+            image_source_path = File.join(self.config.images_server_dir, image['server_dir'])
             @downloader.batch_download(image_source_path, image['target_dir'], image['file_types'], :image)
           end
         else
@@ -148,9 +161,9 @@ module TerrImporter
 
       def import_modules
 
-        if config.has_modules?
+        if self.config.has_modules?
           LOG.info "Module import"
-          config.modules.each do |mod|
+          self.config.modules.each do |mod|
             name = mod['name']
             skin = mod['skin']
             module_source_url = module_path(name, mod['module_template'], skin, mod['template_only'])
@@ -172,7 +185,7 @@ module TerrImporter
         skin = '' if skin.nil?
         raise ConfigurationError, "Name cannot be empty for template" if name.nil?
         raise ConfigurationError, "Module template missing in configuration for template #{name}" if module_template.nil?
-        export_path = config.application_url.clone
+        export_path = self.config.application_url.clone
         export_path << "/terrific/module/details/#{name}/#{module_template}/#{skin}/format/module#{"content" if template}"
         export_path
       end
@@ -181,21 +194,15 @@ module TerrImporter
 
       def export_path(for_what = :js, options={})
         raise DefaultError, "Specify js or css url" unless for_what == :js or for_what == :css
-        export_settings = config.export_settings.clone
+        export_settings = self.config.export_settings.clone
         export_settings.merge!(options)
         export_settings['appbaseurl'] = "" if for_what == :css
 
-        export_path = (for_what == :js) ? config.js_export_path.clone : config.css_export_path.clone
+        export_path = (for_what == :js) ? self.config.js_export_path.clone : self.config.css_export_path.clone
         export_path << '?' << export_settings.map { |k, v| "#{URI.escape(k.to_s)}=#{URI.escape(v.to_s)}" }.join("&")
         export_path
       end
 
-      def replace_stylesheet_lines!(line)
-        config.stylesheets_replace.each do |replace|
-          replace_line!(line, replace['what'], replace['with'])
-        end
-        line
-      end
     end
   end
 end
