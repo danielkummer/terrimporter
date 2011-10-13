@@ -14,7 +14,7 @@ class ConfigurationTest < Test::Unit::TestCase
   end
 
   should 'have dynamic libraries' do
-    assert @configuration.has_libraries?
+    assert @configuration.has_javascripts_libraries?
   end
 
   should 'have modules' do

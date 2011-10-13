@@ -1,4 +1,4 @@
-module ImporterHelper
+module Filer
 
   CSS_PATTERN = /^[a-zA-Z]+/ #only check if a line starts with characters, not comments
 

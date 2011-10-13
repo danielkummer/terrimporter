@@ -56,13 +56,6 @@ module TerrImporter
         !@javascripts['plugins_target_dir'].nil? ? File.join(@javascripts['plugins_target_dir']) : File.join(@javascripts['target_dir'])
       end
 
-      def has_libraries?
-        has_javascripts? and !@javascripts['libraries'].nil?
-      end
-
-      def has_plugins?
-        has_javascripts? and !@javascripts['plugins'].nil?
-      end
     end
   end
 end

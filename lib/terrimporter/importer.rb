@@ -2,7 +2,7 @@ module TerrImporter
   class Application
     #todo split importer into css_importer, image_importer, module_importer, js_importer
     class Importer
-      include ImporterHelper
+      include Filer
       attr_accessor :options, :config
 
       def initialize(options = {})
@@ -97,7 +97,7 @@ module TerrImporter
         LOG.debug "Import base.js from #{js_source_url} to #{file_path}"
         @downloader.download(js_source_url, file_path)
         STAT.add(:js)
-        if config.has_libraries?
+        if config.has_javascripts_libraries?
           if config.libraries_server_dir.nil?
             LOG.info "Define 'libraries_server_dir' in configuration file"
           else
@@ -115,7 +115,7 @@ module TerrImporter
           end
         end
 
-        if config.has_plugins?
+        if config.has_javascripts_plugins?
           unless config.has_plugins_server_dir?
             LOG.info "Define 'plugins_server_dir' in configuration file"
           else
